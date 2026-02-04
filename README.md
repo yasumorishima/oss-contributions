@@ -9,8 +9,8 @@ My open source contribution history across various projects.
 | [action-board](https://github.com/team-mirai-volunteer/action-board) | TypeScript / Next.js | 12 | 10 | 0 | 2 |
 | [post-checker](https://github.com/team-mirai-volunteer/post-checker) | TypeScript | 1 | 0 | 1 | 0 |
 | [fact-checker](https://github.com/team-mirai-volunteer/fact-checker) | TypeScript | 6 | 0 | 0 | 6 |
-| [pybaseball](https://github.com/jldbc/pybaseball) | Python | 1 | 0 | 1 | 0 |
-| **Total** | | **20** | **10** | **2** | **8** |
+| [pybaseball](https://github.com/jldbc/pybaseball) | Python | 2 | 0 | 2 | 0 |
+| **Total** | | **21** | **10** | **3** | **8** |
 
 ## Contributions by Project
 
@@ -60,4 +60,5 @@ Python library for pulling baseball statistics (Statcast, Baseball Reference, Fa
 
 | # | PR | Status | Description |
 |---|---|---|---|
+| 2 | [#499](https://github.com/jldbc/pybaseball/pull/499) | Open | Replace deprecated `errors='ignore'` with explicit try/except |
 | 1 | [#498](https://github.com/jldbc/pybaseball/pull/498) | Open | Fix function name typo in statcast_pitcher_spin.md |
