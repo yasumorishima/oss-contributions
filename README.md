@@ -9,8 +9,8 @@ My open source contribution history across various projects.
 | [action-board](https://github.com/team-mirai-volunteer/action-board) | TypeScript / Next.js | 12 | 10 | 0 | 2 |
 | [post-checker](https://github.com/team-mirai-volunteer/post-checker) | TypeScript | 1 | 0 | 1 | 0 |
 | [fact-checker](https://github.com/team-mirai-volunteer/fact-checker) | TypeScript | 6 | 0 | 0 | 6 |
-| [pybaseball](https://github.com/jldbc/pybaseball) | Python | 2 | 0 | 2 | 0 |
-| **Total** | | **21** | **10** | **3** | **8** |
+| [pybaseball](https://github.com/jldbc/pybaseball) | Python | 7 | 0 | 7 | 0 |
+| **Total** | | **26** | **10** | **8** | **8** |
 
 ## Contributions by Project
 
@@ -60,5 +60,18 @@ Python library for pulling baseball statistics (Statcast, Baseball Reference, Fa
 
 | # | PR | Status | Description |
 |---|---|---|---|
+| 7 | [#504](https://github.com/jldbc/pybaseball/pull/504) | Open | Fix team_ids returning empty data for seasons after 2021 |
+| 6 | [#503](https://github.com/jldbc/pybaseball/pull/503) | Open | Fix team_batting_bref/team_pitching_bref for updated Baseball Reference HTML |
+| 5 | [#502](https://github.com/jldbc/pybaseball/pull/502) | Open | Add input validation to team_fielding_bref |
+| 4 | [#501](https://github.com/jldbc/pybaseball/pull/501) | Open | Fix deprecated GitHub authentication in retrosheet.py |
+| 3 | [#500](https://github.com/jldbc/pybaseball/pull/500) | Open | Fix FutureWarning in team_results.py |
 | 2 | [#499](https://github.com/jldbc/pybaseball/pull/499) | Open | Replace deprecated `errors='ignore'` with explicit try/except |
 | 1 | [#498](https://github.com/jldbc/pybaseball/pull/498) | Open | Fix function name typo in statcast_pitcher_spin.md |
+
+#### Issue Comments
+
+| Issue | Comment | Description |
+|---|---|---|
+| [#470](https://github.com/jldbc/pybaseball/issues/470#issuecomment-3846980849) | Verified | schedule_and_record works on current master (curl_cffi migration) |
+| [#477](https://github.com/jldbc/pybaseball/issues/477#issuecomment-3847380960) | Verified | pitching/batting_stats_range works on current master |
+| [#481](https://github.com/jldbc/pybaseball/issues/481#issuecomment-3846988830) | Verified | Empty GH_TOKEN issue fixed by PR #501 |
