@@ -6,13 +6,22 @@ My open source contribution history across various projects.
 
 | Project | Language | PRs | Merged | Open | Closed |
 |---|---|---|---|---|---|
-| [action-board](https://github.com/team-mirai-volunteer/action-board) | TypeScript / Next.js | 12 | 10 | 0 | 2 |
+| [action-board](https://github.com/team-mirai-volunteer/action-board) | TypeScript / Next.js | 13 | 11 | 0 | 2 |
 | [post-checker](https://github.com/team-mirai-volunteer/post-checker) | TypeScript | 1 | 0 | 1 | 0 |
 | [fact-checker](https://github.com/team-mirai-volunteer/fact-checker) | TypeScript | 6 | 0 | 0 | 6 |
 | [pybaseball](https://github.com/jldbc/pybaseball) | Python | 7 | 0 | 7 | 0 |
-| **Total** | | **26** | **10** | **8** | **8** |
+| [line-bot-mcp-server](https://github.com/line/line-bot-mcp-server) | TypeScript | 1 | 0 | 1 | 0 |
+| **Total** | | **28** | **11** | **9** | **8** |
 
 ## Contributions by Project
+
+### [line/line-bot-mcp-server](https://github.com/line/line-bot-mcp-server)
+
+MCP server for LINE Messaging API integration with AI agents. Built with TypeScript by LY Corporation (LINE). 500+ stars.
+
+| # | PR | Status | Description |
+|---|---|---|---|
+| 1 | [#369](https://github.com/line/line-bot-mcp-server/pull/369) | Open | Add get_follower_ids tool to retrieve follower user IDs |
 
 ### [team-mirai-volunteer/action-board](https://github.com/team-mirai-volunteer/action-board)
 
@@ -20,6 +29,7 @@ Civic tech platform for citizen participation in Japan. Built with Next.js, Type
 
 | # | PR | Status | Description |
 |---|---|---|---|
+| 13 | [#1969](https://github.com/team-mirai-volunteer/action-board/pull/1969) | Merged | Add pure function unit tests (48 tests across 4 files) |
 | 12 | [#1918](https://github.com/team-mirai-volunteer/action-board/pull/1918) | Merged | Disable Supabase Image Transformation to fix broken images |
 | 11 | [#1914](https://github.com/team-mirai-volunteer/action-board/pull/1914) | Merged | Block deletion of shapes with XP to prevent infinite XP exploit |
 | 10 | [#1906](https://github.com/team-mirai-volunteer/action-board/pull/1906) | Merged | Refactor achieveMissionAction: extract type-specific logic into helpers |
