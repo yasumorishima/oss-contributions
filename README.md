@@ -11,7 +11,8 @@ My open source contribution history across various projects.
 | [fact-checker](https://github.com/team-mirai-volunteer/fact-checker) | TypeScript | 6 | 0 | 0 | 6 |
 | [pybaseball](https://github.com/jldbc/pybaseball) | Python | 7 | 0 | 7 | 0 |
 | [line-bot-mcp-server](https://github.com/line/line-bot-mcp-server) | TypeScript | 1 | 0 | 1 | 0 |
-| **Total** | | **28** | **11** | **9** | **8** |
+| [icp-js-core](https://github.com/dfinity/icp-js-core) | TypeScript | 1 | 0 | 1 | 0 |
+| **Total** | | **29** | **11** | **10** | **8** |
 
 ## Contributions by Project
 
@@ -85,3 +86,11 @@ Python library for pulling baseball statistics (Statcast, Baseball Reference, Fa
 | [#470](https://github.com/jldbc/pybaseball/issues/470#issuecomment-3846980849) | Verified | schedule_and_record works on current master (curl_cffi migration) |
 | [#477](https://github.com/jldbc/pybaseball/issues/477#issuecomment-3847380960) | Verified | pitching/batting_stats_range works on current master |
 | [#481](https://github.com/jldbc/pybaseball/issues/481#issuecomment-3846988830) | Verified | Empty GH_TOKEN issue fixed by PR #501 |
+
+### [dfinity/icp-js-core](https://github.com/dfinity/icp-js-core)
+
+Official JavaScript SDK for building applications on the Internet Computer. 170+ stars.
+
+| # | PR | Status | Description |
+|---|---|---|---|
+| 1 | [#1270](https://github.com/dfinity/icp-js-core/pull/1270) | Open | Improve Candid decoding error messages for Variant types (Issue #470, good first issue) |
