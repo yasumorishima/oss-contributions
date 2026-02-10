@@ -12,9 +12,28 @@ My open source contribution history across various projects.
 | [pybaseball](https://github.com/jldbc/pybaseball) | Python | 7 | 0 | 7 | 0 |
 | [line-bot-mcp-server](https://github.com/line/line-bot-mcp-server) | TypeScript | 1 | 0 | 1 | 0 |
 | [icp-js-core](https://github.com/dfinity/icp-js-core) | TypeScript | 1 | 0 | 1 | 0 |
-| **Total** | | **29** | **11** | **10** | **8** |
+| [icp-js-canisters](https://github.com/dfinity/icp-js-canisters) | TypeScript | 1 | 0 | 1 | 0 |
+| [optuna](https://github.com/optuna/optuna) | Python | 1 | 0 | 1 | 0 |
+| [pandas](https://github.com/pandas-dev/pandas) | Python | 1 | 0 | 1 | 0 |
+| **Total** | | **32** | **11** | **13** | **8** |
 
 ## Contributions by Project
+
+### [optuna/optuna](https://github.com/optuna/optuna)
+
+Hyperparameter optimization framework by Preferred Networks. Python. 13k+ stars.
+
+| # | PR | Status | Description |
+|---|---|---|---|
+| 1 | [#6431](https://github.com/optuna/optuna/pull/6431) | Open | Replace .format() with f-strings in _parallel_coordinate.py (Issue #6305) |
+
+### [pandas-dev/pandas](https://github.com/pandas-dev/pandas)
+
+Powerful Python data analysis library. 47k+ stars.
+
+| # | PR | Status | Description |
+|---|---|---|---|
+| 1 | [#64105](https://github.com/pandas-dev/pandas/pull/64105) | Open | DOC: fix Index.to_frame name parameter description (Issue #63191) |
 
 ### [line/line-bot-mcp-server](https://github.com/line/line-bot-mcp-server)
 
@@ -23,6 +42,22 @@ MCP server for LINE Messaging API integration with AI agents. Built with TypeScr
 | # | PR | Status | Description |
 |---|---|---|---|
 | 1 | [#369](https://github.com/line/line-bot-mcp-server/pull/369) | Open | Add get_follower_ids tool to retrieve follower user IDs |
+
+### [dfinity/icp-js-core](https://github.com/dfinity/icp-js-core)
+
+Official JavaScript SDK for building applications on the Internet Computer. 170+ stars.
+
+| # | PR | Status | Description |
+|---|---|---|---|
+| 1 | [#1270](https://github.com/dfinity/icp-js-core/pull/1270) | Open | Improve Candid decoding error messages for Variant types (Issue #470, good first issue) |
+
+### [dfinity/icp-js-canisters](https://github.com/dfinity/icp-js-canisters)
+
+Canister interfaces for the Internet Computer ecosystem. TypeScript.
+
+| # | PR | Status | Description |
+|---|---|---|---|
+| 1 | [#1457](https://github.com/dfinity/icp-js-canisters/pull/1457) | Open | DOC: Add inline comments to HOST constant in README (Issue #646) |
 
 ### [team-mirai-volunteer/action-board](https://github.com/team-mirai-volunteer/action-board)
 
@@ -86,11 +121,3 @@ Python library for pulling baseball statistics (Statcast, Baseball Reference, Fa
 | [#470](https://github.com/jldbc/pybaseball/issues/470#issuecomment-3846980849) | Verified | schedule_and_record works on current master (curl_cffi migration) |
 | [#477](https://github.com/jldbc/pybaseball/issues/477#issuecomment-3847380960) | Verified | pitching/batting_stats_range works on current master |
 | [#481](https://github.com/jldbc/pybaseball/issues/481#issuecomment-3846988830) | Verified | Empty GH_TOKEN issue fixed by PR #501 |
-
-### [dfinity/icp-js-core](https://github.com/dfinity/icp-js-core)
-
-Official JavaScript SDK for building applications on the Internet Computer. 170+ stars.
-
-| # | PR | Status | Description |
-|---|---|---|---|
-| 1 | [#1270](https://github.com/dfinity/icp-js-core/pull/1270) | Open | Improve Candid decoding error messages for Variant types (Issue #470, good first issue) |
