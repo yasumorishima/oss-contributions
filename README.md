@@ -13,9 +13,9 @@ My open source contribution history across various projects.
 | [line-bot-mcp-server](https://github.com/line/line-bot-mcp-server) | TypeScript | 1 | 0 | 1 | 0 |
 | [icp-js-core](https://github.com/dfinity/icp-js-core) | TypeScript | 1 | 0 | 1 | 0 |
 | [icp-js-canisters](https://github.com/dfinity/icp-js-canisters) | TypeScript | 1 | 0 | 1 | 0 |
-| [optuna](https://github.com/optuna/optuna) | Python | 1 | 0 | 1 | 0 |
+| [optuna](https://github.com/optuna/optuna) | Python | 1 | 1 | 0 | 0 |
 | [pandas](https://github.com/pandas-dev/pandas) | Python | 1 | 0 | 1 | 0 |
-| **Total** | | **32** | **11** | **13** | **8** |
+| **Total** | | **32** | **12** | **12** | **8** |
 
 ## Contributions by Project
 
@@ -25,7 +25,7 @@ Hyperparameter optimization framework by Preferred Networks. Python. 13k+ stars.
 
 | # | PR | Status | Description |
 |---|---|---|---|
-| 1 | [#6431](https://github.com/optuna/optuna/pull/6431) | Open | Replace .format() with f-strings in _parallel_coordinate.py (Issue #6305) |
+| 1 | [#6431](https://github.com/optuna/optuna/pull/6431) | Merged | Replace .format() with f-strings in _parallel_coordinate.py (Issue #6305) |
 
 ### [pandas-dev/pandas](https://github.com/pandas-dev/pandas)
 
