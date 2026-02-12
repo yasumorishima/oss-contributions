@@ -7,16 +7,17 @@ My open source contribution history across various projects.
 | Project | Language | PRs | Merged | Open | Closed |
 |---|---|---|---|---|---|
 | [action-board](https://github.com/team-mirai-volunteer/action-board) | TypeScript / Next.js | 13 | 11 | 0 | 2 |
+| [marumie](https://github.com/team-mirai/marumie) | TypeScript / Next.js | 1 | 0 | 1 | 0 |
 | [post-checker](https://github.com/team-mirai-volunteer/post-checker) | TypeScript | 1 | 0 | 1 | 0 |
 | [fact-checker](https://github.com/team-mirai-volunteer/fact-checker) | TypeScript | 6 | 0 | 0 | 6 |
 | [pybaseball](https://github.com/jldbc/pybaseball) | Python | 7 | 0 | 7 | 0 |
 | [line-bot-mcp-server](https://github.com/line/line-bot-mcp-server) | TypeScript | 1 | 0 | 1 | 0 |
 | [icp-js-core](https://github.com/dfinity/icp-js-core) | TypeScript | 1 | 0 | 1 | 0 |
-| [icp-js-canisters](https://github.com/dfinity/icp-js-canisters) | TypeScript | 1 | 0 | 1 | 0 |
+| [icp-js-canisters](https://github.com/dfinity/icp-js-canisters) | TypeScript | 1 | 1 | 0 | 0 |
 | [optuna](https://github.com/optuna/optuna) | Python | 2 | 1 | 1 | 0 |
 | [pandas](https://github.com/pandas-dev/pandas) | Python | 1 | 0 | 1 | 0 |
 | [ezc3d](https://github.com/pyomeca/ezc3d) | C++ / Python | 0 | 0 | 0 | 0 |
-| **Total** | | **33** | **12** | **13** | **8** |
+| **Total** | | **34** | **13** | **13** | **8** |
 
 ## Contributions by Project
 
@@ -59,7 +60,7 @@ Canister interfaces for the Internet Computer ecosystem. TypeScript.
 
 | # | PR | Status | Description |
 |---|---|---|---|
-| 1 | [#1457](https://github.com/dfinity/icp-js-canisters/pull/1457) | Open | DOC: Add inline comments to HOST constant in README (Issue #646) |
+| 1 | [#1457](https://github.com/dfinity/icp-js-canisters/pull/1457) | Merged | DOC: Add inline comments to HOST constant in README (Issue #646) |
 
 ### [team-mirai-volunteer/action-board](https://github.com/team-mirai-volunteer/action-board)
 
@@ -80,6 +81,14 @@ Civic tech platform for citizen participation in Japan. Built with Next.js, Type
 | 3 | [#1849](https://github.com/team-mirai-volunteer/action-board/pull/1849) | Merged | Add breadcrumb navigation to 8 pages |
 | 2 | [#1845](https://github.com/team-mirai-volunteer/action-board/pull/1845) | Merged | Fix prefecture cache invalidation |
 | 1 | [#69 comment](https://github.com/team-mirai-volunteer/fact-checker/issues/69#issuecomment-3811711591) | Done | X API v2 engagement filtering investigation report |
+
+### [team-mirai/marumie](https://github.com/team-mirai/marumie)
+
+Political finance transparency platform. Built with Next.js, TypeScript, Prisma, Tailwind CSS.
+
+| # | PR | Status | Description |
+|---|---|---|---|
+| 1 | [#1141](https://github.com/team-mirai/marumie/pull/1141) | Open | feat: Display total amount when category filter is applied (Issue #248) |
 
 ### [team-mirai-volunteer/post-checker](https://github.com/team-mirai-volunteer/post-checker)
 
