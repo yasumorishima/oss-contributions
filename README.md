@@ -16,8 +16,8 @@ My open source contribution history across various projects.
 | [icp-js-canisters](https://github.com/dfinity/icp-js-canisters) | TypeScript | 1 | 1 | 0 | 0 |
 | [optuna](https://github.com/optuna/optuna) | Python | 2 | 1 | 1 | 0 |
 | [pandas](https://github.com/pandas-dev/pandas) | Python | 1 | 0 | 1 | 0 |
-| [ezc3d](https://github.com/pyomeca/ezc3d) | C++ / Python | 0 | 0 | 0 | 0 |
-| **Total** | | **34** | **13** | **13** | **8** |
+| [ezc3d](https://github.com/pyomeca/ezc3d) | C++ / Python | 1 | 0 | 1 | 0 |
+| **Total** | | **35** | **13** | **14** | **8** |
 
 ## Contributions by Project
 
@@ -136,6 +136,10 @@ Python library for pulling baseball statistics (Statcast, Baseball Reference, Fa
 ### [pyomeca/ezc3d](https://github.com/pyomeca/ezc3d)
 
 Easy to use C3D reader/writer for C++, Python and MATLAB. Used in biomechanics research including Driveline Baseball's motion capture data. 170+ stars.
+
+| # | PR | Status | Description |
+|---|---|---|---|
+| 1 | [#384](https://github.com/pyomeca/ezc3d/pull/384) | Open | Fix C3dMapper.__eq__() early return skipping remaining keys (Issue #383) |
 
 #### Issues Filed
 
