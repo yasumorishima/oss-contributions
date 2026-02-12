@@ -13,9 +13,10 @@ My open source contribution history across various projects.
 | [line-bot-mcp-server](https://github.com/line/line-bot-mcp-server) | TypeScript | 1 | 0 | 1 | 0 |
 | [icp-js-core](https://github.com/dfinity/icp-js-core) | TypeScript | 1 | 0 | 1 | 0 |
 | [icp-js-canisters](https://github.com/dfinity/icp-js-canisters) | TypeScript | 1 | 0 | 1 | 0 |
-| [optuna](https://github.com/optuna/optuna) | Python | 1 | 1 | 0 | 0 |
+| [optuna](https://github.com/optuna/optuna) | Python | 2 | 1 | 1 | 0 |
 | [pandas](https://github.com/pandas-dev/pandas) | Python | 1 | 0 | 1 | 0 |
-| **Total** | | **32** | **12** | **12** | **8** |
+| [ezc3d](https://github.com/pyomeca/ezc3d) | C++ / Python | 0 | 0 | 0 | 0 |
+| **Total** | | **33** | **12** | **13** | **8** |
 
 ## Contributions by Project
 
@@ -25,6 +26,7 @@ Hyperparameter optimization framework by Preferred Networks. Python. 13k+ stars.
 
 | # | PR | Status | Description |
 |---|---|---|---|
+| 2 | [#6434](https://github.com/optuna/optuna/pull/6434) | Open | Use TYPE_CHECKING for import in pruners/_base.py (Issue #6029) |
 | 1 | [#6431](https://github.com/optuna/optuna/pull/6431) | Merged | Replace .format() with f-strings in _parallel_coordinate.py (Issue #6305) |
 
 ### [pandas-dev/pandas](https://github.com/pandas-dev/pandas)
@@ -121,3 +123,13 @@ Python library for pulling baseball statistics (Statcast, Baseball Reference, Fa
 | [#470](https://github.com/jldbc/pybaseball/issues/470#issuecomment-3846980849) | Verified | schedule_and_record works on current master (curl_cffi migration) |
 | [#477](https://github.com/jldbc/pybaseball/issues/477#issuecomment-3847380960) | Verified | pitching/batting_stats_range works on current master |
 | [#481](https://github.com/jldbc/pybaseball/issues/481#issuecomment-3846988830) | Verified | Empty GH_TOKEN issue fixed by PR #501 |
+
+### [pyomeca/ezc3d](https://github.com/pyomeca/ezc3d)
+
+Easy to use C3D reader/writer for C++, Python and MATLAB. Used in biomechanics research including Driveline Baseball's motion capture data. 170+ stars.
+
+#### Issues Filed
+
+| Issue | Status | Description |
+|---|---|---|
+| [#383](https://github.com/pyomeca/ezc3d/issues/383) | Open | Bug: `C3dMapper.__eq__()` returns early, skipping comparison of remaining keys |
