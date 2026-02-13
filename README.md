@@ -10,59 +10,17 @@ My open source contribution history across various projects.
 | [marumie](https://github.com/team-mirai/marumie) | TypeScript / Next.js | 1 | 0 | 1 | 0 |
 | [post-checker](https://github.com/team-mirai-volunteer/post-checker) | TypeScript | 1 | 0 | 1 | 0 |
 | [fact-checker](https://github.com/team-mirai-volunteer/fact-checker) | TypeScript | 6 | 0 | 0 | 6 |
+| [icp-js-canisters](https://github.com/dfinity/icp-js-canisters) | TypeScript | 1 | 1 | 0 | 0 |
+| [icp-js-core](https://github.com/dfinity/icp-js-core) | TypeScript | 1 | 0 | 1 | 0 |
+| [pic-js](https://github.com/dfinity/pic-js) | TypeScript | 1 | 0 | 1 | 0 |
+| [optuna](https://github.com/optuna/optuna) | Python | 2 | 2 | 0 | 0 |
+| [ezc3d](https://github.com/pyomeca/ezc3d) | C++ / Python | 1 | 0 | 1 | 0 |
+| [pandas](https://github.com/pandas-dev/pandas) | Python | 1 | 0 | 1 | 0 |
 | [pybaseball](https://github.com/jldbc/pybaseball) | Python | 7 | 0 | 7 | 0 |
 | [line-bot-mcp-server](https://github.com/line/line-bot-mcp-server) | TypeScript | 1 | 0 | 1 | 0 |
-| [icp-js-core](https://github.com/dfinity/icp-js-core) | TypeScript | 1 | 0 | 1 | 0 |
-| [icp-js-canisters](https://github.com/dfinity/icp-js-canisters) | TypeScript | 1 | 1 | 0 | 0 |
-| [optuna](https://github.com/optuna/optuna) | Python | 2 | 2 | 0 | 0 |
-| [pandas](https://github.com/pandas-dev/pandas) | Python | 1 | 0 | 1 | 0 |
-| [ezc3d](https://github.com/pyomeca/ezc3d) | C++ / Python | 1 | 0 | 1 | 0 |
-| [pic-js](https://github.com/dfinity/pic-js) | TypeScript | 1 | 0 | 1 | 0 |
 | **Total** | | **36** | **14** | **14** | **8** |
 
 ## Contributions by Project
-
-### [optuna/optuna](https://github.com/optuna/optuna)
-
-Hyperparameter optimization framework by Preferred Networks. Python. 13k+ stars.
-
-| # | PR | Status | Description |
-|---|---|---|---|
-| 2 | [#6434](https://github.com/optuna/optuna/pull/6434) | Merged | Use TYPE_CHECKING for import in pruners/_base.py (Issue #6029) |
-| 1 | [#6431](https://github.com/optuna/optuna/pull/6431) | Merged | Replace .format() with f-strings in _parallel_coordinate.py (Issue #6305) |
-
-### [pandas-dev/pandas](https://github.com/pandas-dev/pandas)
-
-Powerful Python data analysis library. 47k+ stars.
-
-| # | PR | Status | Description |
-|---|---|---|---|
-| 1 | [#64105](https://github.com/pandas-dev/pandas/pull/64105) | Open | DOC: fix Index.to_frame name parameter description (Issue #63191) |
-
-### [line/line-bot-mcp-server](https://github.com/line/line-bot-mcp-server)
-
-MCP server for LINE Messaging API integration with AI agents. Built with TypeScript by LY Corporation (LINE). 500+ stars.
-
-| # | PR | Status | Description |
-|---|---|---|---|
-| 1 | [#369](https://github.com/line/line-bot-mcp-server/pull/369) | Open | Add get_follower_ids tool to retrieve follower user IDs |
-
-### [dfinity/icp-js-core](https://github.com/dfinity/icp-js-core)
-
-Official JavaScript SDK for building applications on the Internet Computer. 170+ stars.
-
-| # | PR | Status | Description |
-|---|---|---|---|
-| 1 | [#1270](https://github.com/dfinity/icp-js-core/pull/1270) | Open | Improve Candid decoding error messages for Variant types (Issue #470, good first issue) |
-
-### [dfinity/icp-js-canisters](https://github.com/dfinity/icp-js-canisters)
-
-Canister interfaces for the Internet Computer ecosystem. TypeScript.
-
-| # | PR | Status | Description |
-|---|---|---|---|
-| 2 | — | Closed | Expose Candid `init` in `.idl.d.ts` files (Issue #732, maintainer will handle) |
-| 1 | [#1457](https://github.com/dfinity/icp-js-canisters/pull/1457) | Merged | DOC: Add inline comments to HOST constant in README (Issue #646) |
 
 ### [team-mirai-volunteer/action-board](https://github.com/team-mirai-volunteer/action-board)
 
@@ -113,6 +71,62 @@ Fact-checking automation tool. **Project is now inactive** (succeeded by post-ch
 | 2 | [#84](https://github.com/team-mirai-volunteer/fact-checker/pull/84) | Closed | Disable Twitter posting in non-prod environments |
 | 1 | [#83](https://github.com/team-mirai-volunteer/fact-checker/pull/83) | Closed | Client-side engagement filtering for tweets |
 
+### [dfinity/icp-js-canisters](https://github.com/dfinity/icp-js-canisters)
+
+Canister interfaces for the Internet Computer ecosystem. TypeScript.
+
+| # | PR | Status | Description |
+|---|---|---|---|
+| 2 | — | Closed | Expose Candid `init` in `.idl.d.ts` files (Issue #732, maintainer will handle) |
+| 1 | [#1457](https://github.com/dfinity/icp-js-canisters/pull/1457) | Merged | DOC: Add inline comments to HOST constant in README (Issue #646) |
+
+### [dfinity/icp-js-core](https://github.com/dfinity/icp-js-core)
+
+Official JavaScript SDK for building applications on the Internet Computer. 170+ stars.
+
+| # | PR | Status | Description |
+|---|---|---|---|
+| 1 | [#1270](https://github.com/dfinity/icp-js-core/pull/1270) | Open | Improve Candid decoding error messages for Variant types (Issue #470, good first issue) |
+
+### [dfinity/pic-js](https://github.com/dfinity/pic-js)
+
+PocketIC JavaScript/TypeScript client for testing Internet Computer canisters. 8 stars.
+
+| # | PR | Status | Description |
+|---|---|---|---|
+| 1 | [#235](https://github.com/dfinity/pic-js/pull/235) | Open | feat: add fetchCanisterLogs method to PocketIc (Issue #68) |
+
+### [optuna/optuna](https://github.com/optuna/optuna)
+
+Hyperparameter optimization framework by Preferred Networks. Python. 13k+ stars.
+
+| # | PR | Status | Description |
+|---|---|---|---|
+| 2 | [#6434](https://github.com/optuna/optuna/pull/6434) | Merged | Use TYPE_CHECKING for import in pruners/_base.py (Issue #6029) |
+| 1 | [#6431](https://github.com/optuna/optuna/pull/6431) | Merged | Replace .format() with f-strings in _parallel_coordinate.py (Issue #6305) |
+
+### [pyomeca/ezc3d](https://github.com/pyomeca/ezc3d)
+
+Easy to use C3D reader/writer for C++, Python and MATLAB. Used in biomechanics research including Driveline Baseball's motion capture data. 170+ stars.
+
+| # | PR | Status | Description |
+|---|---|---|---|
+| 1 | [#384](https://github.com/pyomeca/ezc3d/pull/384) | Open | Fix C3dMapper.__eq__() early return skipping remaining keys (Issue #383) |
+
+#### Issues Filed
+
+| Issue | Status | Description |
+|---|---|---|
+| [#383](https://github.com/pyomeca/ezc3d/issues/383) | Open | Bug: `C3dMapper.__eq__()` returns early, skipping comparison of remaining keys |
+
+### [pandas-dev/pandas](https://github.com/pandas-dev/pandas)
+
+Powerful Python data analysis library. 47k+ stars.
+
+| # | PR | Status | Description |
+|---|---|---|---|
+| 1 | [#64105](https://github.com/pandas-dev/pandas/pull/64105) | Open | DOC: fix Index.to_frame name parameter description (Issue #63191) |
+
 ### [jldbc/pybaseball](https://github.com/jldbc/pybaseball)
 
 Python library for pulling baseball statistics (Statcast, Baseball Reference, FanGraphs). 1.5k+ stars.
@@ -135,24 +149,10 @@ Python library for pulling baseball statistics (Statcast, Baseball Reference, Fa
 | [#477](https://github.com/jldbc/pybaseball/issues/477#issuecomment-3847380960) | Verified | pitching/batting_stats_range works on current master |
 | [#481](https://github.com/jldbc/pybaseball/issues/481#issuecomment-3846988830) | Verified | Empty GH_TOKEN issue fixed by PR #501 |
 
-### [pyomeca/ezc3d](https://github.com/pyomeca/ezc3d)
+### [line/line-bot-mcp-server](https://github.com/line/line-bot-mcp-server)
 
-Easy to use C3D reader/writer for C++, Python and MATLAB. Used in biomechanics research including Driveline Baseball's motion capture data. 170+ stars.
-
-| # | PR | Status | Description |
-|---|---|---|---|
-| 1 | [#384](https://github.com/pyomeca/ezc3d/pull/384) | Open | Fix C3dMapper.__eq__() early return skipping remaining keys (Issue #383) |
-
-#### Issues Filed
-
-| Issue | Status | Description |
-|---|---|---|
-| [#383](https://github.com/pyomeca/ezc3d/issues/383) | Open | Bug: `C3dMapper.__eq__()` returns early, skipping comparison of remaining keys |
-
-### [dfinity/pic-js](https://github.com/dfinity/pic-js)
-
-PocketIC JavaScript/TypeScript client for testing Internet Computer canisters. 8 stars.
+MCP server for LINE Messaging API integration with AI agents. Built with TypeScript by LY Corporation (LINE). 500+ stars.
 
 | # | PR | Status | Description |
 |---|---|---|---|
-| 1 | [#235](https://github.com/dfinity/pic-js/pull/235) | Open | feat: add fetchCanisterLogs method to PocketIc (Issue #68) |
+| 1 | [#369](https://github.com/line/line-bot-mcp-server/pull/369) | Open | Add get_follower_ids tool to retrieve follower user IDs |
