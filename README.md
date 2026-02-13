@@ -60,6 +60,7 @@ Canister interfaces for the Internet Computer ecosystem. TypeScript.
 
 | # | PR | Status | Description |
 |---|---|---|---|
+| 2 | — | Investigating | Expose Candid `init` in `.idl.d.ts` files (Issue #732, awaiting maintainer response) |
 | 1 | [#1457](https://github.com/dfinity/icp-js-canisters/pull/1457) | Merged | DOC: Add inline comments to HOST constant in README (Issue #646) |
 
 ### [team-mirai-volunteer/action-board](https://github.com/team-mirai-volunteer/action-board)
