@@ -17,7 +17,8 @@ My open source contribution history across various projects.
 | [optuna](https://github.com/optuna/optuna) | Python | 2 | 2 | 0 | 0 |
 | [pandas](https://github.com/pandas-dev/pandas) | Python | 1 | 0 | 1 | 0 |
 | [ezc3d](https://github.com/pyomeca/ezc3d) | C++ / Python | 1 | 0 | 1 | 0 |
-| **Total** | | **35** | **14** | **13** | **8** |
+| [pic-js](https://github.com/dfinity/pic-js) | TypeScript | 1 | 0 | 1 | 0 |
+| **Total** | | **36** | **14** | **14** | **8** |
 
 ## Contributions by Project
 
@@ -60,7 +61,7 @@ Canister interfaces for the Internet Computer ecosystem. TypeScript.
 
 | # | PR | Status | Description |
 |---|---|---|---|
-| 2 | — | Investigating | Expose Candid `init` in `.idl.d.ts` files (Issue #732, awaiting maintainer response) |
+| 2 | — | Closed | Expose Candid `init` in `.idl.d.ts` files (Issue #732, maintainer will handle) |
 | 1 | [#1457](https://github.com/dfinity/icp-js-canisters/pull/1457) | Merged | DOC: Add inline comments to HOST constant in README (Issue #646) |
 
 ### [team-mirai-volunteer/action-board](https://github.com/team-mirai-volunteer/action-board)
@@ -147,3 +148,11 @@ Easy to use C3D reader/writer for C++, Python and MATLAB. Used in biomechanics r
 | Issue | Status | Description |
 |---|---|---|
 | [#383](https://github.com/pyomeca/ezc3d/issues/383) | Open | Bug: `C3dMapper.__eq__()` returns early, skipping comparison of remaining keys |
+
+### [dfinity/pic-js](https://github.com/dfinity/pic-js)
+
+PocketIC JavaScript/TypeScript client for testing Internet Computer canisters. 8 stars.
+
+| # | PR | Status | Description |
+|---|---|---|---|
+| 1 | [#235](https://github.com/dfinity/pic-js/pull/235) | Open | feat: add fetchCanisterLogs method to PocketIc (Issue #68) |
