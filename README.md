@@ -14,10 +14,10 @@ My open source contribution history across various projects.
 | [line-bot-mcp-server](https://github.com/line/line-bot-mcp-server) | TypeScript | 1 | 0 | 1 | 0 |
 | [icp-js-core](https://github.com/dfinity/icp-js-core) | TypeScript | 1 | 0 | 1 | 0 |
 | [icp-js-canisters](https://github.com/dfinity/icp-js-canisters) | TypeScript | 1 | 1 | 0 | 0 |
-| [optuna](https://github.com/optuna/optuna) | Python | 2 | 1 | 1 | 0 |
+| [optuna](https://github.com/optuna/optuna) | Python | 2 | 2 | 0 | 0 |
 | [pandas](https://github.com/pandas-dev/pandas) | Python | 1 | 0 | 1 | 0 |
 | [ezc3d](https://github.com/pyomeca/ezc3d) | C++ / Python | 1 | 0 | 1 | 0 |
-| **Total** | | **35** | **13** | **14** | **8** |
+| **Total** | | **35** | **14** | **13** | **8** |
 
 ## Contributions by Project
 
@@ -27,7 +27,7 @@ Hyperparameter optimization framework by Preferred Networks. Python. 13k+ stars.
 
 | # | PR | Status | Description |
 |---|---|---|---|
-| 2 | [#6434](https://github.com/optuna/optuna/pull/6434) | Open | Use TYPE_CHECKING for import in pruners/_base.py (Issue #6029) |
+| 2 | [#6434](https://github.com/optuna/optuna/pull/6434) | Merged | Use TYPE_CHECKING for import in pruners/_base.py (Issue #6029) |
 | 1 | [#6431](https://github.com/optuna/optuna/pull/6431) | Merged | Replace .format() with f-strings in _parallel_coordinate.py (Issue #6305) |
 
 ### [pandas-dev/pandas](https://github.com/pandas-dev/pandas)
