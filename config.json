@@ -1,0 +1,52 @@
+{
+  "projects": {
+    "team-mirai-volunteer/action-board": {
+      "language": "TypeScript / Next.js",
+      "description": "Civic tech platform for citizen participation in Japan. Built with Next.js, TypeScript, Supabase."
+    },
+    "team-mirai/marumie": {
+      "language": "TypeScript / Next.js",
+      "description": "Political finance transparency platform. Built with Next.js, TypeScript, Prisma, Tailwind CSS."
+    },
+    "team-mirai-volunteer/post-checker": {
+      "language": "TypeScript",
+      "description": "Social media post verification tool. Built with TypeScript, Vitest."
+    },
+    "team-mirai-volunteer/fact-checker": {
+      "language": "TypeScript",
+      "description": "Fact-checking automation tool. **Project is now inactive** (succeeded by post-checker)."
+    },
+    "dfinity/icp-js-canisters": {
+      "language": "TypeScript",
+      "description": "Canister interfaces for the Internet Computer ecosystem. TypeScript."
+    },
+    "dfinity/icp-js-core": {
+      "language": "TypeScript",
+      "description": "Official JavaScript SDK for building applications on the Internet Computer. 170+ stars."
+    },
+    "dfinity/pic-js": {
+      "language": "TypeScript",
+      "description": "PocketIC JavaScript/TypeScript client for testing Internet Computer canisters. 8 stars."
+    },
+    "optuna/optuna": {
+      "language": "Python",
+      "description": "Hyperparameter optimization framework by Preferred Networks. Python. 13k+ stars."
+    },
+    "pyomeca/ezc3d": {
+      "language": "C++ / Python",
+      "description": "Easy to use C3D reader/writer for C++, Python and MATLAB. Used in biomechanics research including Driveline Baseball's motion capture data. 170+ stars."
+    },
+    "pandas-dev/pandas": {
+      "language": "Python",
+      "description": "Powerful Python data analysis library. 47k+ stars."
+    },
+    "jldbc/pybaseball": {
+      "language": "Python",
+      "description": "Python library for pulling baseball statistics (Statcast, Baseball Reference, FanGraphs). 1.5k+ stars."
+    },
+    "line/line-bot-mcp-server": {
+      "language": "TypeScript",
+      "description": "MCP server for LINE Messaging API integration with AI agents. Built with TypeScript by LY Corporation (LINE). 500+ stars."
+    }
+  }
+}

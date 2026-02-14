@@ -1,0 +1,400 @@
+"""Record or refresh OSS PR contributions in README.md.
+
+Usage:
+    python scripts/record_pr.py https://github.com/optuna/optuna/pull/6435
+    python scripts/record_pr.py --refresh
+"""
+
+import json
+import re
+import subprocess
+import sys
+from pathlib import Path
+
+ROOT = Path(__file__).resolve().parent.parent
+README = ROOT / "README.md"
+CONFIG = ROOT / "config.json"
+
+
+def run(cmd: list[str]) -> str | None:
+    result = subprocess.run(
+        cmd, capture_output=True, text=True, encoding="utf-8", timeout=120
+    )
+    if result.returncode != 0:
+        print(f"Command failed: {' '.join(cmd)}", file=sys.stderr)
+        if result.stderr:
+            print(result.stderr, file=sys.stderr)
+        return None
+    return result.stdout.strip()
+
+
+def load_config() -> dict:
+    if CONFIG.exists():
+        return json.loads(CONFIG.read_text(encoding="utf-8"))
+    return {"projects": {}}
+
+
+def save_config(config: dict) -> None:
+    CONFIG.write_text(
+        json.dumps(config, indent=2, ensure_ascii=False) + "\n", encoding="utf-8"
+    )
+
+
+def parse_pr_url(url: str) -> tuple[str, str, int]:
+    """Parse GitHub PR URL into (owner/repo, full_repo, pr_number)."""
+    m = re.match(r"https://github\.com/([^/]+/[^/]+)/pull/(\d+)", url)
+    if not m:
+        print(f"Invalid PR URL: {url}", file=sys.stderr)
+        sys.exit(1)
+    return m.group(1), int(m.group(2))
+
+
+def fetch_pr_info(url: str) -> dict | None:
+    """Fetch PR info via gh CLI. Returns None on failure."""
+    raw = run(["gh", "pr", "view", url, "--json", "number,title,state,url"])
+    if not raw:
+        return None
+    return json.loads(raw)
+
+
+def get_repo_info(repo: str) -> tuple[str, str]:
+    """Fetch language and description from GitHub API."""
+    raw = run(["gh", "api", f"repos/{repo}", "--jq", ".language"])
+    language = raw or "Unknown"
+    raw2 = run(["gh", "api", f"repos/{repo}", "--jq", ".description"])
+    description = raw2 or ""
+    return language, description
+
+
+def state_to_status(state: str) -> str:
+    """Convert GitHub API state to display status."""
+    mapping = {"OPEN": "Open", "CLOSED": "Closed", "MERGED": "Merged"}
+    return mapping.get(state.upper(), state)
+
+
+def parse_readme() -> list[str]:
+    return README.read_text(encoding="utf-8").splitlines()
+
+
+def find_summary_table(lines: list[str]) -> tuple[int, int]:
+    """Find start and end line indices of the Summary table (inclusive)."""
+    start = None
+    for i, line in enumerate(lines):
+        if line.startswith("| Project |"):
+            start = i
+            continue
+        if start is not None and i == start + 1:
+            continue  # header separator
+        if start is not None:
+            if line.startswith("|"):
+                end = i
+            else:
+                break
+    return start, end
+
+
+def find_project_section(lines: list[str], repo: str) -> int | None:
+    """Find the line index of a project section header. Returns None if not found."""
+    pattern = f"### [{repo}]("
+    for i, line in enumerate(lines):
+        if line.startswith("### [") and repo in line:
+            return i
+    return None
+
+
+def find_next_section(lines: list[str], start: int) -> int:
+    """Find the start of the next ### section after `start`, or end of file."""
+    for i in range(start + 1, len(lines)):
+        if lines[i].startswith("### "):
+            return i
+    return len(lines)
+
+
+def find_pr_table_in_section(
+    lines: list[str], section_start: int, section_end: int
+) -> tuple[int, int] | None:
+    """Find the PR table (| # | PR | ...) within a section. Returns (header_line, last_row_line)."""
+    table_start = None
+    table_end = None
+    for i in range(section_start, section_end):
+        if lines[i].startswith("| # | PR |"):
+            table_start = i
+            continue
+        if table_start is not None and i == table_start + 1:
+            continue  # separator
+        if table_start is not None:
+            if lines[i].startswith("|"):
+                table_end = i
+            else:
+                break
+    if table_start is not None and table_end is not None:
+        return table_start, table_end
+    return None
+
+
+def extract_all_pr_urls(lines: list[str]) -> list[str]:
+    """Extract all GitHub PR URLs from the README."""
+    urls = []
+    for line in lines:
+        for m in re.finditer(
+            r"https://github\.com/[^/]+/[^/]+/pull/\d+", line
+        ):
+            urls.append(m.group(0))
+    return list(dict.fromkeys(urls))  # deduplicate preserving order
+
+
+def get_pr_number_from_row(row: str) -> int | None:
+    """Extract the PR number from a table row like '| 1 | [#123](...) | ...'."""
+    m = re.search(r"\[#(\d+)\]", row)
+    if m:
+        return int(m.group(1))
+    return None
+
+
+def get_max_row_number(lines: list[str], table_start: int, table_end: int) -> int:
+    """Get the maximum row number (first column) from a PR table."""
+    max_num = 0
+    for i in range(table_start + 2, table_end + 1):  # skip header + separator
+        m = re.match(r"\|\s*(\d+)\s*\|", lines[i])
+        if m:
+            max_num = max(max_num, int(m.group(1)))
+    return max_num
+
+
+def build_pr_row(row_num: int, pr_number: int, url: str, status: str, title: str) -> str:
+    return f"| {row_num} | [#{pr_number}]({url}) | {status} | {title} |"
+
+
+def build_project_section(repo: str, description: str) -> list[str]:
+    """Build a new project section."""
+    return [
+        f"### [{repo}](https://github.com/{repo})",
+        "",
+        description,
+        "",
+        "| # | PR | Status | Description |",
+        "|---|---|---|---|",
+    ]
+
+
+def recalculate_summary(lines: list[str]) -> list[str]:
+    """Recalculate the Summary table based on actual PR tables in each section."""
+    projects = []
+    i = 0
+    while i < len(lines):
+        if lines[i].startswith("### ["):
+            m = re.match(r"### \[([^\]]+)\]\((https://github\.com/[^)]+)\)", lines[i])
+            if not m:
+                i += 1
+                continue
+            repo = m.group(1)
+            url = m.group(2)
+            section_end = find_next_section(lines, i)
+
+            # Find config info
+            config = load_config()
+            proj_config = config.get("projects", {}).get(repo, {})
+            language = proj_config.get("language", "Unknown")
+
+            # Count statuses from PR table
+            merged = open_count = closed = 0
+            pr_table = find_pr_table_in_section(lines, i, section_end)
+            if pr_table:
+                for j in range(pr_table[0] + 2, pr_table[1] + 1):
+                    row = lines[j]
+                    # Skip rows without a PR link (e.g. "| 2 | — | Closed |")
+                    if "| — |" in row or "| \u2014 |" in row:
+                        continue
+                    if "| Merged |" in row:
+                        merged += 1
+                    elif "| Open |" in row:
+                        open_count += 1
+                    elif "| Closed |" in row:
+                        closed += 1
+                    elif "| Done |" in row:
+                        # "Done" entries (e.g. issue comments) count as Closed
+                        closed += 1
+            total = merged + open_count + closed
+
+            if total > 0:
+                short_name = repo.split("/")[-1]
+                projects.append(
+                    f"| [{short_name}]({url}) | {language} | {total} | {merged} | {open_count} | {closed} |"
+                )
+            i = section_end
+        else:
+            i += 1
+
+    grand_total = sum(int(re.search(r"\| (\d+) \|", p).group(1)) for p in projects)
+    grand_merged = 0
+    grand_open = 0
+    grand_closed = 0
+    for p in projects:
+        parts = [x.strip() for x in p.split("|")]
+        # parts: ['', 'name', 'lang', 'total', 'merged', 'open', 'closed', '']
+        grand_merged += int(parts[4])
+        grand_open += int(parts[5])
+        grand_closed += int(parts[6])
+
+    summary_lines = [
+        "| Project | Language | PRs | Merged | Open | Closed |",
+        "|---|---|---|---|---|---|",
+    ]
+    summary_lines.extend(projects)
+    summary_lines.append(
+        f"| **Total** | | **{grand_total}** | **{grand_merged}** | **{grand_open}** | **{grand_closed}** |"
+    )
+    return summary_lines
+
+
+def record_pr(url: str) -> None:
+    """Record or update a single PR."""
+    repo, pr_number = parse_pr_url(url)
+    pr_info = fetch_pr_info(url)
+    if pr_info is None:
+        print(f"Failed to fetch PR info: {url}", file=sys.stderr)
+        sys.exit(1)
+    status = state_to_status(pr_info["state"])
+    title = pr_info["title"]
+
+    config = load_config()
+    if repo not in config.get("projects", {}):
+        print(f"New project detected: {repo}. Fetching info from GitHub...")
+        language, description = get_repo_info(repo)
+        config.setdefault("projects", {})[repo] = {
+            "language": language,
+            "description": description,
+        }
+        save_config(config)
+        print(f"  Added to config.json: language={language}")
+
+    proj = config["projects"][repo]
+    lines = parse_readme()
+
+    section_idx = find_project_section(lines, repo)
+
+    if section_idx is None:
+        # Create new section at end of file
+        new_section = build_project_section(repo, proj["description"])
+        new_row = build_pr_row(1, pr_number, url, status, title)
+        new_section.append(new_row)
+
+        # Add blank line before new section if needed
+        if lines and lines[-1].strip():
+            lines.append("")
+        lines.extend(new_section)
+        print(f"Created new section for {repo}")
+    else:
+        section_end = find_next_section(lines, section_idx)
+        pr_table = find_pr_table_in_section(lines, section_idx, section_end)
+
+        if pr_table is None:
+            # Section exists but no PR table - add one
+            insert_idx = section_idx + 1
+            # Skip description lines
+            while insert_idx < section_end and lines[insert_idx].strip():
+                insert_idx += 1
+            insert_idx += 1  # skip blank line after description
+
+            table_lines = [
+                "| # | PR | Status | Description |",
+                "|---|---|---|---|",
+                build_pr_row(1, pr_number, url, status, title),
+            ]
+            for j, tl in enumerate(table_lines):
+                lines.insert(insert_idx + j, tl)
+            print(f"Added PR table to {repo}")
+        else:
+            # Check if PR already exists
+            existing_row_idx = None
+            for i in range(pr_table[0] + 2, pr_table[1] + 1):
+                if f"[#{pr_number}]" in lines[i]:
+                    existing_row_idx = i
+                    break
+
+            if existing_row_idx is not None:
+                # Update existing row
+                old_row = lines[existing_row_idx]
+                row_num_match = re.match(r"\|\s*(\d+)\s*\|", old_row)
+                row_num = int(row_num_match.group(1)) if row_num_match else 1
+                lines[existing_row_idx] = build_pr_row(
+                    row_num, pr_number, url, status, title
+                )
+                print(f"Updated PR #{pr_number} status to {status}")
+            else:
+                # Add new row (at top of table, with incremented number)
+                max_num = get_max_row_number(lines, pr_table[0], pr_table[1])
+                new_row = build_pr_row(max_num + 1, pr_number, url, status, title)
+                # Insert after header separator (line pr_table[0]+1)
+                lines.insert(pr_table[0] + 2, new_row)
+                print(f"Added PR #{pr_number} to {repo}")
+
+    # Recalculate summary
+    summary_lines = recalculate_summary(lines)
+    summary_start, summary_end = find_summary_table(lines)
+    if summary_start is not None:
+        lines[summary_start : summary_end + 1] = summary_lines
+
+    README.write_text("\n".join(lines) + "\n", encoding="utf-8")
+    print(f"README.md updated. Review changes before committing.")
+
+
+def refresh_all() -> None:
+    """Refresh status of all PRs in README.md."""
+    lines = parse_readme()
+    urls = extract_all_pr_urls(lines)
+    print(f"Found {len(urls)} PR URLs to refresh.")
+
+    changes = 0
+    for url in urls:
+        repo, pr_number = parse_pr_url(url)
+        pr_info = fetch_pr_info(url)
+        if pr_info is None:
+            print(f"  Skipping {url}: failed to fetch")
+            continue
+
+        new_status = state_to_status(pr_info["state"])
+
+        # Find and update the row
+        for i, line in enumerate(lines):
+            if f"[#{pr_number}]({url})" in line:
+                # Check current status
+                current_status = None
+                for s in ["Open", "Closed", "Merged"]:
+                    if f"| {s} |" in line:
+                        current_status = s
+                        break
+                if current_status and current_status != new_status:
+                    lines[i] = line.replace(f"| {current_status} |", f"| {new_status} |")
+                    print(f"  Updated {repo}#{pr_number}: {current_status} -> {new_status}")
+                    changes += 1
+                break
+
+    if changes > 0:
+        # Recalculate summary
+        summary_lines = recalculate_summary(lines)
+        summary_start, summary_end = find_summary_table(lines)
+        if summary_start is not None:
+            lines[summary_start : summary_end + 1] = summary_lines
+
+        README.write_text("\n".join(lines) + "\n", encoding="utf-8")
+        print(f"\n{changes} PR(s) updated. Review changes before committing.")
+    else:
+        print("\nAll PRs are up to date. No changes needed.")
+
+
+def main():
+    if len(sys.argv) < 2:
+        print("Usage:")
+        print("  python scripts/record_pr.py <PR_URL>")
+        print("  python scripts/record_pr.py --refresh")
+        sys.exit(1)
+
+    if sys.argv[1] == "--refresh":
+        refresh_all()
+    else:
+        record_pr(sys.argv[1])
+
+
+if __name__ == "__main__":
+    main()
