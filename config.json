@@ -47,6 +47,10 @@
     "line/line-bot-mcp-server": {
       "language": "TypeScript",
       "description": "MCP server for LINE Messaging API integration with AI agents. Built with TypeScript by LY Corporation (LINE). 500+ stars."
+    },
+    "openclaw/openclaw": {
+      "language": "TypeScript",
+      "description": "Your own personal AI assistant. Any OS. Any Platform. The lobster way. 🦞"
     }
   }
 }

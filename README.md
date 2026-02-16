@@ -18,7 +18,8 @@ My open source contribution history across various projects.
 | [pandas](https://github.com/pandas-dev/pandas) | Python | 1 | 0 | 1 | 0 |
 | [pybaseball](https://github.com/jldbc/pybaseball) | Python | 7 | 0 | 7 | 0 |
 | [line-bot-mcp-server](https://github.com/line/line-bot-mcp-server) | TypeScript | 1 | 0 | 1 | 0 |
-| **Total** | | **37** | **15** | **14** | **8** |
+| [openclaw](https://github.com/openclaw/openclaw) | TypeScript | 1 | 0 | 1 | 0 |
+| **Total** | | **38** | **15** | **15** | **8** |
 
 ## Contributions by Project
 
@@ -157,3 +158,11 @@ MCP server for LINE Messaging API integration with AI agents. Built with TypeScr
 | # | PR | Status | Description |
 |---|---|---|---|
 | 1 | [#369](https://github.com/line/line-bot-mcp-server/pull/369) | Open | Add get_follower_ids tool to retrieve follower user IDs |
+
+### [openclaw/openclaw](https://github.com/openclaw/openclaw)
+
+Your own personal AI assistant. Any OS. Any Platform. The lobster way. 🦞
+
+| # | PR | Status | Description |
+|---|---|---|---|
+| 1 | [#17949](https://github.com/openclaw/openclaw/pull/17949) | Open | fix: clear stale runningAtMs in cron.run() before already-running check (#17554) |
