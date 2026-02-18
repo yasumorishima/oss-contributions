@@ -15,11 +15,11 @@ My open source contribution history across various projects.
 | [pic-js](https://github.com/dfinity/pic-js) | TypeScript | 1 | 0 | 1 | 0 |
 | [optuna](https://github.com/optuna/optuna) | Python | 3 | 3 | 0 | 0 |
 | [ezc3d](https://github.com/pyomeca/ezc3d) | C++ / Python | 1 | 0 | 1 | 0 |
-| [pandas](https://github.com/pandas-dev/pandas) | Python | 1 | 0 | 1 | 0 |
+| [pandas](https://github.com/pandas-dev/pandas) | Python | 1 | 1 | 0 | 0 |
 | [pybaseball](https://github.com/jldbc/pybaseball) | Python | 7 | 0 | 7 | 0 |
 | [line-bot-mcp-server](https://github.com/line/line-bot-mcp-server) | TypeScript | 1 | 0 | 1 | 0 |
 | [openclaw](https://github.com/openclaw/openclaw) | TypeScript | 1 | 0 | 1 | 0 |
-| **Total** | | **38** | **15** | **15** | **8** |
+| **Total** | | **38** | **16** | **14** | **8** |
 
 ## Contributions by Project
 
@@ -127,7 +127,7 @@ Powerful Python data analysis library. 47k+ stars.
 
 | # | PR | Status | Description |
 |---|---|---|---|
-| 1 | [#64105](https://github.com/pandas-dev/pandas/pull/64105) | Open | DOC: fix Index.to_frame name parameter description (Issue #63191) |
+| 1 | [#64105](https://github.com/pandas-dev/pandas/pull/64105) | Merged | DOC: fix Index.to_frame name parameter description (Issue #63191) |
 
 ### [jldbc/pybaseball](https://github.com/jldbc/pybaseball)
 
