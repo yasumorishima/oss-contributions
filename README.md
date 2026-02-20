@@ -19,7 +19,8 @@ My open source contribution history across various projects.
 | [pybaseball](https://github.com/jldbc/pybaseball) | Python | 7 | 0 | 7 | 0 |
 | [line-bot-mcp-server](https://github.com/line/line-bot-mcp-server) | TypeScript | 1 | 0 | 1 | 0 |
 | [openclaw](https://github.com/openclaw/openclaw) | TypeScript | 1 | 0 | 1 | 0 |
-| **Total** | | **38** | **16** | **14** | **8** |
+| [kouchou-ai](https://github.com/digitaldemocracy2030/kouchou-ai) | Python | 1 | 0 | 1 | 0 |
+| **Total** | | **39** | **16** | **15** | **8** |
 
 ## Contributions by Project
 
@@ -166,3 +167,11 @@ Your own personal AI assistant. Any OS. Any Platform. The lobster way. 🦞
 | # | PR | Status | Description |
 |---|---|---|---|
 | 1 | [#17949](https://github.com/openclaw/openclaw/pull/17949) | Open | fix: clear stale runningAtMs in cron.run() before already-running check (#17554) |
+
+### [digitaldemocracy2030/kouchou-ai](https://github.com/digitaldemocracy2030/kouchou-ai)
+
+広聴AI (デジタル民主主義2030ブロードリスニング)
+
+| # | PR | Status | Description |
+|---|---|---|---|
+| 1 | [#796](https://github.com/digitaldemocracy2030/kouchou-ai/pull/796) | Open | fix: filter out empty/whitespace-only comments before LLM processing (#583) |

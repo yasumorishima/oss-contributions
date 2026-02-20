@@ -51,6 +51,10 @@
     "openclaw/openclaw": {
       "language": "TypeScript",
       "description": "Your own personal AI assistant. Any OS. Any Platform. The lobster way. 🦞"
+    },
+    "digitaldemocracy2030/kouchou-ai": {
+      "language": "Python",
+      "description": "広聴AI (デジタル民主主義2030ブロードリスニング)"
     }
   }
 }
