@@ -44,6 +44,19 @@ Civic tech platform for citizen participation in Japan. Built with Next.js, Type
 | 2 | [#1845](https://github.com/team-mirai-volunteer/action-board/pull/1845) | Merged | Fix prefecture cache invalidation |
 | 1 | [#69 comment](https://github.com/team-mirai-volunteer/fact-checker/issues/69#issuecomment-3811711591) | Done | X API v2 engagement filtering investigation report |
 
+### [team-mirai-volunteer/fact-checker](https://github.com/team-mirai-volunteer/fact-checker)
+
+Fact-checking automation tool. **Project is now inactive** (succeeded by post-checker).
+
+| # | PR | Status | Description |
+|---|---|---|---|
+| 6 | [#88](https://github.com/team-mirai-volunteer/fact-checker/pull/88) | Closed | Slack same-thread reply for completion reports |
+| 5 | [#87](https://github.com/team-mirai-volunteer/fact-checker/pull/87) | Closed | Deduplicate tweets using start_time filter |
+| 4 | [#86](https://github.com/team-mirai-volunteer/fact-checker/pull/86) | Closed | Unit tests for Note markdown utilities (33 tests) |
+| 3 | [#85](https://github.com/team-mirai-volunteer/fact-checker/pull/85) | Closed | Slack button env-based branching for dev preview |
+| 2 | [#84](https://github.com/team-mirai-volunteer/fact-checker/pull/84) | Closed | Disable Twitter posting in non-prod environments |
+| 1 | [#83](https://github.com/team-mirai-volunteer/fact-checker/pull/83) | Closed | Client-side engagement filtering for tweets |
+
 ### [team-mirai/marumie](https://github.com/team-mirai/marumie)
 
 Political finance transparency platform. Built with Next.js, TypeScript, Prisma, Tailwind CSS.
@@ -60,18 +73,15 @@ Social media post verification tool. Built with TypeScript, Vitest.
 |---|---|---|---|
 | 1 | [#34](https://github.com/team-mirai-volunteer/post-checker/pull/34) | Open | Fix timezone-dependent date parsing in filename generation |
 
-### [team-mirai-volunteer/fact-checker](https://github.com/team-mirai-volunteer/fact-checker)
+### [optuna/optuna](https://github.com/optuna/optuna)
 
-Fact-checking automation tool. **Project is now inactive** (succeeded by post-checker).
+Hyperparameter optimization framework by Preferred Networks. Python. 13k+ stars.
 
 | # | PR | Status | Description |
 |---|---|---|---|
-| 6 | [#88](https://github.com/team-mirai-volunteer/fact-checker/pull/88) | Closed | Slack same-thread reply for completion reports |
-| 5 | [#87](https://github.com/team-mirai-volunteer/fact-checker/pull/87) | Closed | Deduplicate tweets using start_time filter |
-| 4 | [#86](https://github.com/team-mirai-volunteer/fact-checker/pull/86) | Closed | Unit tests for Note markdown utilities (33 tests) |
-| 3 | [#85](https://github.com/team-mirai-volunteer/fact-checker/pull/85) | Closed | Slack button env-based branching for dev preview |
-| 2 | [#84](https://github.com/team-mirai-volunteer/fact-checker/pull/84) | Closed | Disable Twitter posting in non-prod environments |
-| 1 | [#83](https://github.com/team-mirai-volunteer/fact-checker/pull/83) | Closed | Client-side engagement filtering for tweets |
+| 3 | [#6447](https://github.com/optuna/optuna/pull/6447) | Merged | Use `TYPE_CHECKING` for import in `pruners/_hyperband.py` |
+| 2 | [#6434](https://github.com/optuna/optuna/pull/6434) | Merged | Use TYPE_CHECKING for import in pruners/_base.py (Issue #6029) |
+| 1 | [#6431](https://github.com/optuna/optuna/pull/6431) | Merged | Replace .format() with f-strings in _parallel_coordinate.py (Issue #6305) |
 
 ### [dfinity/icp-js-canisters](https://github.com/dfinity/icp-js-canisters)
 
@@ -98,29 +108,13 @@ PocketIC JavaScript/TypeScript client for testing Internet Computer canisters. 8
 |---|---|---|---|
 | 1 | [#235](https://github.com/dfinity/pic-js/pull/235) | Open | feat: add fetchCanisterLogs method to PocketIc (Issue #68) |
 
-### [optuna/optuna](https://github.com/optuna/optuna)
+### [openclaw/openclaw](https://github.com/openclaw/openclaw)
 
-Hyperparameter optimization framework by Preferred Networks. Python. 13k+ stars.
-
-| # | PR | Status | Description |
-|---|---|---|---|
-| 3 | [#6447](https://github.com/optuna/optuna/pull/6447) | Merged | Use `TYPE_CHECKING` for import in `pruners/_hyperband.py` |
-| 2 | [#6434](https://github.com/optuna/optuna/pull/6434) | Merged | Use TYPE_CHECKING for import in pruners/_base.py (Issue #6029) |
-| 1 | [#6431](https://github.com/optuna/optuna/pull/6431) | Merged | Replace .format() with f-strings in _parallel_coordinate.py (Issue #6305) |
-
-### [pyomeca/ezc3d](https://github.com/pyomeca/ezc3d)
-
-Easy to use C3D reader/writer for C++, Python and MATLAB. Used in biomechanics research including Driveline Baseball's motion capture data. 170+ stars.
+Your own personal AI assistant. Any OS. Any Platform. The lobster way. 🦞
 
 | # | PR | Status | Description |
 |---|---|---|---|
-| 1 | [#384](https://github.com/pyomeca/ezc3d/pull/384) | Open | Fix C3dMapper.__eq__() early return skipping remaining keys (Issue #383) |
-
-#### Issues Filed
-
-| Issue | Status | Description |
-|---|---|---|
-| [#383](https://github.com/pyomeca/ezc3d/issues/383) | Open | Bug: `C3dMapper.__eq__()` returns early, skipping comparison of remaining keys |
+| 1 | [#17949](https://github.com/openclaw/openclaw/pull/17949) | Merged | fix: clear stale runningAtMs in cron.run() before already-running check (#17554) |
 
 ### [pandas-dev/pandas](https://github.com/pandas-dev/pandas)
 
@@ -152,21 +146,19 @@ Python library for pulling baseball statistics (Statcast, Baseball Reference, Fa
 | [#477](https://github.com/jldbc/pybaseball/issues/477#issuecomment-3847380960) | Verified | pitching/batting_stats_range works on current master |
 | [#481](https://github.com/jldbc/pybaseball/issues/481#issuecomment-3846988830) | Verified | Empty GH_TOKEN issue fixed by PR #501 |
 
-### [line/line-bot-mcp-server](https://github.com/line/line-bot-mcp-server)
+### [pyomeca/ezc3d](https://github.com/pyomeca/ezc3d)
 
-MCP server for LINE Messaging API integration with AI agents. Built with TypeScript by LY Corporation (LINE). 500+ stars.
-
-| # | PR | Status | Description |
-|---|---|---|---|
-| 1 | [#369](https://github.com/line/line-bot-mcp-server/pull/369) | Open | Add get_follower_ids tool to retrieve follower user IDs |
-
-### [openclaw/openclaw](https://github.com/openclaw/openclaw)
-
-Your own personal AI assistant. Any OS. Any Platform. The lobster way. 🦞
+Easy to use C3D reader/writer for C++, Python and MATLAB. Used in biomechanics research including Driveline Baseball's motion capture data. 170+ stars.
 
 | # | PR | Status | Description |
 |---|---|---|---|
-| 1 | [#17949](https://github.com/openclaw/openclaw/pull/17949) | Merged | fix: clear stale runningAtMs in cron.run() before already-running check (#17554) |
+| 1 | [#384](https://github.com/pyomeca/ezc3d/pull/384) | Open | Fix C3dMapper.__eq__() early return skipping remaining keys (Issue #383) |
+
+#### Issues Filed
+
+| Issue | Status | Description |
+|---|---|---|
+| [#383](https://github.com/pyomeca/ezc3d/issues/383) | Open | Bug: `C3dMapper.__eq__()` returns early, skipping comparison of remaining keys |
 
 ### [digitaldemocracy2030/kouchou-ai](https://github.com/digitaldemocracy2030/kouchou-ai)
 
@@ -175,3 +167,11 @@ Your own personal AI assistant. Any OS. Any Platform. The lobster way. 🦞
 | # | PR | Status | Description |
 |---|---|---|---|
 | 1 | [#796](https://github.com/digitaldemocracy2030/kouchou-ai/pull/796) | Open | fix: filter out empty/whitespace-only comments before LLM processing (#583) |
+
+### [line/line-bot-mcp-server](https://github.com/line/line-bot-mcp-server)
+
+MCP server for LINE Messaging API integration with AI agents. Built with TypeScript by LY Corporation (LINE). 500+ stars.
+
+| # | PR | Status | Description |
+|---|---|---|---|
+| 1 | [#369](https://github.com/line/line-bot-mcp-server/pull/369) | Open | Add get_follower_ids tool to retrieve follower user IDs |
