@@ -1,6 +1,8 @@
 name: Refresh Contributions
 
 on:
+  schedule:
+    - cron: '0 9 * * 1'  # 毎週月曜 9:00 UTC
   workflow_dispatch:
 
 permissions:
