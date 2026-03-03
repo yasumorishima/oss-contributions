@@ -23,6 +23,48 @@ jobs:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: python scripts/record_pr.py --refresh
 
+      - name: Write summary
+        run: |
+          python3 - <<'EOF'
+          import re, os
+          from pathlib import Path
+
+          readme = Path("README.md").read_text(encoding="utf-8")
+          lines = readme.splitlines()
+
+          # サマリーテーブル抽出（ヘッダー行から Total 行まで）
+          summary_rows = []
+          in_summary = False
+          for line in lines:
+              if "| Project |" in line:
+                  in_summary = True
+              if in_summary:
+                  summary_rows.append(line)
+              if in_summary and "**Total**" in line:
+                  break
+
+          # Open PR 抽出
+          open_prs = []
+          for line in lines:
+              if "| Open |" in line:
+                  m = re.search(r'\[#(\d+)\]\((https://github\.com/[^)]+)\)', line)
+                  desc_m = re.search(r'\| Open \| (.+?) \|', line)
+                  if m:
+                      open_prs.append((m.group(1), m.group(2), desc_m.group(1).strip() if desc_m else ""))
+
+          out = os.environ.get("GITHUB_STEP_SUMMARY", "/dev/stdout")
+          with open(out, "a", encoding="utf-8") as f:
+              f.write("## OSS Contributions\n\n")
+              f.write("\n".join(summary_rows) + "\n\n")
+              f.write(f"### Open PRs ({len(open_prs)})\n\n")
+              if open_prs:
+                  f.write("| PR | Description |\n|---|---|\n")
+                  for num, url, desc in open_prs:
+                      f.write(f"| [#{num}]({url}) | {desc} |\n")
+              else:
+                  f.write("_No open PRs._\n")
+          EOF
+
       - name: Commit and push if changed
         run: |
           git config user.name "github-actions[bot]"
