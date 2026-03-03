@@ -16,12 +16,12 @@ jobs:
           import urllib.request, json, os
 
           PACKAGES = [
-              ("savant-extras",       "https://github.com/yasumorishima/savant-extras"),
-              ("baseball-field-viz",  "https://github.com/yasumorishima/baseball-field-viz"),
+              ("savant-extras",          "https://github.com/yasumorishima/savant-extras"),
+              ("baseball-field-viz",     "https://github.com/yasumorishima/baseball-field-viz"),
               ("kaggle-notebook-deploy", "https://github.com/yasumorishima/kaggle-notebook-deploy"),
-              ("kaggle-wandb-sync",   "https://github.com/yasumorishima/kaggle-wandb-sync"),
-              ("signate-deploy",      "https://github.com/yasumorishima/signate-deploy"),
-              ("signate-wandb-sync",  "https://github.com/yasumorishima/signate-wandb-sync"),
+              ("kaggle-wandb-sync",      "https://github.com/yasumorishima/kaggle-wandb-sync"),
+              ("signate-deploy",         "https://github.com/yasumorishima/signate-deploy"),
+              ("signate-wandb-sync",     "https://github.com/yasumorishima/signate-wandb-sync"),
           ]
 
           rows = []
@@ -36,7 +36,15 @@ jobs:
               except Exception as e:
                   rows.append(("❌", pkg, "error", str(e)[:40], repo))
 
-          out = os.environ.get("GITHUB_STEP_SUMMARY", "/dev/stdout")
+          # stdout
+          print("## PyPI Packages\n")
+          print(f"  {'Package':<28} {'Latest':<10} Recent versions")
+          print("  " + "-" * 65)
+          for icon, pkg, latest, versions, repo in rows:
+              print(f"  {icon} {pkg:<26} {latest:<10} {versions}")
+
+          # GitHub Step Summary
+          out = os.environ.get("GITHUB_STEP_SUMMARY", "/dev/null")
           with open(out, "a", encoding="utf-8") as f:
               f.write("## PyPI Packages\n\n")
               f.write("| | Package | Latest | Recent versions |\n|---|---|---|---|\n")
