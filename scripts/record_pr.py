@@ -339,8 +339,54 @@ def record_pr(url: str) -> None:
     print(f"README.md updated. Review changes before committing.")
 
 
+def scan_new_prs() -> int:
+    """Scan config.json repos for new PRs not yet in README. Returns count added."""
+    config = load_config()
+    author = config.get("author", "")
+    if not author:
+        print("No 'author' field in config.json. Skipping scan.", file=sys.stderr)
+        return 0
+
+    existing_urls = set(extract_all_pr_urls(parse_readme()))
+    added = 0
+
+    for repo in config.get("projects", {}):
+        raw = run(
+            [
+                "gh", "pr", "list",
+                "--repo", repo,
+                "--author", author,
+                "--state", "all",
+                "--json", "number,title,state,url",
+                "--limit", "100",
+            ]
+        )
+        if not raw:
+            continue
+        try:
+            prs = json.loads(raw)
+        except json.JSONDecodeError:
+            continue
+
+        for pr in prs:
+            url = pr.get("url", "")
+            if url and url not in existing_urls:
+                print(f"  New PR found: {url}")
+                record_pr(url)
+                existing_urls.add(url)
+                added += 1
+
+    return added
+
+
 def refresh_all() -> None:
-    """Refresh status of all PRs in README.md."""
+    """Scan for new PRs and refresh status of all PRs in README.md."""
+    new_count = scan_new_prs()
+    if new_count:
+        print(f"\nAdded {new_count} new PR(s). Now refreshing statuses...")
+    else:
+        print("No new PRs found.")
+
     lines = parse_readme()
     urls = extract_all_pr_urls(lines)
     print(f"Found {len(urls)} PR URLs to refresh.")

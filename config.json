@@ -1,4 +1,5 @@
 {
+  "author": "yasumorishima",
   "projects": {
     "team-mirai-volunteer/action-board": {
       "language": "TypeScript / Next.js",
