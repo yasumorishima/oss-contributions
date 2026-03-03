@@ -32,7 +32,7 @@ jobs:
           readme = Path("README.md").read_text(encoding="utf-8")
           lines = readme.splitlines()
 
-          # サマリーテーブル抽出（ヘッダー行から Total 行まで）
+          # サマリーテーブル抽出
           summary_rows = []
           in_summary = False
           for line in lines:
@@ -52,7 +52,16 @@ jobs:
                   if m:
                       open_prs.append((m.group(1), m.group(2), desc_m.group(1).strip() if desc_m else ""))
 
-          out = os.environ.get("GITHUB_STEP_SUMMARY", "/dev/stdout")
+          # stdout
+          print("## OSS Contributions\n")
+          for row in summary_rows:
+              print(" ", row)
+          print(f"\n### Open PRs ({len(open_prs)})")
+          for num, url, desc in open_prs:
+              print(f"  #{num}: {desc}  {url}")
+
+          # GitHub Step Summary
+          out = os.environ.get("GITHUB_STEP_SUMMARY", "/dev/null")
           with open(out, "a", encoding="utf-8") as f:
               f.write("## OSS Contributions\n\n")
               f.write("\n".join(summary_rows) + "\n\n")
