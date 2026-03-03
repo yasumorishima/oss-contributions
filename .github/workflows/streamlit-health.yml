@@ -68,19 +68,29 @@ jobs:
                   status = e.code
               except Exception as e:
                   status = str(e)[:30]
-              icon = "✅" if status == 200 else "⚠️"
+              icon = "OK" if status == 200 else "NG"
               results.append((icon, name, url, status))
               time.sleep(0.3)
 
-          ok = sum(1 for r in results if r[0] == "✅")
+          ok = sum(1 for r in results if r[0] == "OK")
           ng = len(results) - ok
 
-          out = os.environ.get("GITHUB_STEP_SUMMARY", "/dev/stdout")
+          # stdout
+          print(f"## Streamlit Health Check — {ok}/{len(results)} OK\n")
+          for icon, name, url, status in results:
+              mark = "✅" if icon == "OK" else "⚠️"
+              print(f"  {mark} {name:<28} {status}")
+          if ng > 0:
+              print(f"\n⚠️ {ng} app(s) returned non-200 status.")
+
+          # GitHub Step Summary
+          out = os.environ.get("GITHUB_STEP_SUMMARY", "/dev/null")
           with open(out, "a", encoding="utf-8") as f:
               f.write(f"## Streamlit Health Check — {ok}/{len(results)} OK\n\n")
               f.write("| | App | Status |\n|---|---|---|\n")
               for icon, name, url, status in results:
-                  f.write(f"| {icon} | [{name}]({url}) | {status} |\n")
+                  mark = "✅" if icon == "OK" else "⚠️"
+                  f.write(f"| {mark} | [{name}]({url}) | {status} |\n")
               if ng > 0:
                   f.write(f"\n> ⚠️ {ng} app(s) returned non-200 status.\n")
           EOF
