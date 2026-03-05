@@ -12,7 +12,7 @@ My open source contribution history across various projects.
 | [post-checker](https://github.com/team-mirai-volunteer/post-checker) | TypeScript | 1 | 0 | 1 | 0 |
 | [optuna](https://github.com/optuna/optuna) | Python | 4 | 4 | 0 | 0 |
 | [icp-js-canisters](https://github.com/dfinity/icp-js-canisters) | TypeScript | 1 | 1 | 0 | 0 |
-| [icp-js-core](https://github.com/dfinity/icp-js-core) | TypeScript | 1 | 0 | 1 | 0 |
+| [icp-js-core](https://github.com/dfinity/icp-js-core) | TypeScript | 2 | 0 | 2 | 0 |
 | [pic-js](https://github.com/dfinity/pic-js) | TypeScript | 1 | 0 | 1 | 0 |
 | [openclaw](https://github.com/openclaw/openclaw) | TypeScript | 1 | 1 | 0 | 0 |
 | [pandas](https://github.com/pandas-dev/pandas) | Python | 1 | 1 | 0 | 0 |
@@ -20,7 +20,7 @@ My open source contribution history across various projects.
 | [ezc3d](https://github.com/pyomeca/ezc3d) | C++ / Python | 1 | 0 | 1 | 0 |
 | [kouchou-ai](https://github.com/digitaldemocracy2030/kouchou-ai) | Python | 1 | 0 | 1 | 0 |
 | [line-bot-mcp-server](https://github.com/line/line-bot-mcp-server) | TypeScript | 1 | 0 | 1 | 0 |
-| **Total** | | **40** | **18** | **14** | **8** |
+| **Total** | | **41** | **18** | **15** | **8** |
 
 ## Contributions by Project
 
@@ -99,6 +99,7 @@ Official JavaScript SDK for building applications on the Internet Computer. 170+
 
 | # | PR | Status | Description |
 |---|---|---|---|
+| 2 | [#1277](https://github.com/dfinity/icp-js-core/pull/1277) | Open | fix(agent): deduplicate parallel fetchSubnetKeys requests |
 | 1 | [#1270](https://github.com/dfinity/icp-js-core/pull/1270) | Open | Improve Candid decoding error messages for Variant types (Issue #470, good first issue) |
 
 ### [dfinity/pic-js](https://github.com/dfinity/pic-js)
