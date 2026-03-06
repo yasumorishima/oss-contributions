@@ -24,10 +24,13 @@ jobs:
         run: python scripts/record_pr.py --refresh
 
       - name: Write summary
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           python3 - <<'EOF'
-          import re, os
+          import re, os, subprocess, json
           from pathlib import Path
+          from datetime import datetime, timezone
 
           readme = Path("README.md").read_text(encoding="utf-8")
           lines = readme.splitlines()
@@ -47,18 +50,43 @@ jobs:
           open_prs = []
           for line in lines:
               if "| Open |" in line:
-                  m = re.search(r'\[#(\d+)\]\((https://github\.com/[^)]+)\)', line)
+                  m = re.search(r'\[#(\d+)\]\((https://github\.com/([^/]+/[^/]+)/pull/(\d+))\)', line)
                   desc_m = re.search(r'\| Open \| (.+?) \|', line)
                   if m:
-                      open_prs.append((m.group(1), m.group(2), desc_m.group(1).strip() if desc_m else ""))
+                      open_prs.append({
+                          "num": m.group(1),
+                          "url": m.group(2),
+                          "repo": m.group(3),
+                          "pr": m.group(4),
+                          "desc": desc_m.group(1).strip() if desc_m else ""
+                      })
+
+          # 各Open PRの最終更新日を取得
+          def get_last_activity(repo, pr_num):
+              try:
+                  result = subprocess.run(
+                      ["gh", "pr", "view", pr_num, "--repo", repo,
+                       "--json", "updatedAt,comments,reviews",
+                       "--jq", ".updatedAt"],
+                      capture_output=True, text=True, timeout=30
+                  )
+                  if result.returncode == 0 and result.stdout.strip():
+                      dt = datetime.fromisoformat(result.stdout.strip().replace("Z", "+00:00"))
+                      return dt.strftime("%Y-%m-%d")
+              except Exception:
+                  pass
+              return "unknown"
+
+          for pr in open_prs:
+              pr["last_update"] = get_last_activity(pr["repo"], pr["pr"])
 
           # stdout
           print("## OSS Contributions\n")
           for row in summary_rows:
               print(" ", row)
           print(f"\n### Open PRs ({len(open_prs)})")
-          for num, url, desc in open_prs:
-              print(f"  #{num}: {desc}  {url}")
+          for pr in open_prs:
+              print(f"  #{pr['num']}: {pr['desc']}  (last update: {pr['last_update']})  {pr['url']}")
 
           # GitHub Step Summary
           out = os.environ.get("GITHUB_STEP_SUMMARY", "/dev/null")
@@ -67,9 +95,9 @@ jobs:
               f.write("\n".join(summary_rows) + "\n\n")
               f.write(f"### Open PRs ({len(open_prs)})\n\n")
               if open_prs:
-                  f.write("| PR | Description |\n|---|---|\n")
-                  for num, url, desc in open_prs:
-                      f.write(f"| [#{num}]({url}) | {desc} |\n")
+                  f.write("| PR | Description | Last Update |\n|---|---|---|\n")
+                  for pr in open_prs:
+                      f.write(f"| [#{pr['num']}]({pr['url']}) | {pr['desc']} | {pr['last_update']} |\n")
               else:
                   f.write("_No open PRs._\n")
           EOF
