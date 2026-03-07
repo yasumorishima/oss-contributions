@@ -3,6 +3,10 @@ name: Contamination Check
 on:
   workflow_dispatch:
     inputs:
+      memo:
+        description: 'この実行の意図（必須）'
+        required: true
+        type: string
       fork_repo:
         description: 'Fork repo (e.g. yasumorishima/optuna)'
         required: true
