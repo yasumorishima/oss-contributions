@@ -6,6 +6,10 @@ name: Sync Forks
 on:
   workflow_dispatch:
     inputs:
+      memo:
+        description: 'この実行の意図（必須）'
+        required: true
+        type: string
       repo:
         description: 'Sync specific repo only (name only, e.g. optuna). Leave empty for all.'
         required: false
