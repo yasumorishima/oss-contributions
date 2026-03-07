@@ -4,7 +4,11 @@ on:
   schedule:
     - cron: '0 9 * * 1'  # 毎週月曜 9:00 UTC
   workflow_dispatch:
-
+    inputs:
+      memo:
+        description: 'この実行の意図'
+        required: false
+        type: string
 permissions:
   contents: write
 
