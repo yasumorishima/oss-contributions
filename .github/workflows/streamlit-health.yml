@@ -17,50 +17,20 @@ jobs:
           python3 - <<'EOF'
           import urllib.request, os, time
 
-          APPS = [
-              # Core apps
-              ("NPB Prediction",          "https://npb-prediction.streamlit.app/"),
-              ("MLB Bat Tracking",        "https://yasumorishima-mlb-bat-tracking.streamlit.app/"),
-              ("MLB Win Probability",     "https://mlb-wp-engine.streamlit.app/"),
-              ("NPB Bayes Projection",    "https://npb-prediction-bayes.streamlit.app/"),
-              ("Baseball MLOps",          "https://baseball-mlops.streamlit.app/"),
-              # WBC Pool A
-              ("WBC PR Batters",          "https://wbc-pr-batters.streamlit.app/"),
-              ("WBC PR Pitchers",         "https://wbc-pr-pitchers.streamlit.app/"),
-              ("WBC Cuba Batters",        "https://wbc-cuba-batters.streamlit.app/"),
-              ("WBC CAN Batters",         "https://wbc-can-batters.streamlit.app/"),
-              ("WBC CAN Pitchers",        "https://wbc-can-pitchers.streamlit.app/"),
-              ("WBC PAN Batters",         "https://wbc-pan-batters.streamlit.app/"),
-              ("WBC PAN Pitchers",        "https://wbc-pan-pitchers.streamlit.app/"),
-              ("WBC COL Batters",         "https://wbc-col-batters.streamlit.app/"),
-              ("WBC COL Pitchers",        "https://wbc-col-pitchers.streamlit.app/"),
-              # WBC Pool B
-              ("WBC USA Batters",         "https://wbc-usa-batters.streamlit.app/"),
-              ("WBC USA Pitchers",        "https://wbc-usa-pitchers.streamlit.app/"),
-              ("WBC MEX Batters",         "https://wbc-mex-batters.streamlit.app/"),
-              ("WBC MEX Pitchers",        "https://wbc-mex-pitchers.streamlit.app/"),
-              ("WBC ITA Batters",         "https://wbc-ita-batters.streamlit.app/"),
-              ("WBC ITA Pitchers",        "https://wbc-ita-pitchers.streamlit.app/"),
-              ("WBC GB Batters",          "https://wbc-gb-batters.streamlit.app/"),
-              ("WBC GB Pitchers",         "https://wbc-gb-pitchers.streamlit.app/"),
-              # WBC Pool C
-              ("WBC JPN Batters",         "https://wbc-japan-batters.streamlit.app/"),
-              ("WBC JPN Pitchers",        "https://wbc-japan-pitchers.streamlit.app/"),
-              ("WBC KOR Batters",         "https://wbc-kor-batters.streamlit.app/"),
-              ("WBC KOR Pitchers",        "https://wbc-kor-pitchers.streamlit.app/"),
-              ("WBC TWN Batters",         "https://wbc-twn-batters.streamlit.app/"),
-              ("WBC AUS Batters",         "https://wbc-aus-batters.streamlit.app/"),
-              # WBC Pool D
-              ("WBC DR Batters",          "https://wbc-dr-batters.streamlit.app/"),
-              ("WBC DR Pitchers",         "https://wbc-dr-pitchers.streamlit.app/"),
-              ("WBC VEN Batters",         "https://wbc-venezuela-batters.streamlit.app/"),
-              ("WBC VEN Pitchers",        "https://wbc-venezuela-pitchers.streamlit.app/"),
-              ("WBC NED Batters",         "https://wbc-ned-batters.streamlit.app/"),
-              ("WBC NED Pitchers",        "https://wbc-ned-pitchers.streamlit.app/"),
-              ("WBC ISR Batters",         "https://wbc-isr-batters.streamlit.app/"),
-              ("WBC ISR Pitchers",        "https://wbc-isr-pitchers.streamlit.app/"),
-              ("WBC NIC Batters",         "https://wbc-nic-batters.streamlit.app/"),
-          ]
+          # Fetch URLs from wbc-scouting's streamlit_apps.txt (single source of truth)
+          RAW_URL = "https://raw.githubusercontent.com/yasumorishima/wbc-scouting/main/streamlit_apps.txt"
+          req = urllib.request.Request(RAW_URL, headers={"User-Agent": "health-check/1.0"})
+          with urllib.request.urlopen(req, timeout=10) as resp:
+              txt = resp.read().decode("utf-8")
+
+          APPS = []
+          for line in txt.splitlines():
+              line = line.strip()
+              if line and not line.startswith("#"):
+                  # Derive display name from URL slug
+                  slug = line.replace("https://", "").replace(".streamlit.app/", "")
+                  name = slug.replace("-", " ").title()
+                  APPS.append((name, line))
 
           results = []
           for name, url in APPS:
