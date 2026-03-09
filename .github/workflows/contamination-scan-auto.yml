@@ -1,0 +1,165 @@
+name: Auto Contamination Scan
+
+on:
+  schedule:
+    - cron: '0 2 * * *'  # 毎日JST 11:00
+  workflow_dispatch:
+    inputs:
+      memo:
+        description: 'この実行の意図'
+        required: false
+        type: string
+
+permissions:
+  issues: write
+  contents: read
+
+jobs:
+  scan:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Build fork list from config.json
+        id: forks
+        run: |
+          # config.json の upstream 一覧からフォーク一覧を生成
+          # upstream "dfinity/icp-js-core" → fork "yasumorishima/icp-js-core"
+          AUTHOR=$(jq -r '.author' config.json)
+          jq -r '.projects | keys[]' config.json | while read upstream; do
+            REPO_NAME=$(echo "$upstream" | cut -d/ -f2)
+            echo "$AUTHOR/$REPO_NAME $upstream"
+          done > /tmp/fork_list.txt
+          cat /tmp/fork_list.txt
+
+      - name: Check fork-only files in fork main branches
+        id: files
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          FORBIDDEN_FILES=(".coderabbit.yaml" ".github/workflows/codeql.yml")
+          REPORT_FILE=$(mktemp)
+          FAIL=false
+
+          while read -r FORK UPSTREAM; do
+            for f in "${FORBIDDEN_FILES[@]}"; do
+              EXISTS=$(gh api "repos/$FORK/contents/$f" --jq '.name' 2>/dev/null || echo "")
+              if [ -n "$EXISTS" ]; then
+                echo "::error::FORK FILE: $FORK の main に $f が存在"
+                echo "- ⚠️ \`$FORK\` の main に \`$f\` が存在（削除が必要）" >> "$REPORT_FILE"
+                FAIL=true
+              fi
+            done
+          done < /tmp/fork_list.txt
+
+          echo "fail=$FAIL" >> "$GITHUB_OUTPUT"
+          echo "report_file=$REPORT_FILE" >> "$GITHUB_OUTPUT"
+
+      - name: Check CodeQL Default Setup
+        id: codeql
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          REPORT_FILE=$(mktemp)
+          FAIL=false
+
+          while read -r FORK UPSTREAM; do
+            # フォークが存在するか確認
+            EXISTS=$(gh api "repos/$FORK" --jq '.full_name' 2>/dev/null || echo "")
+            if [ -z "$EXISTS" ]; then
+              continue
+            fi
+
+            STATE=$(gh api "repos/$FORK/code-scanning/default-setup" --jq '.state' 2>/dev/null || echo "not-found")
+            if [ "$STATE" != "configured" ]; then
+              echo "::warning::CODEQL: $FORK の Default Setup が未有効 (state=$STATE)"
+              echo "- ⚠️ \`$FORK\` の CodeQL Default Setup が未有効（state: $STATE）" >> "$REPORT_FILE"
+              FAIL=true
+            fi
+          done < /tmp/fork_list.txt
+
+          echo "fail=$FAIL" >> "$GITHUB_OUTPUT"
+          echo "report_file=$REPORT_FILE" >> "$GITHUB_OUTPUT"
+
+      - name: Scan open PRs for contamination
+        id: prscan
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          FORBIDDEN_FILES=(".coderabbit.yaml" ".github/workflows/codeql.yml")
+          REPORT_FILE=$(mktemp)
+          FAIL=false
+          AUTHOR=$(jq -r '.author' config.json)
+
+          while read -r FORK UPSTREAM; do
+            PRS=$(gh pr list \
+              --repo "$UPSTREAM" \
+              --state open \
+              --json number,headRepositoryOwner \
+              --jq ".[] | select(.headRepositoryOwner.login == \"$AUTHOR\") | .number" \
+              2>/dev/null || echo "")
+
+            for PR in $PRS; do
+              FILES=$(gh pr view "$PR" \
+                --repo "$UPSTREAM" \
+                --json files \
+                --jq '.files[].path' \
+                2>/dev/null || echo "")
+
+              for f in "${FORBIDDEN_FILES[@]}"; do
+                if echo "$FILES" | grep -qxF "$f"; then
+                  echo "::error::CONTAMINATION: $UPSTREAM PR #$PR に $f が混入"
+                  echo "- ❌ \`$UPSTREAM\` PR #$PR に \`$f\` が混入" >> "$REPORT_FILE"
+                  FAIL=true
+                fi
+              done
+            done
+          done < /tmp/fork_list.txt
+
+          echo "fail=$FAIL" >> "$GITHUB_OUTPUT"
+          echo "report_file=$REPORT_FILE" >> "$GITHUB_OUTPUT"
+
+      - name: Create issue if any problems found
+        if: steps.files.outputs.fail == 'true' || steps.codeql.outputs.fail == 'true' || steps.prscan.outputs.fail == 'true'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          ISSUE_TITLE="⚠️ [自動検知] フォーク設定の問題が検出されました"
+
+          # 同タイトルのオープン Issue があればスキップ
+          EXISTING=$(gh issue list \
+            --repo yasumorishima/oss-contributions \
+            --state open \
+            --json title \
+            | jq --arg t "$ISSUE_TITLE" '[.[] | select(.title == $t)] | length')
+
+          if [ "$EXISTING" -gt 0 ]; then
+            echo "ℹ️ 既にオープン Issue あり。重複作成をスキップします"
+            exit 0
+          fi
+
+          BODY_FILE=$(mktemp)
+          echo "## ⚠️ フォーク設定の問題を検出" > "$BODY_FILE"
+          echo "" >> "$BODY_FILE"
+
+          for RF in "${{ steps.files.outputs.report_file }}" "${{ steps.codeql.outputs.report_file }}" "${{ steps.prscan.outputs.report_file }}"; do
+            if [ -s "$RF" ]; then
+              cat "$RF" >> "$BODY_FILE"
+            fi
+          done
+
+          cat >> "$BODY_FILE" << 'BODYEOF'
+
+## ルール
+- `.coderabbit.yaml` / `codeql.yml` はフォークに置かない（Web UI / Default Setup で代替）
+- CodeQL Default Setup は各フォークで有効化必須
+- feature ブランチは `git checkout -b xxx upstream/main` で切る
+
+> このIssueは Auto Contamination Scan ワークフローにより自動作成されました
+BODYEOF
+
+          gh issue create \
+            --repo yasumorishima/oss-contributions \
+            --title "$ISSUE_TITLE" \
+            --body-file "$BODY_FILE" \
+            --label "bug"
