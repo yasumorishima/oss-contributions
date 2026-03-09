@@ -148,15 +148,13 @@ jobs:
             fi
           done
 
-          cat >> "$BODY_FILE" << 'BODYEOF'
-
-## ルール
-- `.coderabbit.yaml` / `codeql.yml` はフォークに置かない（Web UI / Default Setup で代替）
-- CodeQL Default Setup は各フォークで有効化必須
-- feature ブランチは `git checkout -b xxx upstream/main` で切る
-
-> このIssueは Auto Contamination Scan ワークフローにより自動作成されました
-BODYEOF
+          echo "" >> "$BODY_FILE"
+          echo "## ルール" >> "$BODY_FILE"
+          echo "- \`.coderabbit.yaml\` / \`codeql.yml\` はフォークに置かない（Web UI / Default Setup で代替）" >> "$BODY_FILE"
+          echo "- CodeQL Default Setup は各フォークで有効化必須" >> "$BODY_FILE"
+          echo "- feature ブランチは \`git checkout -b xxx upstream/main\` で切る" >> "$BODY_FILE"
+          echo "" >> "$BODY_FILE"
+          echo "> このIssueは Auto Contamination Scan ワークフローにより自動作成されました" >> "$BODY_FILE"
 
           gh issue create \
             --repo yasumorishima/oss-contributions \
