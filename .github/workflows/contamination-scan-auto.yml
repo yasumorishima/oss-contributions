@@ -1,0 +1,129 @@
+name: Auto Contamination Scan
+
+on:
+  schedule:
+    - cron: '0 2 * * *'  # 毎日JST 11:00
+  workflow_dispatch:
+    inputs:
+      memo:
+        description: 'この実行の意図'
+        required: false
+        type: string
+
+permissions:
+  issues: write
+
+jobs:
+  scan:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Scan all fork PRs for contamination
+        id: scan
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          FORK_ONLY=(
+            ".coderabbit.yaml"
+            ".github/workflows/codeql.yml"
+          )
+
+          # フォーク → upstream のマッピング
+          declare -A UPSTREAMS=(
+            ["yasumorishima/icp-js-core"]="dfinity/icp-js-core"
+            ["yasumorishima/pic-js"]="dfinity/pic-js"
+            ["yasumorishima/marumie"]="team-mirai/marumie"
+            ["yasumorishima/post-checker"]="team-mirai-volunteer/post-checker"
+            ["yasumorishima/ezc3d"]="pyomeca/ezc3d"
+            ["yasumorishima/line-bot-mcp-server"]="line/line-bot-mcp-server"
+            ["yasumorishima/kouchou-ai"]="digitaldemocracy2030/kouchou-ai"
+            ["yasumorishima/optuna"]="optuna/optuna"
+          )
+
+          FAIL=false
+          # レポートはファイルに書き出す（変数展開での特殊文字問題を回避）
+          REPORT_FILE=$(mktemp)
+
+          for FORK in "${!UPSTREAMS[@]}"; do
+            UPSTREAM="${UPSTREAMS[$FORK]}"
+
+            PRS=$(gh pr list \
+              --repo "$UPSTREAM" \
+              --state open \
+              --json number,headRepositoryOwner \
+              --jq '.[] | select(.headRepositoryOwner.login == "yasumorishima") | .number' \
+              2>/dev/null || echo "")
+
+            for PR in $PRS; do
+              FILES=$(gh pr view "$PR" \
+                --repo "$UPSTREAM" \
+                --json files \
+                --jq '.files[].path' \
+                2>/dev/null || echo "")
+
+              for f in "${FORK_ONLY[@]}"; do
+                if echo "$FILES" | grep -qxF "$f"; then
+                  echo "::error::CONTAMINATION: $UPSTREAM PR #$PR に $f が混入"
+                  echo "- ❌ \`$UPSTREAM\` PR #$PR に \`$f\` が混入" >> "$REPORT_FILE"
+                  FAIL=true
+                fi
+              done
+            done
+          done
+
+          if [ "$FAIL" = true ]; then
+            echo "contaminated=true" >> "$GITHUB_OUTPUT"
+            echo "report_file=$REPORT_FILE" >> "$GITHUB_OUTPUT"
+          else
+            echo "contaminated=false" >> "$GITHUB_OUTPUT"
+            echo "✅ 全オープンPRに汚染なし"
+          fi
+
+      - name: Create issue if contaminated (skip if already open)
+        if: steps.scan.outputs.contaminated == 'true'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          ISSUE_TITLE="⚠️ [自動検知] upstream PRにフォーク専用ファイルが混入しています"
+
+          # タイトルの完全一致でオープンIssueを検索（search indexing delay 回避）
+          EXISTING=$(gh issue list \
+            --repo yasumorishima/oss-contributions \
+            --state open \
+            --json title \
+            --jq --arg t "$ISSUE_TITLE" '[.[] | select(.title == $t)] | length')
+
+          if [ "$EXISTING" -gt 0 ]; then
+            echo "ℹ️ 既にオープン Issue あり。重複作成をスキップします"
+            exit 0
+          fi
+
+          REPORT_FILE="${{ steps.scan.outputs.report_file }}"
+
+          # Issue body をファイルに書き出す（変数展開での特殊文字問題を回避）
+          BODY_FILE=$(mktemp)
+          cat > "$BODY_FILE" << 'BODYEOF'
+          ## ⚠️ フォーク専用ファイルの混入を検出
+
+          BODYEOF
+
+          cat "$REPORT_FILE" >> "$BODY_FILE"
+
+          cat >> "$BODY_FILE" << 'BODYEOF'
+
+          ## 対応手順
+          1. 該当PRをクローズする
+          2. `upstream/main` から feature ブランチを切り直す:
+             ```bash
+             git fetch upstream
+             git checkout -b fix/xxx upstream/main
+             ```
+          3. fork-only ファイルを除いた差分のみで PR を再作成する
+
+          > このIssueは Auto Contamination Scan ワークフローにより自動作成されました
+          BODYEOF
+
+          gh issue create \
+            --repo yasumorishima/oss-contributions \
+            --title "$ISSUE_TITLE" \
+            --body-file "$BODY_FILE" \
+            --label "bug"
