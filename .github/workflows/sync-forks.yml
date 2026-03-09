@@ -2,6 +2,7 @@ name: Sync Forks
 
 # Requires secret: GH_PAT (classic token with repo scope)
 # Manual trigger only — never runs automatically
+# Fork list is read from config.json (SSOT)
 
 on:
   workflow_dispatch:
@@ -18,42 +19,34 @@ jobs:
   sync:
     runs-on: ubuntu-latest
     steps:
-      - name: Sync active OSS forks
-        run: |
-          declare -A FORKS=(
-            ["optuna"]="optuna/optuna"
-            ["marumie"]="team-mirai/marumie"
-            ["icp-js-core"]="dfinity/icp-js-core"
-            ["icp-js-canisters"]="dfinity/icp-js-canisters"
-            ["line-bot-mcp-server"]="line/line-bot-mcp-server"
-            ["ezc3d"]="pyomeca/ezc3d"
-            ["post-checker"]="team-mirai-volunteer/post-checker"
-            ["kouchou-ai"]="digitaldemocracy2030/kouchou-ai"
-          )
+      - uses: actions/checkout@v4
 
+      - name: Sync forks from config.json
+        run: |
+          AUTHOR=$(jq -r '.author' config.json)
           FILTER="${{ inputs.repo }}"
           SUCCESS=0
           FAILED=0
 
-          for name in "${!FORKS[@]}"; do
-            upstream="${FORKS[$name]}"
-            fork="yasumorishima/${name}"
+          while read upstream; do
+            REPO_NAME=$(echo "$upstream" | cut -d/ -f2)
+            FORK="$AUTHOR/$REPO_NAME"
 
-            if [ -n "$FILTER" ] && [ "$name" != "$FILTER" ]; then
-              echo "⏩ Skipping $fork"
+            if [ -n "$FILTER" ] && [ "$REPO_NAME" != "$FILTER" ]; then
+              echo "⏩ Skipping $FORK"
               continue
             fi
 
-            echo "🔄 Syncing $fork ← $upstream ..."
-            if gh repo sync "$fork" --source "$upstream" 2>&1; then
-              echo "✅ $fork synced"
+            echo "🔄 Syncing $FORK ← $upstream ..."
+            if gh repo sync "$FORK" --source "$upstream" 2>&1; then
+              echo "✅ $FORK synced"
               SUCCESS=$((SUCCESS + 1))
             else
-              echo "::warning::❌ Sync failed for $fork (diverged — manual rebase needed)"
+              echo "::warning::❌ Sync failed for $FORK (diverged — manual rebase needed)"
               FAILED=$((FAILED + 1))
             fi
             echo ""
-          done
+          done < <(jq -r '.projects | keys[]' config.json)
 
           echo "=== Summary ==="
           echo "✅ Succeeded: $SUCCESS"
