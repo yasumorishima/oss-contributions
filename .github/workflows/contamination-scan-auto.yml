@@ -12,45 +12,91 @@ on:
 
 permissions:
   issues: write
+  contents: read
 
 jobs:
   scan:
     runs-on: ubuntu-latest
     steps:
-      - name: Scan all fork PRs for contamination
-        id: scan
+      - uses: actions/checkout@v4
+
+      - name: Build fork list from config.json
+        id: forks
+        run: |
+          # config.json の upstream 一覧からフォーク一覧を生成
+          # upstream "dfinity/icp-js-core" → fork "yasumorishima/icp-js-core"
+          AUTHOR=$(jq -r '.author' config.json)
+          jq -r '.projects | keys[]' config.json | while read upstream; do
+            REPO_NAME=$(echo "$upstream" | cut -d/ -f2)
+            echo "$AUTHOR/$REPO_NAME $upstream"
+          done > /tmp/fork_list.txt
+          cat /tmp/fork_list.txt
+
+      - name: Check fork-only files in fork main branches
+        id: files
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          FORK_ONLY=(
-            ".coderabbit.yaml"
-            ".github/workflows/codeql.yml"
-          )
-
-          # フォーク → upstream のマッピング
-          declare -A UPSTREAMS=(
-            ["yasumorishima/icp-js-core"]="dfinity/icp-js-core"
-            ["yasumorishima/pic-js"]="dfinity/pic-js"
-            ["yasumorishima/marumie"]="team-mirai/marumie"
-            ["yasumorishima/post-checker"]="team-mirai-volunteer/post-checker"
-            ["yasumorishima/ezc3d"]="pyomeca/ezc3d"
-            ["yasumorishima/line-bot-mcp-server"]="line/line-bot-mcp-server"
-            ["yasumorishima/kouchou-ai"]="digitaldemocracy2030/kouchou-ai"
-            ["yasumorishima/optuna"]="optuna/optuna"
-          )
-
-          FAIL=false
-          # レポートはファイルに書き出す（変数展開での特殊文字問題を回避）
+          FORBIDDEN_FILES=(".coderabbit.yaml" ".github/workflows/codeql.yml")
           REPORT_FILE=$(mktemp)
+          FAIL=false
 
-          for FORK in "${!UPSTREAMS[@]}"; do
-            UPSTREAM="${UPSTREAMS[$FORK]}"
+          while read -r FORK UPSTREAM; do
+            for f in "${FORBIDDEN_FILES[@]}"; do
+              EXISTS=$(gh api "repos/$FORK/contents/$f" --jq '.name' 2>/dev/null || echo "")
+              if [ -n "$EXISTS" ]; then
+                echo "::error::FORK FILE: $FORK の main に $f が存在"
+                echo "- ⚠️ \`$FORK\` の main に \`$f\` が存在（削除が必要）" >> "$REPORT_FILE"
+                FAIL=true
+              fi
+            done
+          done < /tmp/fork_list.txt
 
+          echo "fail=$FAIL" >> "$GITHUB_OUTPUT"
+          echo "report_file=$REPORT_FILE" >> "$GITHUB_OUTPUT"
+
+      - name: Check CodeQL Default Setup
+        id: codeql
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          REPORT_FILE=$(mktemp)
+          FAIL=false
+
+          while read -r FORK UPSTREAM; do
+            # フォークが存在するか確認
+            EXISTS=$(gh api "repos/$FORK" --jq '.full_name' 2>/dev/null || echo "")
+            if [ -z "$EXISTS" ]; then
+              continue
+            fi
+
+            STATE=$(gh api "repos/$FORK/code-scanning/default-setup" --jq '.state' 2>/dev/null || echo "not-found")
+            if [ "$STATE" != "configured" ]; then
+              echo "::warning::CODEQL: $FORK の Default Setup が未有効 (state=$STATE)"
+              echo "- ⚠️ \`$FORK\` の CodeQL Default Setup が未有効（state: $STATE）" >> "$REPORT_FILE"
+              FAIL=true
+            fi
+          done < /tmp/fork_list.txt
+
+          echo "fail=$FAIL" >> "$GITHUB_OUTPUT"
+          echo "report_file=$REPORT_FILE" >> "$GITHUB_OUTPUT"
+
+      - name: Scan open PRs for contamination
+        id: prscan
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          FORBIDDEN_FILES=(".coderabbit.yaml" ".github/workflows/codeql.yml")
+          REPORT_FILE=$(mktemp)
+          FAIL=false
+          AUTHOR=$(jq -r '.author' config.json)
+
+          while read -r FORK UPSTREAM; do
             PRS=$(gh pr list \
               --repo "$UPSTREAM" \
               --state open \
               --json number,headRepositoryOwner \
-              --jq '.[] | select(.headRepositoryOwner.login == "yasumorishima") | .number' \
+              --jq ".[] | select(.headRepositoryOwner.login == \"$AUTHOR\") | .number" \
               2>/dev/null || echo "")
 
             for PR in $PRS; do
@@ -60,7 +106,7 @@ jobs:
                 --jq '.files[].path' \
                 2>/dev/null || echo "")
 
-              for f in "${FORK_ONLY[@]}"; do
+              for f in "${FORBIDDEN_FILES[@]}"; do
                 if echo "$FILES" | grep -qxF "$f"; then
                   echo "::error::CONTAMINATION: $UPSTREAM PR #$PR に $f が混入"
                   echo "- ❌ \`$UPSTREAM\` PR #$PR に \`$f\` が混入" >> "$REPORT_FILE"
@@ -68,25 +114,19 @@ jobs:
                 fi
               done
             done
-          done
+          done < /tmp/fork_list.txt
 
-          if [ "$FAIL" = true ]; then
-            echo "contaminated=true" >> "$GITHUB_OUTPUT"
-            echo "report_file=$REPORT_FILE" >> "$GITHUB_OUTPUT"
-          else
-            echo "contaminated=false" >> "$GITHUB_OUTPUT"
-            echo "✅ 全オープンPRに汚染なし"
-          fi
+          echo "fail=$FAIL" >> "$GITHUB_OUTPUT"
+          echo "report_file=$REPORT_FILE" >> "$GITHUB_OUTPUT"
 
-      - name: Create issue if contaminated (skip if already open)
-        if: steps.scan.outputs.contaminated == 'true'
+      - name: Create issue if any problems found
+        if: steps.files.outputs.fail == 'true' || steps.codeql.outputs.fail == 'true' || steps.prscan.outputs.fail == 'true'
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          ISSUE_TITLE="⚠️ [自動検知] upstream PRにフォーク専用ファイルが混入しています"
+          ISSUE_TITLE="⚠️ [自動検知] フォーク設定の問題が検出されました"
 
-          # タイトルの完全一致でオープンIssueを検索（search indexing delay 回避）
-          # gh CLI は --jq --arg 未対応のため jq に直接パイプする
+          # 同タイトルのオープン Issue があればスキップ
           EXISTING=$(gh issue list \
             --repo yasumorishima/oss-contributions \
             --state open \
@@ -98,30 +138,25 @@ jobs:
             exit 0
           fi
 
-          REPORT_FILE="${{ steps.scan.outputs.report_file }}"
-
-          # Issue body をファイルに書き出す（変数展開での特殊文字問題を回避）
           BODY_FILE=$(mktemp)
-          cat > "$BODY_FILE" << 'BODYEOF'
-          ## ⚠️ フォーク専用ファイルの混入を検出
+          echo "## ⚠️ フォーク設定の問題を検出" > "$BODY_FILE"
+          echo "" >> "$BODY_FILE"
 
-          BODYEOF
-
-          cat "$REPORT_FILE" >> "$BODY_FILE"
+          for RF in "${{ steps.files.outputs.report_file }}" "${{ steps.codeql.outputs.report_file }}" "${{ steps.prscan.outputs.report_file }}"; do
+            if [ -s "$RF" ]; then
+              cat "$RF" >> "$BODY_FILE"
+            fi
+          done
 
           cat >> "$BODY_FILE" << 'BODYEOF'
 
-          ## 対応手順
-          1. 該当PRをクローズする
-          2. `upstream/main` から feature ブランチを切り直す:
-             ```bash
-             git fetch upstream
-             git checkout -b fix/xxx upstream/main
-             ```
-          3. fork-only ファイルを除いた差分のみで PR を再作成する
+## ルール
+- `.coderabbit.yaml` / `codeql.yml` はフォークに置かない（Web UI / Default Setup で代替）
+- CodeQL Default Setup は各フォークで有効化必須
+- feature ブランチは `git checkout -b xxx upstream/main` で切る
 
-          > このIssueは Auto Contamination Scan ワークフローにより自動作成されました
-          BODYEOF
+> このIssueは Auto Contamination Scan ワークフローにより自動作成されました
+BODYEOF
 
           gh issue create \
             --repo yasumorishima/oss-contributions \
