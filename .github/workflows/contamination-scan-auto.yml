@@ -32,7 +32,7 @@ jobs:
           done > /tmp/fork_list.txt
           cat /tmp/fork_list.txt
 
-      - name: Check fork-only files in fork main branches
+      - name: Check fork-only files in fork default branches
         id: files
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -42,11 +42,17 @@ jobs:
           FAIL=false
 
           while read -r FORK UPSTREAM; do
+            # フォークのデフォルトブランチを取得（main/master/develop 等）
+            DEFAULT_BRANCH=$(gh api "repos/$FORK" --jq '.default_branch' 2>/dev/null || echo "")
+            if [ -z "$DEFAULT_BRANCH" ]; then
+              continue
+            fi
+
             for f in "${FORBIDDEN_FILES[@]}"; do
-              EXISTS=$(gh api "repos/$FORK/contents/$f" --jq '.name' 2>/dev/null || echo "")
+              EXISTS=$(gh api "repos/$FORK/contents/$f?ref=$DEFAULT_BRANCH" --jq '.name' 2>/dev/null || echo "")
               if [ -n "$EXISTS" ]; then
-                echo "::error::FORK FILE: $FORK の main に $f が存在"
-                echo "- ⚠️ \`$FORK\` の main に \`$f\` が存在（削除が必要）" >> "$REPORT_FILE"
+                echo "::error::FORK FILE: $FORK ($DEFAULT_BRANCH) に $f が存在"
+                echo "- ⚠️ \`$FORK\` ($DEFAULT_BRANCH) に \`$f\` が存在（削除が必要）" >> "$REPORT_FILE"
                 FAIL=true
               fi
             done
