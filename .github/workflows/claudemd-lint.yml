@@ -1,0 +1,103 @@
+name: CLAUDE.md Lint
+
+# CLAUDE.mdに変動データ（バージョン、精度、メダル数等）が混入していないかチェック
+# 変動データはREADME等の一次ソースに書き、CLAUDE.mdにはルールと参照先だけ置く
+
+on:
+  schedule:
+    - cron: '0 3 * * 1'  # 毎週月曜JST 12:00
+  workflow_dispatch:
+    inputs:
+      memo:
+        description: 'この実行の意図'
+        required: false
+        type: string
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          repository: yasumorishima/claude-config
+          token: ${{ secrets.GH_PAT }}
+
+      - name: Lint CLAUDE.md for stale data patterns
+        run: |
+          python3 - <<'PYEOF'
+          import re, sys, os
+
+          with open("CLAUDE.md", encoding="utf-8") as f:
+              lines = f.readlines()
+
+          warnings = []
+
+          # コードブロック内はスキップ
+          in_code_block = False
+          check_lines = []
+          for i, line in enumerate(lines, 1):
+              if line.strip().startswith("```"):
+                  in_code_block = not in_code_block
+                  check_lines.append((i, None))  # skip
+              elif in_code_block:
+                  check_lines.append((i, None))  # skip
+              else:
+                  check_lines.append((i, line))
+
+          for lineno, line in check_lines:
+              if line is None:
+                  continue
+
+              # 1. バージョン番号（v0.4.3形式）— "vX.Y.Z"テンプレートや"vX.Y.Z"リリース手順は除外
+              if re.search(r'v\d+\.\d+\.\d+', line) and 'vX.Y.Z' not in line:
+                  warnings.append((lineno, "VERSION", line.strip()))
+
+              # 2. "Phase X.Y" パターン
+              if re.search(r'Phase\s+\d+\.\d+', line, re.IGNORECASE):
+                  warnings.append((lineno, "PHASE", line.strip()))
+
+              # 3. ML精度っぽい数値（0.0XXXや+XX.X%）— ルール説明の閾値は除外
+              if re.search(r'\b0\.\d{3,}\b', line) and 'fontsize' not in line:
+                  # "15GB" 等の数値は除外
+                  if not re.search(r'\d+GB', line):
+                      warnings.append((lineno, "PRECISION", line.strip()))
+
+              # 4. メダル数（"12 Bronze" 等）
+              if re.search(r'\d+\s+(Bronze|Silver|Gold)\b', line, re.IGNORECASE):
+                  warnings.append((lineno, "MEDAL_COUNT", line.strip()))
+
+              # 5. 括弧内の国数・件数（"177か国" "6 published" 等のハードコード数値）
+              if re.search(r'\d{2,}か国', line):
+                  warnings.append((lineno, "HARDCODED_COUNT", line.strip()))
+
+              # 6. 日付がセクションタイトルに含まれる（"完了 3/6" 等）
+              if line.startswith('#') and re.search(r'\d{1,2}/\d{1,2}', line):
+                  warnings.append((lineno, "DATE_IN_HEADER", line.strip()))
+
+          # 結果出力
+          summary_path = os.environ.get("GITHUB_STEP_SUMMARY", "/dev/null")
+
+          if warnings:
+              print(f"::warning::CLAUDE.md に {len(warnings)} 件の変動データパターンを検出")
+              print()
+              for lineno, kind, text in warnings:
+                  print(f"  L{lineno} [{kind}] {text}")
+
+              with open(summary_path, "a", encoding="utf-8") as f:
+                  f.write("## ⚠️ CLAUDE.md 変動データ検出\n\n")
+                  f.write("以下の行に変動データパターンが含まれています。README等の一次ソースへの参照に置換してください。\n\n")
+                  f.write("| 行 | 種別 | 内容 |\n|---|---|---|\n")
+                  for lineno, kind, text in warnings:
+                      # Markdown table内のパイプをエスケープ
+                      safe_text = text.replace("|", "\\|")[:100]
+                      f.write(f"| L{lineno} | `{kind}` | {safe_text} |\n")
+                  f.write("\n### ルール\n")
+                  f.write("- CLAUDE.mdにはルールと参照先だけ置く\n")
+                  f.write("- バージョン・精度・メダル数等の変動データはREADME等の一次ソースに書く\n")
+          else:
+              print("✅ CLAUDE.md に変動データパターンなし")
+              with open(summary_path, "a", encoding="utf-8") as f:
+                  f.write("## ✅ CLAUDE.md Lint — 問題なし\n")
+
+          sys.exit(1 if warnings else 0)
+          PYEOF
