@@ -86,11 +86,12 @@ jobs:
           ISSUE_TITLE="⚠️ [自動検知] upstream PRにフォーク専用ファイルが混入しています"
 
           # タイトルの完全一致でオープンIssueを検索（search indexing delay 回避）
+          # gh CLI は --jq --arg 未対応のため jq に直接パイプする
           EXISTING=$(gh issue list \
             --repo yasumorishima/oss-contributions \
             --state open \
             --json title \
-            --jq --arg t "$ISSUE_TITLE" '[.[] | select(.title == $t)] | length')
+            | jq --arg t "$ISSUE_TITLE" '[.[] | select(.title == $t)] | length')
 
           if [ "$EXISTING" -gt 0 ]; then
             echo "ℹ️ 既にオープン Issue あり。重複作成をスキップします"
