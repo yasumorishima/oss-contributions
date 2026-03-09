@@ -17,10 +17,13 @@ jobs:
   lint:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-        with:
-          repository: yasumorishima/claude-config
-          token: ${{ secrets.GH_PAT }}
+      - name: Fetch CLAUDE.md from claude-config
+        env:
+          GH_TOKEN: ${{ secrets.GH_PAT }}
+        run: |
+          gh api repos/yasumorishima/claude-config/contents/CLAUDE.md \
+            --jq '.content' | base64 -d > CLAUDE.md
+          echo "Fetched CLAUDE.md ($(wc -l < CLAUDE.md) lines)"
 
       - name: Lint CLAUDE.md for stale data patterns
         run: |
