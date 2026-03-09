@@ -18,9 +18,9 @@ My open source contribution history across various projects.
 | [pandas](https://github.com/pandas-dev/pandas) | Python | 1 | 1 | 0 | 0 |
 | [pybaseball](https://github.com/jldbc/pybaseball) | Python | 7 | 0 | 7 | 0 |
 | [ezc3d](https://github.com/pyomeca/ezc3d) | C++ / Python | 1 | 0 | 1 | 0 |
-| [kouchou-ai](https://github.com/digitaldemocracy2030/kouchou-ai) | Python | 1 | 0 | 1 | 0 |
+| [kouchou-ai](https://github.com/digitaldemocracy2030/kouchou-ai) | Python | 1 | 1 | 0 | 0 |
 | [line-bot-mcp-server](https://github.com/line/line-bot-mcp-server) | TypeScript | 1 | 0 | 1 | 0 |
-| **Total** | | **41** | **18** | **15** | **8** |
+| **Total** | | **41** | **19** | **14** | **8** |
 
 ## Contributions by Project
 
@@ -168,7 +168,7 @@ Easy to use C3D reader/writer for C++, Python and MATLAB. Used in biomechanics r
 
 | # | PR | Status | Description |
 |---|---|---|---|
-| 1 | [#796](https://github.com/digitaldemocracy2030/kouchou-ai/pull/796) | Open | fix: filter out empty/whitespace-only comments before LLM processing (#583) |
+| 1 | [#796](https://github.com/digitaldemocracy2030/kouchou-ai/pull/796) | Merged | fix: filter out empty/whitespace-only comments before LLM processing (#583) |
 
 ### [line/line-bot-mcp-server](https://github.com/line/line-bot-mcp-server)
 
