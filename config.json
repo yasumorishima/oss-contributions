@@ -11,7 +11,7 @@
     },
     "team-mirai-volunteer/post-checker": {
       "language": "TypeScript",
-      "description": "Social media post verification tool. Built with TypeScript, Vitest."
+      "description": "Social media post verification tool. Built with TypeScript, Vitest. **Project appears inactive** (no commits since 2026-01-29)."
     },
     "team-mirai-volunteer/fact-checker": {
       "language": "TypeScript",
