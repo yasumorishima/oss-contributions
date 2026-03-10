@@ -93,9 +93,9 @@ def parse_team_mirai_prs(text: str) -> list[dict]:
     return prs
 
 
-def update_profile(profile_path: Path, oss_text: str) -> bool:
-    """Update the profile README. Returns True if changed."""
-    profile = profile_path.read_text(encoding="utf-8")
+def update_profile(profile_text: str, oss_text: str) -> str | None:
+    """Update the profile README content. Returns new content or None if unchanged."""
+    profile = profile_text
     original = profile
 
     summary = parse_summary_table(oss_text)
@@ -104,7 +104,7 @@ def update_profile(profile_path: Path, oss_text: str) -> bool:
             "ERROR: Could not parse oss-contributions summary table",
             file=sys.stderr,
         )
-        return False
+        return None
 
     # --- 1. OSS_STATS + repo count ---
     total_prs = sum(e["total"] for e in summary)
@@ -179,9 +179,8 @@ def update_profile(profile_path: Path, oss_text: str) -> bool:
             profile = "\n".join(lines)
 
     if profile != original:
-        profile_path.write_text(profile, encoding="utf-8")
-        return True
-    return False
+        return profile
+    return None
 
 
 def main():
@@ -195,7 +194,11 @@ def main():
         sys.exit(1)
 
     oss_text = OSS_README.read_text(encoding="utf-8")
-    if update_profile(profile_path, oss_text):
+    profile_text = profile_path.read_text(encoding="utf-8")
+    result = update_profile(profile_text, oss_text)
+
+    if result is not None:
+        profile_path.write_text(result, encoding="utf-8")
         print("Profile README updated.")
     else:
         print("Profile README already up to date.")

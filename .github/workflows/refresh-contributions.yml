@@ -169,19 +169,25 @@ jobs:
           HAS_PAT: ${{ secrets.CLAUDE_CONFIG_PAT != '' }}
           GH_TOKEN: ${{ secrets.CLAUDE_CONFIG_PAT }}
         run: |
-          git clone --depth 1 https://x-access-token:${GH_TOKEN}@github.com/yasumorishima/yasumorishima.git /tmp/profile
+          # Fetch current profile README via API
+          CURRENT_SHA=$(gh api repos/yasumorishima/yasumorishima/contents/README.md --jq '.sha')
+          gh api repos/yasumorishima/yasumorishima/contents/README.md --jq '.content' | base64 -d > /tmp/profile_readme.md
 
-          python scripts/sync_profile_readme.py /tmp/profile/README.md
+          python scripts/sync_profile_readme.py /tmp/profile_readme.md
 
-          cd /tmp/profile
-          git config user.name "github-actions[bot]"
-          git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add README.md
-          if ! git diff --cached --quiet; then
-            git diff --cached --stat
-            git commit -m "Auto-sync OSS stats from oss-contributions"
-            git push
-            echo "Profile README updated."
-          else
+          # Compare content
+          NEW_CONTENT=$(base64 -w 0 /tmp/profile_readme.md)
+          OLD_CONTENT=$(gh api repos/yasumorishima/yasumorishima/contents/README.md --jq '.content' | tr -d '\n')
+
+          if [ "$NEW_CONTENT" = "$OLD_CONTENT" ]; then
             echo "Profile README already up to date."
+          else
+            # Update via Contents API (no git push needed)
+            jq -n --arg msg "Auto-sync OSS stats from oss-contributions" \
+                  --arg content "$NEW_CONTENT" \
+                  --arg sha "$CURRENT_SHA" \
+                  '{message: $msg, content: $content, sha: $sha}' \
+              | gh api repos/yasumorishima/yasumorishima/contents/README.md \
+                  -X PUT --input - --jq '.commit.sha'
+            echo "Profile README updated."
           fi
