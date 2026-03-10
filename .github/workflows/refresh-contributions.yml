@@ -106,6 +106,46 @@ jobs:
                   f.write("_No open PRs._\n")
           EOF
 
+
+      - name: Close stale fork PRs
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          python3 - <<'PYEOF'
+import subprocess, json
+
+def run(cmd):
+    r = subprocess.run(cmd, capture_output=True, text=True, timeout=60)
+    return r.stdout.strip() if r.returncode == 0 else None
+
+# upstreamでMergedになったPRのタイトル一覧を取得
+readme = open('README.md', encoding='utf-8').read()
+import re
+merged_titles = set(re.findall(r'\| Merged \| (.+?) \|', readme))
+
+# yasumorishima所有のオープンPRを取得
+out = run(['gh', 'search', 'prs', '--author', 'yasumorishima', '--state', 'open',
+           '--json', 'repository,number,title,url'])
+if not out:
+    print('No open PRs found')
+    exit(0)
+
+prs = json.loads(out)
+for pr in prs:
+    repo = pr['repository']['nameWithOwner']
+    # フォーク（yasumorishima/xxx）のみ対象
+    if not repo.startswith('yasumorishima/'):
+        continue
+    title = pr['title']
+    # タイトルがupstreamのMerged PRと一致する場合はクローズ
+    if title in merged_titles:
+        print(f'Closing stale fork PR: {repo}#{pr["number"]} - {title}')
+        run(['gh', 'pr', 'close', str(pr['number']), '--repo', repo,
+             '--comment', 'Auto-closing: corresponding upstream PR has been merged.'])
+    else:
+        print(f'Keeping: {repo}#{pr["number"]} - {title}')
+PYEOF
+
       - name: Commit and push if changed
         run: |
           git config user.name "github-actions[bot]"
@@ -151,3 +191,4 @@ jobs:
           else
             echo "claude-config already up to date."
           fi
+
