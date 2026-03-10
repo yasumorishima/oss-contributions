@@ -162,32 +162,3 @@ jobs:
           else
             echo "claude-config already up to date."
           fi
-
-      - name: Sync stats to profile README
-        if: ${{ env.HAS_PAT == 'true' }}
-        env:
-          HAS_PAT: ${{ secrets.CLAUDE_CONFIG_PAT != '' }}
-          GH_TOKEN: ${{ secrets.CLAUDE_CONFIG_PAT }}
-        run: |
-          # Fetch current profile README via API
-          CURRENT_SHA=$(gh api repos/yasumorishima/yasumorishima/contents/README.md --jq '.sha')
-          gh api repos/yasumorishima/yasumorishima/contents/README.md --jq '.content' | base64 -d > /tmp/profile_readme.md
-
-          python scripts/sync_profile_readme.py /tmp/profile_readme.md
-
-          # Compare content
-          NEW_CONTENT=$(base64 -w 0 /tmp/profile_readme.md)
-          OLD_CONTENT=$(gh api repos/yasumorishima/yasumorishima/contents/README.md --jq '.content' | tr -d '\n')
-
-          if [ "$NEW_CONTENT" = "$OLD_CONTENT" ]; then
-            echo "Profile README already up to date."
-          else
-            # Update via Contents API (no git push needed)
-            jq -n --arg msg "Auto-sync OSS stats from oss-contributions" \
-                  --arg content "$NEW_CONTENT" \
-                  --arg sha "$CURRENT_SHA" \
-                  '{message: $msg, content: $content, sha: $sha}' \
-              | gh api repos/yasumorishima/yasumorishima/contents/README.md \
-                  -X PUT --input - --jq '.commit.sha'
-            echo "Profile README updated."
-          fi
