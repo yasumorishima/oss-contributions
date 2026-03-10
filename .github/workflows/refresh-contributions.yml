@@ -162,3 +162,26 @@ jobs:
           else
             echo "claude-config already up to date."
           fi
+
+      - name: Sync stats to profile README
+        if: ${{ env.HAS_PAT == 'true' }}
+        env:
+          HAS_PAT: ${{ secrets.CLAUDE_CONFIG_PAT != '' }}
+          GH_TOKEN: ${{ secrets.CLAUDE_CONFIG_PAT }}
+        run: |
+          git clone --depth 1 https://x-access-token:${GH_TOKEN}@github.com/yasumorishima/yasumorishima.git /tmp/profile
+
+          python scripts/sync_profile_readme.py /tmp/profile/README.md
+
+          cd /tmp/profile
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add README.md
+          if ! git diff --cached --quiet; then
+            git diff --cached --stat
+            git commit -m "Auto-sync OSS stats from oss-contributions"
+            git push
+            echo "Profile README updated."
+          else
+            echo "Profile README already up to date."
+          fi
