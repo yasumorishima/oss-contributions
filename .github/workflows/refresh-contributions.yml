@@ -2,11 +2,11 @@ name: Refresh Contributions
 
 on:
   schedule:
-    - cron: '0 9 * * 1'  # 毎週月曜 9:00 UTC
+    - cron: '0 9 * * 1'  # 豈朱ｱ譛域屆 9:00 UTC
   workflow_dispatch:
     inputs:
       memo:
-        description: 'この実行の意図'
+        description: '縺薙�螳溯｡後�諢丞峙'
         required: false
         type: string
 permissions:
@@ -39,7 +39,7 @@ jobs:
           readme = Path("README.md").read_text(encoding="utf-8")
           lines = readme.splitlines()
 
-          # サマリーテーブル抽出
+          # 繧ｵ繝槭Μ繝ｼ繝��繝悶Ν謚ｽ蜃ｺ
           summary_rows = []
           in_summary = False
           for line in lines:
@@ -50,7 +50,7 @@ jobs:
               if in_summary and "**Total**" in line:
                   break
 
-          # Open PR 抽出
+          # Open PR 謚ｽ蜃ｺ
           open_prs = []
           for line in lines:
               if "| Open |" in line:
@@ -65,7 +65,7 @@ jobs:
                           "desc": desc_m.group(1).strip() if desc_m else ""
                       })
 
-          # 各Open PRの最終更新日を取得
+          # 蜷Оpen PR縺ｮ譛邨よ峩譁ｰ譌･繧貞叙蠕
           def get_last_activity(repo, pr_num):
               try:
                   result = subprocess.run(
@@ -118,12 +118,12 @@ def run(cmd):
     r = subprocess.run(cmd, capture_output=True, text=True, timeout=60)
     return r.stdout.strip() if r.returncode == 0 else None
 
-# upstream��Merged�ɂȂ���PR�̃^�C�g���ꗗ���擾
+# upstreamでMergedになったPRのタイトル一覧を取得
 readme = open('README.md', encoding='utf-8').read()
 import re
 merged_titles = set(re.findall(r'\| Merged \| (.+?) \|', readme))
 
-# yasumorishima���L�̃I�[�v��PR���擾
+# yasumorishima所有のオープンPRを取得
 out = run(['gh', 'search', 'prs', '--author', 'yasumorishima', '--state', 'open',
            '--json', 'repository,number,title,url'])
 if not out:
@@ -133,11 +133,11 @@ if not out:
 prs = json.loads(out)
 for pr in prs:
     repo = pr['repository']['nameWithOwner']
-    # �t�H�[�N�iyasumorishima/xxx�j�̂ݑΏ�
+    # フォーク（yasumorishima/xxx）のみ対象
     if not repo.startswith('yasumorishima/'):
         continue
     title = pr['title']
-    # �^�C�g����upstream��Merged PR�ƈ�v����ꍇ�̓N���[�Y
+    # タイトルがupstreamのMerged PRと一致する場合はクローズ
     if title in merged_titles:
         print(f'Closing stale fork PR: {repo}#{pr["number"]} - {title}')
         run(['gh', 'pr', 'close', str(pr['number']), '--repo', repo,
@@ -164,7 +164,7 @@ PYEOF
           HAS_PAT: ${{ secrets.CLAUDE_CONFIG_PAT != '' }}
           GH_TOKEN: ${{ secrets.CLAUDE_CONFIG_PAT }}
         run: |
-          # README.mdのTotal行からPR数・Merged数を抽出
+          # README.md縺ｮTotal陦後°繧臼R謨ｰ繝ｻMerged謨ｰ繧呈歓蜃ｺ
           TOTAL_LINE=$(grep '**Total**' README.md)
           TOTAL_PRS=$(echo "$TOTAL_LINE" | grep -oP '\*\*\K\d+(?=\*\*)' | head -1)
           TOTAL_MERGED=$(echo "$TOTAL_LINE" | grep -oP '\*\*\K\d+(?=\*\*)' | sed -n '2p')
@@ -175,11 +175,11 @@ PYEOF
           fi
           echo "Extracted: ${TOTAL_PRS} PRs, ${TOTAL_MERGED} Merged"
 
-          # claude-configのCLAUDE.mdを取得・更新
+          # claude-config縺ｮCLAUDE.md繧貞叙蠕励�譖ｴ譁ｰ
           git clone --depth 1 https://x-access-token:${GH_TOKEN}@github.com/yasumorishima/claude-config.git /tmp/claude-config
           cd /tmp/claude-config
 
-          sed -i -E "s|oss-contributions（[0-9]+件、[0-9]+ Merged）|oss-contributions（${TOTAL_PRS}件、${TOTAL_MERGED} Merged）|g" CLAUDE.md
+          sed -i -E "s|oss-contributions��0-9]+莉ｶ縲ー0-9]+ Merged�榎oss-contributions�${TOTAL_PRS}莉ｶ縲${TOTAL_MERGED} Merged�榎g" CLAUDE.md
 
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
@@ -191,4 +191,5 @@ PYEOF
           else
             echo "claude-config already up to date."
           fi
+
 
