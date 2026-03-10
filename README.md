@@ -10,7 +10,7 @@ My open source contribution history across various projects.
 | [fact-checker](https://github.com/team-mirai-volunteer/fact-checker) | TypeScript | 6 | 0 | 0 | 6 |
 | [marumie](https://github.com/team-mirai/marumie) | TypeScript / Next.js | 1 | 0 | 1 | 0 |
 | [post-checker](https://github.com/team-mirai-volunteer/post-checker) | TypeScript | 1 | 0 | 1 | 0 |
-| [optuna](https://github.com/optuna/optuna) | Python | 5 | 4 | 1 | 0 |
+| [optuna](https://github.com/optuna/optuna) | Python | 5 | 5 | 0 | 0 |
 | [icp-js-canisters](https://github.com/dfinity/icp-js-canisters) | TypeScript | 1 | 1 | 0 | 0 |
 | [icp-js-core](https://github.com/dfinity/icp-js-core) | TypeScript | 3 | 0 | 2 | 1 |
 | [pic-js](https://github.com/dfinity/pic-js) | TypeScript | 1 | 0 | 1 | 0 |
@@ -20,7 +20,7 @@ My open source contribution history across various projects.
 | [ezc3d](https://github.com/pyomeca/ezc3d) | C++ / Python | 1 | 0 | 1 | 0 |
 | [kouchou-ai](https://github.com/digitaldemocracy2030/kouchou-ai) | Python | 1 | 1 | 0 | 0 |
 | [line-bot-mcp-server](https://github.com/line/line-bot-mcp-server) | TypeScript | 1 | 0 | 1 | 0 |
-| **Total** | | **43** | **19** | **15** | **9** |
+| **Total** | | **43** | **20** | **14** | **9** |
 
 ## Contributions by Project
 
@@ -79,7 +79,7 @@ Hyperparameter optimization framework by Preferred Networks. Python. 13k+ stars.
 
 | # | PR | Status | Description |
 |---|---|---|---|
-| 5 | [#6501](https://github.com/optuna/optuna/pull/6501) | Open | fix: move `optuna` import to TYPE_CHECKING in `pruners/_patient.py` |
+| 5 | [#6501](https://github.com/optuna/optuna/pull/6501) | Merged | fix: move `optuna` import to TYPE_CHECKING in `pruners/_patient.py` |
 | 4 | [#6490](https://github.com/optuna/optuna/pull/6490) | Merged | fix: move JSONSerializable import to TYPE_CHECKING in study/study.py |
 | 3 | [#6447](https://github.com/optuna/optuna/pull/6447) | Merged | Use `TYPE_CHECKING` for import in `pruners/_hyperband.py` |
 | 2 | [#6434](https://github.com/optuna/optuna/pull/6434) | Merged | Use TYPE_CHECKING for import in pruners/_base.py (Issue #6029) |
