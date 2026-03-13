@@ -20,7 +20,8 @@ My open source contribution history across various projects.
 | [ezc3d](https://github.com/pyomeca/ezc3d) | C++ / Python | 1 | 0 | 1 | 0 |
 | [kouchou-ai](https://github.com/digitaldemocracy2030/kouchou-ai) | Python | 1 | 1 | 0 | 0 |
 | [line-bot-mcp-server](https://github.com/line/line-bot-mcp-server) | TypeScript | 1 | 0 | 1 | 0 |
-| **Total** | | **43** | **21** | **13** | **9** |
+| [optunahub-registry](https://github.com/optuna/optunahub-registry) | Python | 1 | 1 | 0 | 0 |
+| **Total** | | **44** | **22** | **13** | **9** |
 
 ## Contributions by Project
 
@@ -179,3 +180,11 @@ MCP server for LINE Messaging API integration with AI agents. Built with TypeScr
 | # | PR | Status | Description |
 |---|---|---|---|
 | 1 | [#369](https://github.com/line/line-bot-mcp-server/pull/369) | Open | Add get_follower_ids tool to retrieve follower user IDs |
+
+### [optuna/optunahub-registry](https://github.com/optuna/optunahub-registry)
+
+Registry of user-contributed Optuna packages (samplers, pruners, visualizations). By Preferred Networks.
+
+| # | PR | Status | Description |
+|---|---|---|---|
+| 1 | [#357](https://github.com/optuna/optunahub-registry/pull/357) | Merged | Add SHAP-like beeswarm plot visualization |
