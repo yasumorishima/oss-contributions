@@ -56,6 +56,10 @@
     "digitaldemocracy2030/kouchou-ai": {
       "language": "Python",
       "description": "広聴AI (デジタル民主主義2030ブロードリスニング)"
+    },
+    "optuna/optunahub-registry": {
+      "language": "Python",
+      "description": "Registry of user-contributed Optuna packages (samplers, pruners, visualizations). By Preferred Networks."
     }
   }
 }
