@@ -14,6 +14,7 @@ My open source contribution history across various projects.
 | [icp-js-canisters](https://github.com/dfinity/icp-js-canisters) | TypeScript | 1 | 1 | 0 | 0 |
 | [icp-js-core](https://github.com/dfinity/icp-js-core) | TypeScript | 3 | 1 | 1 | 1 |
 | [pic-js](https://github.com/dfinity/pic-js) | TypeScript | 1 | 0 | 1 | 0 |
+| [icp-js-bindgen](https://github.com/dfinity/icp-js-bindgen) | Rust | 1 | 1 | 0 | 0 |
 | [openclaw](https://github.com/openclaw/openclaw) | TypeScript | 1 | 1 | 0 | 0 |
 | [pandas](https://github.com/pandas-dev/pandas) | Python | 1 | 1 | 0 | 0 |
 | [pybaseball](https://github.com/jldbc/pybaseball) | Python | 7 | 0 | 7 | 0 |
@@ -21,7 +22,7 @@ My open source contribution history across various projects.
 | [kouchou-ai](https://github.com/digitaldemocracy2030/kouchou-ai) | Python | 1 | 1 | 0 | 0 |
 | [line-bot-mcp-server](https://github.com/line/line-bot-mcp-server) | TypeScript | 1 | 0 | 1 | 0 |
 | [optunahub-registry](https://github.com/optuna/optunahub-registry) | Python | 2 | 1 | 1 | 0 |
-| **Total** | | **45** | **22** | **14** | **9** |
+| **Total** | | **46** | **23** | **14** | **9** |
 
 ## Contributions by Project
 
@@ -112,6 +113,15 @@ PocketIC JavaScript/TypeScript client for testing Internet Computer canisters. 8
 | # | PR | Status | Description |
 |---|---|---|---|
 | 1 | [#235](https://github.com/dfinity/pic-js/pull/235) | Open | feat: add fetchCanisterLogs method to PocketIc (Issue #68) |
+
+
+### [dfinity/icp-js-bindgen](https://github.com/dfinity/icp-js-bindgen)
+
+Generate TypeScript bindings for Candid. Rust. 1 star.
+
+| # | PR | Status | Description |
+|---|---|---|---|
+| 1 | [#125](https://github.com/dfinity/icp-js-bindgen/pull/125) | Merged | fix: prevent WASM double-initialization with concurrent plugin instances |
 
 ### [openclaw/openclaw](https://github.com/openclaw/openclaw)
 

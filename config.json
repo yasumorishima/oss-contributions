@@ -60,6 +60,10 @@
     "optuna/optunahub-registry": {
       "language": "Python",
       "description": "Registry of user-contributed Optuna packages (samplers, pruners, visualizations). By Preferred Networks."
+    },
+    "dfinity/icp-js-bindgen": {
+      "language": "Rust",
+      "description": "Generate TypeScript bindings for Candid. Rust. 1 star."
     }
   }
 }
