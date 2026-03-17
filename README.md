@@ -12,7 +12,7 @@ My open source contribution history across various projects.
 | [post-checker](https://github.com/team-mirai-volunteer/post-checker) | TypeScript | 1 | 0 | 1 | 0 |
 | [optuna](https://github.com/optuna/optuna) | Python | 5 | 5 | 0 | 0 |
 | [icp-js-canisters](https://github.com/dfinity/icp-js-canisters) | TypeScript | 1 | 1 | 0 | 0 |
-| [icp-js-core](https://github.com/dfinity/icp-js-core) | TypeScript | 3 | 1 | 1 | 1 |
+| [icp-js-core](https://github.com/dfinity/icp-js-core) | TypeScript | 3 | 2 | 0 | 1 |
 | [pic-js](https://github.com/dfinity/pic-js) | TypeScript | 1 | 0 | 1 | 0 |
 | [icp-js-bindgen](https://github.com/dfinity/icp-js-bindgen) | Rust | 1 | 1 | 0 | 0 |
 | [openclaw](https://github.com/openclaw/openclaw) | TypeScript | 1 | 1 | 0 | 0 |
@@ -22,7 +22,7 @@ My open source contribution history across various projects.
 | [kouchou-ai](https://github.com/digitaldemocracy2030/kouchou-ai) | Python | 1 | 1 | 0 | 0 |
 | [line-bot-mcp-server](https://github.com/line/line-bot-mcp-server) | TypeScript | 1 | 0 | 1 | 0 |
 | [optunahub-registry](https://github.com/optuna/optunahub-registry) | Python | 2 | 1 | 1 | 0 |
-| **Total** | | **46** | **23** | **14** | **9** |
+| **Total** | | **46** | **24** | **13** | **9** |
 
 ## Contributions by Project
 
@@ -104,7 +104,7 @@ Official JavaScript SDK for building applications on the Internet Computer. 170+
 |---|---|---|---|
 | 3 | [#1278](https://github.com/dfinity/icp-js-core/pull/1278) | Merged | fix(agent): deduplicate parallel fetchSubnetKeys requests |
 | 2 | [#1277](https://github.com/dfinity/icp-js-core/pull/1277) | Closed | fix(agent): deduplicate parallel fetchSubnetKeys requests |
-| 1 | [#1270](https://github.com/dfinity/icp-js-core/pull/1270) | Open | Improve Candid decoding error messages for Variant types (Issue #470, good first issue) |
+| 1 | [#1270](https://github.com/dfinity/icp-js-core/pull/1270) | Merged | Improve Candid decoding error messages for Variant types (Issue #470, good first issue) |
 
 ### [dfinity/pic-js](https://github.com/dfinity/pic-js)
 
