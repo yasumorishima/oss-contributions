@@ -20,9 +20,9 @@ My open source contribution history across various projects.
 | [pybaseball](https://github.com/jldbc/pybaseball) | Python | 7 | 0 | 7 | 0 |
 | [ezc3d](https://github.com/pyomeca/ezc3d) | C++ / Python | 1 | 0 | 1 | 0 |
 | [kouchou-ai](https://github.com/digitaldemocracy2030/kouchou-ai) | Python | 1 | 1 | 0 | 0 |
-| [line-bot-mcp-server](https://github.com/line/line-bot-mcp-server) | TypeScript | 1 | 0 | 1 | 0 |
+| [line-bot-mcp-server](https://github.com/line/line-bot-mcp-server) | TypeScript | 1 | 1 | 0 | 0 |
 | [optunahub-registry](https://github.com/optuna/optunahub-registry) | Python | 2 | 1 | 1 | 0 |
-| **Total** | | **46** | **24** | **13** | **9** |
+| **Total** | | **46** | **25** | **12** | **9** |
 
 ## Contributions by Project
 
@@ -189,7 +189,7 @@ MCP server for LINE Messaging API integration with AI agents. Built with TypeScr
 
 | # | PR | Status | Description |
 |---|---|---|---|
-| 1 | [#369](https://github.com/line/line-bot-mcp-server/pull/369) | Open | Add get_follower_ids tool to retrieve follower user IDs |
+| 1 | [#369](https://github.com/line/line-bot-mcp-server/pull/369) | Merged | Add get_follower_ids tool to retrieve follower user IDs |
 
 ### [optuna/optunahub-registry](https://github.com/optuna/optunahub-registry)
 
