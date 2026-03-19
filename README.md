@@ -22,7 +22,9 @@ My open source contribution history across various projects.
 | [kouchou-ai](https://github.com/digitaldemocracy2030/kouchou-ai) | Python | 1 | 1 | 0 | 0 |
 | [line-bot-mcp-server](https://github.com/line/line-bot-mcp-server) | TypeScript | 1 | 1 | 0 | 0 |
 | [optunahub-registry](https://github.com/optuna/optunahub-registry) | Python | 2 | 1 | 1 | 0 |
-| **Total** | | **46** | **25** | **12** | **9** |
+| [Kamodo](https://github.com/nasa/Kamodo) | Python | 1 | 0 | 1 | 0 |
+| [Kamodo-core](https://github.com/nasa/Kamodo-core) | Python | 1 | 0 | 1 | 0 |
+| **Total** | | **48** | **25** | **14** | **9** |
 
 ## Contributions by Project
 
@@ -199,3 +201,19 @@ Registry of user-contributed Optuna packages (samplers, pruners, visualizations)
 |---|---|---|---|
 | 2 | [#360](https://github.com/optuna/optunahub-registry/pull/360) | Open | Add Meta-Learn TPE sampler (Warm-starting via Task Similarity) |
 | 1 | [#357](https://github.com/optuna/optunahub-registry/pull/357) | Merged | Add SHAP-like beeswarm plot visualization |
+
+### [nasa/Kamodo](https://github.com/nasa/Kamodo)
+
+Space weather data visualization and analysis tool by NASA CCMC. Python, NumPy, Plotly.
+
+| # | PR | Status | Description |
+|---|---|---|---|
+| 1 | [#156](https://github.com/nasa/Kamodo/pull/156) | Open | fix: replace numpy 2.0 removed APIs (np.NaN, np.float) |
+
+### [nasa/Kamodo-core](https://github.com/nasa/Kamodo-core)
+
+Core functional API for scientific data by NASA CCMC. Python, SymPy, NumPy.
+
+| # | PR | Status | Description |
+|---|---|---|---|
+| 1 | [#3](https://github.com/nasa/Kamodo-core/pull/3) | Open | fix: support numpy 2.0 by removing deprecated APIs |
