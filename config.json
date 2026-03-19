@@ -64,6 +64,14 @@
     "dfinity/icp-js-bindgen": {
       "language": "Rust",
       "description": "Generate TypeScript bindings for Candid. Rust. 1 star."
+    },
+    "nasa/Kamodo": {
+      "language": "Python",
+      "description": "Space weather data visualization and analysis tool by NASA CCMC. Python, NumPy, Plotly."
+    },
+    "nasa/Kamodo-core": {
+      "language": "Python",
+      "description": "Core functional API for scientific data by NASA CCMC. Python, SymPy, NumPy."
     }
   }
 }
