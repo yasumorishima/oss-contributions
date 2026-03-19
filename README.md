@@ -24,7 +24,10 @@ My open source contribution history across various projects.
 | [optunahub-registry](https://github.com/optuna/optunahub-registry) | Python | 2 | 1 | 1 | 0 |
 | [Kamodo](https://github.com/nasa/Kamodo) | Python | 1 | 0 | 1 | 0 |
 | [Kamodo-core](https://github.com/nasa/Kamodo-core) | Python | 1 | 0 | 1 | 0 |
-| **Total** | | **48** | **25** | **14** | **9** |
+| [timesfm](https://github.com/google-research/timesfm) | Python | 2 | 0 | 2 | 0 |
+| [optax](https://github.com/google-deepmind/optax) | Python | 1 | 0 | 1 | 0 |
+| [condor](https://github.com/nasa/condor) | Python | 1 | 0 | 1 | 0 |
+| **Total** | | **52** | **25** | **18** | **9** |
 
 ## Contributions by Project
 
@@ -217,3 +220,28 @@ Core functional API for scientific data by NASA CCMC. Python, SymPy, NumPy.
 | # | PR | Status | Description |
 |---|---|---|---|
 | 1 | [#3](https://github.com/nasa/Kamodo-core/pull/3) | Open | fix: support numpy 2.0 by removing deprecated APIs |
+
+### [google-research/timesfm](https://github.com/google-research/timesfm)
+
+Google time series foundation model for forecasting. Python, JAX/PyTorch.
+
+| # | PR | Status | Description |
+|---|---|---|---|
+| 2 | [#376](https://github.com/google-research/timesfm/pull/376) | Open | docs: fix swapped xreg_mode descriptions in forecast_with_covariates |
+| 1 | [#377](https://github.com/google-research/timesfm/pull/377) | Open | feat: add tqdm progress bars to TimesFMFinetuner |
+
+### [google-deepmind/optax](https://github.com/google-deepmind/optax)
+
+Gradient processing and optimization library for JAX by Google DeepMind.
+
+| # | PR | Status | Description |
+|---|---|---|---|
+| 1 | [#1634](https://github.com/google-deepmind/optax/pull/1634) | Open | feat: add optional weight_decay to adabelief optimizer |
+
+### [nasa/condor](https://github.com/nasa/condor)
+
+Orbital mechanics and trajectory analysis tool by NASA. Python, SciPy, CasADi.
+
+| # | PR | Status | Description |
+|---|---|---|---|
+| 1 | [#75](https://github.com/nasa/condor/pull/75) | Open | fix: handle 1D interpolation result in resample for single-state ODEs |
