@@ -180,6 +180,12 @@ Easy to use C3D reader/writer for C++, Python and MATLAB. Used in biomechanics r
 |---|---|---|---|
 | 1 | [#796](https://github.com/digitaldemocracy2030/kouchou-ai/pull/796) | Merged | fix: filter out empty/whitespace-only comments before LLM processing (#583) |
 
+#### Issue Comments
+
+| Issue | Comment | Description |
+|---|---|---|
+| [#573](https://github.com/digitaldemocracy2030/kouchou-ai/issues/573#issuecomment-4055584181) | Experiment Report | PLaMo-Embedding-1B evaluation: clustering quality comparison, bfloat16 NaN issue, SentenceTransformer compatibility |
+
 ### [team-mirai-volunteer/action-board](https://github.com/team-mirai-volunteer/action-board)
 
 Civic tech platform for citizen participation in Japan. Built with Next.js, TypeScript, Supabase.
