@@ -72,6 +72,18 @@
     "nasa/Kamodo-core": {
       "language": "Python",
       "description": "Core functional API for scientific data by NASA CCMC. Python, SymPy, NumPy."
+    },
+    "google-research/timesfm": {
+      "language": "Python",
+      "description": "Google time series foundation model for forecasting. Python, JAX/PyTorch."
+    },
+    "google-deepmind/optax": {
+      "language": "Python",
+      "description": "Gradient processing and optimization library for JAX by Google DeepMind."
+    },
+    "nasa/condor": {
+      "language": "Python",
+      "description": "Orbital mechanics and trajectory analysis tool by NASA. Python, SciPy, CasADi."
     }
   }
 }
