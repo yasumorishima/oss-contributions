@@ -6,30 +6,179 @@ My open source contribution history across various projects.
 
 | Project | Language | PRs | Merged | Open | Closed |
 |---|---|---|---|---|---|
-| [action-board](https://github.com/team-mirai-volunteer/action-board) | TypeScript / Next.js | 13 | 11 | 0 | 2 |
-| [fact-checker](https://github.com/team-mirai-volunteer/fact-checker) | TypeScript | 6 | 0 | 0 | 6 |
-| [marumie](https://github.com/team-mirai/marumie) | TypeScript / Next.js | 1 | 0 | 1 | 0 |
-| [post-checker](https://github.com/team-mirai-volunteer/post-checker) | TypeScript | 1 | 0 | 1 | 0 |
 | [optuna](https://github.com/optuna/optuna) | Python | 5 | 5 | 0 | 0 |
-| [icp-js-canisters](https://github.com/dfinity/icp-js-canisters) | TypeScript | 1 | 1 | 0 | 0 |
-| [icp-js-core](https://github.com/dfinity/icp-js-core) | TypeScript | 3 | 2 | 0 | 1 |
-| [pic-js](https://github.com/dfinity/pic-js) | TypeScript | 1 | 0 | 1 | 0 |
-| [icp-js-bindgen](https://github.com/dfinity/icp-js-bindgen) | Rust | 1 | 1 | 0 | 0 |
-| [openclaw](https://github.com/openclaw/openclaw) | TypeScript | 1 | 1 | 0 | 0 |
-| [pandas](https://github.com/pandas-dev/pandas) | Python | 1 | 1 | 0 | 0 |
-| [pybaseball](https://github.com/jldbc/pybaseball) | Python | 7 | 0 | 7 | 0 |
-| [ezc3d](https://github.com/pyomeca/ezc3d) | C++ / Python | 1 | 0 | 1 | 0 |
-| [kouchou-ai](https://github.com/digitaldemocracy2030/kouchou-ai) | Python | 1 | 1 | 0 | 0 |
-| [line-bot-mcp-server](https://github.com/line/line-bot-mcp-server) | TypeScript | 1 | 1 | 0 | 0 |
 | [optunahub-registry](https://github.com/optuna/optunahub-registry) | Python | 2 | 1 | 1 | 0 |
 | [Kamodo](https://github.com/nasa/Kamodo) | Python | 1 | 0 | 1 | 0 |
 | [Kamodo-core](https://github.com/nasa/Kamodo-core) | Python | 1 | 0 | 1 | 0 |
-| [timesfm](https://github.com/google-research/timesfm) | Python | 2 | 0 | 2 | 0 |
-| [optax](https://github.com/google-deepmind/optax) | Python | 1 | 0 | 1 | 0 |
 | [condor](https://github.com/nasa/condor) | Python | 1 | 0 | 1 | 0 |
+| [optax](https://github.com/google-deepmind/optax) | Python | 1 | 0 | 1 | 0 |
+| [timesfm](https://github.com/google-research/timesfm) | Python | 2 | 0 | 2 | 0 |
+| [icp-js-bindgen](https://github.com/dfinity/icp-js-bindgen) | Rust | 1 | 1 | 0 | 0 |
+| [icp-js-canisters](https://github.com/dfinity/icp-js-canisters) | TypeScript | 1 | 1 | 0 | 0 |
+| [icp-js-core](https://github.com/dfinity/icp-js-core) | TypeScript | 3 | 2 | 0 | 1 |
+| [pic-js](https://github.com/dfinity/pic-js) | TypeScript | 1 | 0 | 1 | 0 |
+| [pybaseball](https://github.com/jldbc/pybaseball) | Python | 7 | 0 | 7 | 0 |
+| [pandas](https://github.com/pandas-dev/pandas) | Python | 1 | 1 | 0 | 0 |
+| [ezc3d](https://github.com/pyomeca/ezc3d) | C++ / Python | 1 | 0 | 1 | 0 |
+| [kouchou-ai](https://github.com/digitaldemocracy2030/kouchou-ai) | Python | 1 | 1 | 0 | 0 |
+| [action-board](https://github.com/team-mirai-volunteer/action-board) | TypeScript / Next.js | 13 | 11 | 0 | 2 |
+| [fact-checker](https://github.com/team-mirai-volunteer/fact-checker) | TypeScript | 6 | 0 | 0 | 6 |
+| [post-checker](https://github.com/team-mirai-volunteer/post-checker) | TypeScript | 1 | 0 | 1 | 0 |
+| [marumie](https://github.com/team-mirai/marumie) | TypeScript / Next.js | 1 | 0 | 1 | 0 |
+| [line-bot-mcp-server](https://github.com/line/line-bot-mcp-server) | TypeScript | 1 | 1 | 0 | 0 |
+| [openclaw](https://github.com/openclaw/openclaw) | TypeScript | 1 | 1 | 0 | 0 |
 | **Total** | | **52** | **25** | **18** | **9** |
 
 ## Contributions by Project
+
+### [optuna/optuna](https://github.com/optuna/optuna)
+
+Hyperparameter optimization framework by Preferred Networks. Python. 13k+ stars.
+
+| # | PR | Status | Description |
+|---|---|---|---|
+| 5 | [#6501](https://github.com/optuna/optuna/pull/6501) | Merged | fix: move `optuna` import to TYPE_CHECKING in `pruners/_patient.py` |
+| 4 | [#6490](https://github.com/optuna/optuna/pull/6490) | Merged | fix: move JSONSerializable import to TYPE_CHECKING in study/study.py |
+| 3 | [#6447](https://github.com/optuna/optuna/pull/6447) | Merged | Use `TYPE_CHECKING` for import in `pruners/_hyperband.py` |
+| 2 | [#6434](https://github.com/optuna/optuna/pull/6434) | Merged | Use TYPE_CHECKING for import in pruners/_base.py (Issue #6029) |
+| 1 | [#6431](https://github.com/optuna/optuna/pull/6431) | Merged | Replace .format() with f-strings in _parallel_coordinate.py (Issue #6305) |
+
+### [optuna/optunahub-registry](https://github.com/optuna/optunahub-registry)
+
+Registry of user-contributed Optuna packages (samplers, pruners, visualizations). By Preferred Networks.
+
+| # | PR | Status | Description |
+|---|---|---|---|
+| 2 | [#360](https://github.com/optuna/optunahub-registry/pull/360) | Open | Add Meta-Learn TPE sampler (Warm-starting via Task Similarity) |
+| 1 | [#357](https://github.com/optuna/optunahub-registry/pull/357) | Merged | Add SHAP-like beeswarm plot visualization |
+
+### [nasa/Kamodo](https://github.com/nasa/Kamodo)
+
+Space weather data visualization and analysis tool by NASA CCMC. Python, NumPy, Plotly.
+
+| # | PR | Status | Description |
+|---|---|---|---|
+| 1 | [#156](https://github.com/nasa/Kamodo/pull/156) | Open | fix: replace numpy 2.0 removed APIs (np.NaN, np.float) |
+
+### [nasa/Kamodo-core](https://github.com/nasa/Kamodo-core)
+
+Core functional API for scientific data by NASA CCMC. Python, SymPy, NumPy.
+
+| # | PR | Status | Description |
+|---|---|---|---|
+| 1 | [#3](https://github.com/nasa/Kamodo-core/pull/3) | Open | fix: support numpy 2.0 by removing deprecated APIs |
+
+### [nasa/condor](https://github.com/nasa/condor)
+
+Orbital mechanics and trajectory analysis tool by NASA. Python, SciPy, CasADi.
+
+| # | PR | Status | Description |
+|---|---|---|---|
+| 1 | [#75](https://github.com/nasa/condor/pull/75) | Open | fix: handle 1D interpolation result in resample for single-state ODEs |
+
+### [google-deepmind/optax](https://github.com/google-deepmind/optax)
+
+Gradient processing and optimization library for JAX by Google DeepMind.
+
+| # | PR | Status | Description |
+|---|---|---|---|
+| 1 | [#1634](https://github.com/google-deepmind/optax/pull/1634) | Open | feat: add optional weight_decay to adabelief optimizer |
+
+### [google-research/timesfm](https://github.com/google-research/timesfm)
+
+Google time series foundation model for forecasting. Python, JAX/PyTorch.
+
+| # | PR | Status | Description |
+|---|---|---|---|
+| 2 | [#376](https://github.com/google-research/timesfm/pull/376) | Open | docs: fix swapped xreg_mode descriptions in forecast_with_covariates |
+| 1 | [#377](https://github.com/google-research/timesfm/pull/377) | Open | feat: add tqdm progress bars to TimesFMFinetuner |
+
+### [dfinity/icp-js-bindgen](https://github.com/dfinity/icp-js-bindgen)
+
+Generate TypeScript bindings for Candid. Rust. 1 star.
+
+| # | PR | Status | Description |
+|---|---|---|---|
+| 1 | [#125](https://github.com/dfinity/icp-js-bindgen/pull/125) | Merged | fix: prevent WASM double-initialization with concurrent plugin instances |
+
+### [dfinity/icp-js-canisters](https://github.com/dfinity/icp-js-canisters)
+
+Canister interfaces for the Internet Computer ecosystem. TypeScript.
+
+| # | PR | Status | Description |
+|---|---|---|---|
+| 2 | — | Closed | Expose Candid `init` in `.idl.d.ts` files (Issue #732, maintainer will handle) |
+| 1 | [#1457](https://github.com/dfinity/icp-js-canisters/pull/1457) | Merged | DOC: Add inline comments to HOST constant in README (Issue #646) |
+
+### [dfinity/icp-js-core](https://github.com/dfinity/icp-js-core)
+
+Official JavaScript SDK for building applications on the Internet Computer. 170+ stars.
+
+| # | PR | Status | Description |
+|---|---|---|---|
+| 3 | [#1278](https://github.com/dfinity/icp-js-core/pull/1278) | Merged | fix(agent): deduplicate parallel fetchSubnetKeys requests |
+| 2 | [#1277](https://github.com/dfinity/icp-js-core/pull/1277) | Closed | fix(agent): deduplicate parallel fetchSubnetKeys requests |
+| 1 | [#1270](https://github.com/dfinity/icp-js-core/pull/1270) | Merged | Improve Candid decoding error messages for Variant types (Issue #470, good first issue) |
+
+### [dfinity/pic-js](https://github.com/dfinity/pic-js)
+
+PocketIC JavaScript/TypeScript client for testing Internet Computer canisters. 8 stars.
+
+| # | PR | Status | Description |
+|---|---|---|---|
+| 1 | [#235](https://github.com/dfinity/pic-js/pull/235) | Open | feat: add fetchCanisterLogs method to PocketIc (Issue #68) |
+
+### [jldbc/pybaseball](https://github.com/jldbc/pybaseball)
+
+Python library for pulling baseball statistics (Statcast, Baseball Reference, FanGraphs). 1.5k+ stars.
+
+| # | PR | Status | Description |
+|---|---|---|---|
+| 7 | [#504](https://github.com/jldbc/pybaseball/pull/504) | Open | Fix team_ids returning empty data for seasons after 2021 |
+| 6 | [#503](https://github.com/jldbc/pybaseball/pull/503) | Open | Fix team_batting_bref/team_pitching_bref for updated Baseball Reference HTML |
+| 5 | [#502](https://github.com/jldbc/pybaseball/pull/502) | Open | Add input validation to team_fielding_bref |
+| 4 | [#501](https://github.com/jldbc/pybaseball/pull/501) | Open | Fix deprecated GitHub authentication in retrosheet.py |
+| 3 | [#500](https://github.com/jldbc/pybaseball/pull/500) | Open | Fix FutureWarning in team_results.py |
+| 2 | [#499](https://github.com/jldbc/pybaseball/pull/499) | Open | Replace deprecated `errors='ignore'` with explicit try/except |
+| 1 | [#498](https://github.com/jldbc/pybaseball/pull/498) | Open | Fix function name typo in statcast_pitcher_spin.md |
+
+#### Issue Comments
+
+| Issue | Comment | Description |
+|---|---|---|
+| [#470](https://github.com/jldbc/pybaseball/issues/470#issuecomment-3846980849) | Verified | schedule_and_record works on current master (curl_cffi migration) |
+| [#477](https://github.com/jldbc/pybaseball/issues/477#issuecomment-3847380960) | Verified | pitching/batting_stats_range works on current master |
+| [#481](https://github.com/jldbc/pybaseball/issues/481#issuecomment-3846988830) | Verified | Empty GH_TOKEN issue fixed by PR #501 |
+
+### [pandas-dev/pandas](https://github.com/pandas-dev/pandas)
+
+Powerful Python data analysis library. 47k+ stars.
+
+| # | PR | Status | Description |
+|---|---|---|---|
+| 1 | [#64105](https://github.com/pandas-dev/pandas/pull/64105) | Merged | DOC: fix Index.to_frame name parameter description (Issue #63191) |
+
+### [pyomeca/ezc3d](https://github.com/pyomeca/ezc3d)
+
+Easy to use C3D reader/writer for C++, Python and MATLAB. Used in biomechanics research including Driveline Baseball's motion capture data. 170+ stars.
+
+| # | PR | Status | Description |
+|---|---|---|---|
+| 1 | [#384](https://github.com/pyomeca/ezc3d/pull/384) | Open | Fix C3dMapper.__eq__() early return skipping remaining keys (Issue #383) |
+
+#### Issues Filed
+
+| Issue | Status | Description |
+|---|---|---|
+| [#383](https://github.com/pyomeca/ezc3d/issues/383) | Open | Bug: `C3dMapper.__eq__()` returns early, skipping comparison of remaining keys |
+
+### [digitaldemocracy2030/kouchou-ai](https://github.com/digitaldemocracy2030/kouchou-ai)
+
+広聴AI (デジタル民主主義2030ブロードリスニング)
+
+| # | PR | Status | Description |
+|---|---|---|---|
+| 1 | [#796](https://github.com/digitaldemocracy2030/kouchou-ai/pull/796) | Merged | fix: filter out empty/whitespace-only comments before LLM processing (#583) |
 
 ### [team-mirai-volunteer/action-board](https://github.com/team-mirai-volunteer/action-board)
 
@@ -64,14 +213,6 @@ Fact-checking automation tool. **Project is now inactive** (succeeded by post-ch
 | 2 | [#84](https://github.com/team-mirai-volunteer/fact-checker/pull/84) | Closed | Disable Twitter posting in non-prod environments |
 | 1 | [#83](https://github.com/team-mirai-volunteer/fact-checker/pull/83) | Closed | Client-side engagement filtering for tweets |
 
-### [team-mirai/marumie](https://github.com/team-mirai/marumie)
-
-Political finance transparency platform. Built with Next.js, TypeScript, Prisma, Tailwind CSS.
-
-| # | PR | Status | Description |
-|---|---|---|---|
-| 1 | [#1141](https://github.com/team-mirai/marumie/pull/1141) | Open | feat: Display total amount when category filter is applied (Issue #248) |
-
 ### [team-mirai-volunteer/post-checker](https://github.com/team-mirai-volunteer/post-checker)
 
 Social media post verification tool. Built with TypeScript, Vitest.
@@ -80,113 +221,13 @@ Social media post verification tool. Built with TypeScript, Vitest.
 |---|---|---|---|
 | 1 | [#34](https://github.com/team-mirai-volunteer/post-checker/pull/34) | Open | Fix timezone-dependent date parsing in filename generation |
 
-### [optuna/optuna](https://github.com/optuna/optuna)
+### [team-mirai/marumie](https://github.com/team-mirai/marumie)
 
-Hyperparameter optimization framework by Preferred Networks. Python. 13k+ stars.
-
-| # | PR | Status | Description |
-|---|---|---|---|
-| 5 | [#6501](https://github.com/optuna/optuna/pull/6501) | Merged | fix: move `optuna` import to TYPE_CHECKING in `pruners/_patient.py` |
-| 4 | [#6490](https://github.com/optuna/optuna/pull/6490) | Merged | fix: move JSONSerializable import to TYPE_CHECKING in study/study.py |
-| 3 | [#6447](https://github.com/optuna/optuna/pull/6447) | Merged | Use `TYPE_CHECKING` for import in `pruners/_hyperband.py` |
-| 2 | [#6434](https://github.com/optuna/optuna/pull/6434) | Merged | Use TYPE_CHECKING for import in pruners/_base.py (Issue #6029) |
-| 1 | [#6431](https://github.com/optuna/optuna/pull/6431) | Merged | Replace .format() with f-strings in _parallel_coordinate.py (Issue #6305) |
-
-### [dfinity/icp-js-canisters](https://github.com/dfinity/icp-js-canisters)
-
-Canister interfaces for the Internet Computer ecosystem. TypeScript.
+Political finance transparency platform. Built with Next.js, TypeScript, Prisma, Tailwind CSS.
 
 | # | PR | Status | Description |
 |---|---|---|---|
-| 2 | — | Closed | Expose Candid `init` in `.idl.d.ts` files (Issue #732, maintainer will handle) |
-| 1 | [#1457](https://github.com/dfinity/icp-js-canisters/pull/1457) | Merged | DOC: Add inline comments to HOST constant in README (Issue #646) |
-
-### [dfinity/icp-js-core](https://github.com/dfinity/icp-js-core)
-
-Official JavaScript SDK for building applications on the Internet Computer. 170+ stars.
-
-| # | PR | Status | Description |
-|---|---|---|---|
-| 3 | [#1278](https://github.com/dfinity/icp-js-core/pull/1278) | Merged | fix(agent): deduplicate parallel fetchSubnetKeys requests |
-| 2 | [#1277](https://github.com/dfinity/icp-js-core/pull/1277) | Closed | fix(agent): deduplicate parallel fetchSubnetKeys requests |
-| 1 | [#1270](https://github.com/dfinity/icp-js-core/pull/1270) | Merged | Improve Candid decoding error messages for Variant types (Issue #470, good first issue) |
-
-### [dfinity/pic-js](https://github.com/dfinity/pic-js)
-
-PocketIC JavaScript/TypeScript client for testing Internet Computer canisters. 8 stars.
-
-| # | PR | Status | Description |
-|---|---|---|---|
-| 1 | [#235](https://github.com/dfinity/pic-js/pull/235) | Open | feat: add fetchCanisterLogs method to PocketIc (Issue #68) |
-
-
-### [dfinity/icp-js-bindgen](https://github.com/dfinity/icp-js-bindgen)
-
-Generate TypeScript bindings for Candid. Rust. 1 star.
-
-| # | PR | Status | Description |
-|---|---|---|---|
-| 1 | [#125](https://github.com/dfinity/icp-js-bindgen/pull/125) | Merged | fix: prevent WASM double-initialization with concurrent plugin instances |
-
-### [openclaw/openclaw](https://github.com/openclaw/openclaw)
-
-Your own personal AI assistant. Any OS. Any Platform. The lobster way. 🦞
-
-| # | PR | Status | Description |
-|---|---|---|---|
-| 1 | [#17949](https://github.com/openclaw/openclaw/pull/17949) | Merged | fix: clear stale runningAtMs in cron.run() before already-running check (#17554) |
-
-### [pandas-dev/pandas](https://github.com/pandas-dev/pandas)
-
-Powerful Python data analysis library. 47k+ stars.
-
-| # | PR | Status | Description |
-|---|---|---|---|
-| 1 | [#64105](https://github.com/pandas-dev/pandas/pull/64105) | Merged | DOC: fix Index.to_frame name parameter description (Issue #63191) |
-
-### [jldbc/pybaseball](https://github.com/jldbc/pybaseball)
-
-Python library for pulling baseball statistics (Statcast, Baseball Reference, FanGraphs). 1.5k+ stars.
-
-| # | PR | Status | Description |
-|---|---|---|---|
-| 7 | [#504](https://github.com/jldbc/pybaseball/pull/504) | Open | Fix team_ids returning empty data for seasons after 2021 |
-| 6 | [#503](https://github.com/jldbc/pybaseball/pull/503) | Open | Fix team_batting_bref/team_pitching_bref for updated Baseball Reference HTML |
-| 5 | [#502](https://github.com/jldbc/pybaseball/pull/502) | Open | Add input validation to team_fielding_bref |
-| 4 | [#501](https://github.com/jldbc/pybaseball/pull/501) | Open | Fix deprecated GitHub authentication in retrosheet.py |
-| 3 | [#500](https://github.com/jldbc/pybaseball/pull/500) | Open | Fix FutureWarning in team_results.py |
-| 2 | [#499](https://github.com/jldbc/pybaseball/pull/499) | Open | Replace deprecated `errors='ignore'` with explicit try/except |
-| 1 | [#498](https://github.com/jldbc/pybaseball/pull/498) | Open | Fix function name typo in statcast_pitcher_spin.md |
-
-#### Issue Comments
-
-| Issue | Comment | Description |
-|---|---|---|
-| [#470](https://github.com/jldbc/pybaseball/issues/470#issuecomment-3846980849) | Verified | schedule_and_record works on current master (curl_cffi migration) |
-| [#477](https://github.com/jldbc/pybaseball/issues/477#issuecomment-3847380960) | Verified | pitching/batting_stats_range works on current master |
-| [#481](https://github.com/jldbc/pybaseball/issues/481#issuecomment-3846988830) | Verified | Empty GH_TOKEN issue fixed by PR #501 |
-
-### [pyomeca/ezc3d](https://github.com/pyomeca/ezc3d)
-
-Easy to use C3D reader/writer for C++, Python and MATLAB. Used in biomechanics research including Driveline Baseball's motion capture data. 170+ stars.
-
-| # | PR | Status | Description |
-|---|---|---|---|
-| 1 | [#384](https://github.com/pyomeca/ezc3d/pull/384) | Open | Fix C3dMapper.__eq__() early return skipping remaining keys (Issue #383) |
-
-#### Issues Filed
-
-| Issue | Status | Description |
-|---|---|---|
-| [#383](https://github.com/pyomeca/ezc3d/issues/383) | Open | Bug: `C3dMapper.__eq__()` returns early, skipping comparison of remaining keys |
-
-### [digitaldemocracy2030/kouchou-ai](https://github.com/digitaldemocracy2030/kouchou-ai)
-
-広聴AI (デジタル民主主義2030ブロードリスニング)
-
-| # | PR | Status | Description |
-|---|---|---|---|
-| 1 | [#796](https://github.com/digitaldemocracy2030/kouchou-ai/pull/796) | Merged | fix: filter out empty/whitespace-only comments before LLM processing (#583) |
+| 1 | [#1141](https://github.com/team-mirai/marumie/pull/1141) | Open | feat: Display total amount when category filter is applied (Issue #248) |
 
 ### [line/line-bot-mcp-server](https://github.com/line/line-bot-mcp-server)
 
@@ -196,52 +237,11 @@ MCP server for LINE Messaging API integration with AI agents. Built with TypeScr
 |---|---|---|---|
 | 1 | [#369](https://github.com/line/line-bot-mcp-server/pull/369) | Merged | Add get_follower_ids tool to retrieve follower user IDs |
 
-### [optuna/optunahub-registry](https://github.com/optuna/optunahub-registry)
+### [openclaw/openclaw](https://github.com/openclaw/openclaw)
 
-Registry of user-contributed Optuna packages (samplers, pruners, visualizations). By Preferred Networks.
-
-| # | PR | Status | Description |
-|---|---|---|---|
-| 2 | [#360](https://github.com/optuna/optunahub-registry/pull/360) | Open | Add Meta-Learn TPE sampler (Warm-starting via Task Similarity) |
-| 1 | [#357](https://github.com/optuna/optunahub-registry/pull/357) | Merged | Add SHAP-like beeswarm plot visualization |
-
-### [nasa/Kamodo](https://github.com/nasa/Kamodo)
-
-Space weather data visualization and analysis tool by NASA CCMC. Python, NumPy, Plotly.
+Your own personal AI assistant. Any OS. Any Platform. The lobster way. 🦞
 
 | # | PR | Status | Description |
 |---|---|---|---|
-| 1 | [#156](https://github.com/nasa/Kamodo/pull/156) | Open | fix: replace numpy 2.0 removed APIs (np.NaN, np.float) |
+| 1 | [#17949](https://github.com/openclaw/openclaw/pull/17949) | Merged | fix: clear stale runningAtMs in cron.run() before already-running check (#17554) |
 
-### [nasa/Kamodo-core](https://github.com/nasa/Kamodo-core)
-
-Core functional API for scientific data by NASA CCMC. Python, SymPy, NumPy.
-
-| # | PR | Status | Description |
-|---|---|---|---|
-| 1 | [#3](https://github.com/nasa/Kamodo-core/pull/3) | Open | fix: support numpy 2.0 by removing deprecated APIs |
-
-### [google-research/timesfm](https://github.com/google-research/timesfm)
-
-Google time series foundation model for forecasting. Python, JAX/PyTorch.
-
-| # | PR | Status | Description |
-|---|---|---|---|
-| 2 | [#376](https://github.com/google-research/timesfm/pull/376) | Open | docs: fix swapped xreg_mode descriptions in forecast_with_covariates |
-| 1 | [#377](https://github.com/google-research/timesfm/pull/377) | Open | feat: add tqdm progress bars to TimesFMFinetuner |
-
-### [google-deepmind/optax](https://github.com/google-deepmind/optax)
-
-Gradient processing and optimization library for JAX by Google DeepMind.
-
-| # | PR | Status | Description |
-|---|---|---|---|
-| 1 | [#1634](https://github.com/google-deepmind/optax/pull/1634) | Open | feat: add optional weight_decay to adabelief optimizer |
-
-### [nasa/condor](https://github.com/nasa/condor)
-
-Orbital mechanics and trajectory analysis tool by NASA. Python, SciPy, CasADi.
-
-| # | PR | Status | Description |
-|---|---|---|---|
-| 1 | [#75](https://github.com/nasa/condor/pull/75) | Open | fix: handle 1D interpolation result in resample for single-state ODEs |

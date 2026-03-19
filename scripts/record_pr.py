@@ -177,9 +177,75 @@ def build_project_section(repo: str, description: str) -> list[str]:
     ]
 
 
+def get_group_order(config: dict, repo: str) -> tuple[int, str]:
+    """Return (group_index, repo) for sorting. Projects are ordered by group, then by repo name."""
+    groups = config.get("groups", [])
+    for idx, group in enumerate(groups):
+        prefixes = group.get("prefixes", [])
+        if not prefixes:
+            continue
+        for prefix in prefixes:
+            if repo.startswith(prefix):
+                return (idx, repo)
+    # Fallback: "Other" group (last)
+    return (len(groups) - 1, repo)
+
+
+def reorder_sections(lines: list[str]) -> list[str]:
+    """Reorder project sections (### [...]) by group order defined in config.json."""
+    config = load_config()
+
+    # Find the "## Contributions by Project" header
+    contrib_start = None
+    for i, line in enumerate(lines):
+        if line.startswith("## Contributions by Project"):
+            contrib_start = i
+            break
+    if contrib_start is None:
+        return lines
+
+    # Extract all ### sections after contrib_start
+    sections: list[tuple[str, list[str]]] = []  # (repo, section_lines)
+    current_repo = None
+    current_lines: list[str] = []
+    for i in range(contrib_start + 1, len(lines)):
+        if lines[i].startswith("### ["):
+            if current_repo is not None:
+                # Strip trailing blank lines from previous section
+                while current_lines and not current_lines[-1].strip():
+                    current_lines.pop()
+                sections.append((current_repo, current_lines))
+            m = re.match(r"### \[([^\]]+)\]", lines[i])
+            current_repo = m.group(1) if m else ""
+            current_lines = [lines[i]]
+        elif current_repo is not None:
+            current_lines.append(lines[i])
+
+    if current_repo is not None:
+        while current_lines and not current_lines[-1].strip():
+            current_lines.pop()
+        sections.append((current_repo, current_lines))
+
+    if not sections:
+        return lines
+
+    # Sort sections by group order
+    sections.sort(key=lambda s: get_group_order(config, s[0]))
+
+    # Rebuild: header portion + sorted sections
+    result = lines[: contrib_start + 1]
+    for _repo, sec_lines in sections:
+        result.append("")
+        result.extend(sec_lines)
+    result.append("")
+
+    return result
+
+
 def recalculate_summary(lines: list[str]) -> list[str]:
     """Recalculate the Summary table based on actual PR tables in each section."""
-    projects = []
+    config = load_config()
+    project_rows = []
     i = 0
     while i < len(lines):
         if lines[i].startswith("### ["):
@@ -192,7 +258,6 @@ def recalculate_summary(lines: list[str]) -> list[str]:
             section_end = find_next_section(lines, i)
 
             # Find config info
-            config = load_config()
             proj_config = config.get("projects", {}).get(repo, {})
             language = proj_config.get("language", "Unknown")
 
@@ -218,20 +283,21 @@ def recalculate_summary(lines: list[str]) -> list[str]:
 
             if total > 0:
                 short_name = repo.split("/")[-1]
-                projects.append(
-                    f"| [{short_name}]({url}) | {language} | {total} | {merged} | {open_count} | {closed} |"
-                )
+                row_text = f"| [{short_name}]({url}) | {language} | {total} | {merged} | {open_count} | {closed} |"
+                sort_key = get_group_order(config, repo)
+                project_rows.append((sort_key, row_text))
             i = section_end
         else:
             i += 1
 
-    grand_total = sum(int(re.search(r"\| (\d+) \|", p).group(1)) for p in projects)
-    grand_merged = 0
-    grand_open = 0
-    grand_closed = 0
-    for p in projects:
-        parts = [x.strip() for x in p.split("|")]
+    # Sort by group order, then by repo name
+    project_rows.sort(key=lambda x: x[0])
+
+    grand_total = grand_merged = grand_open = grand_closed = 0
+    for _, row_text in project_rows:
+        parts = [x.strip() for x in row_text.split("|")]
         # parts: ['', 'name', 'lang', 'total', 'merged', 'open', 'closed', '']
+        grand_total += int(parts[3])
         grand_merged += int(parts[4])
         grand_open += int(parts[5])
         grand_closed += int(parts[6])
@@ -240,7 +306,7 @@ def recalculate_summary(lines: list[str]) -> list[str]:
         "| Project | Language | PRs | Merged | Open | Closed |",
         "|---|---|---|---|---|---|",
     ]
-    summary_lines.extend(projects)
+    summary_lines.extend(row_text for _, row_text in project_rows)
     summary_lines.append(
         f"| **Total** | | **{grand_total}** | **{grand_merged}** | **{grand_open}** | **{grand_closed}** |"
     )
@@ -329,7 +395,8 @@ def record_pr(url: str) -> None:
                 lines.insert(pr_table[0] + 2, new_row)
                 print(f"Added PR #{pr_number} to {repo}")
 
-    # Recalculate summary
+    # Reorder sections by group, then recalculate summary
+    lines = reorder_sections(lines)
     summary_lines = recalculate_summary(lines)
     summary_start, summary_end = find_summary_table(lines)
     if summary_start is not None:
@@ -416,17 +483,20 @@ def refresh_all() -> None:
                     changes += 1
                 break
 
-    if changes > 0:
-        # Recalculate summary
-        summary_lines = recalculate_summary(lines)
-        summary_start, summary_end = find_summary_table(lines)
-        if summary_start is not None:
-            lines[summary_start : summary_end + 1] = summary_lines
+    # Always reorder sections by group (even if no status changes)
+    lines = reorder_sections(lines)
 
-        README.write_text("\n".join(lines) + "\n", encoding="utf-8")
-        print(f"\n{changes} PR(s) updated. Review changes before committing.")
+    # Recalculate summary
+    summary_lines = recalculate_summary(lines)
+    summary_start, summary_end = find_summary_table(lines)
+    if summary_start is not None:
+        lines[summary_start : summary_end + 1] = summary_lines
+
+    README.write_text("\n".join(lines) + "\n", encoding="utf-8")
+    if changes > 0:
+        print(f"\n{changes} PR(s) updated. README.md reordered and updated.")
     else:
-        print("\nAll PRs are up to date. No changes needed.")
+        print("\nAll PRs are up to date. README.md reordered.")
 
 
 def main():
