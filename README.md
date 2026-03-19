@@ -12,7 +12,7 @@ My open source contribution history across various projects.
 | [Kamodo-core](https://github.com/nasa/Kamodo-core) | Python | 1 | 0 | 1 | 0 |
 | [condor](https://github.com/nasa/condor) | Python | 1 | 0 | 1 | 0 |
 | [optax](https://github.com/google-deepmind/optax) | Python | 1 | 0 | 1 | 0 |
-| [timesfm](https://github.com/google-research/timesfm) | Python | 2 | 0 | 2 | 0 |
+| [timesfm](https://github.com/google-research/timesfm) | Python | 2 | 1 | 1 | 0 |
 | [icp-js-bindgen](https://github.com/dfinity/icp-js-bindgen) | Rust | 1 | 1 | 0 | 0 |
 | [icp-js-canisters](https://github.com/dfinity/icp-js-canisters) | TypeScript | 1 | 1 | 0 | 0 |
 | [icp-js-core](https://github.com/dfinity/icp-js-core) | TypeScript | 3 | 2 | 0 | 1 |
@@ -27,7 +27,7 @@ My open source contribution history across various projects.
 | [marumie](https://github.com/team-mirai/marumie) | TypeScript / Next.js | 1 | 0 | 1 | 0 |
 | [line-bot-mcp-server](https://github.com/line/line-bot-mcp-server) | TypeScript | 1 | 1 | 0 | 0 |
 | [openclaw](https://github.com/openclaw/openclaw) | TypeScript | 1 | 1 | 0 | 0 |
-| **Total** | | **52** | **25** | **18** | **9** |
+| **Total** | | **52** | **26** | **17** | **9** |
 
 ## Contributions by Project
 
@@ -90,7 +90,7 @@ Google time series foundation model for forecasting. Python, JAX/PyTorch.
 
 | # | PR | Status | Description |
 |---|---|---|---|
-| 2 | [#376](https://github.com/google-research/timesfm/pull/376) | Open | docs: fix swapped xreg_mode descriptions in forecast_with_covariates |
+| 2 | [#376](https://github.com/google-research/timesfm/pull/376) | Merged | docs: fix swapped xreg_mode descriptions in forecast_with_covariates |
 | 1 | [#377](https://github.com/google-research/timesfm/pull/377) | Open | feat: add tqdm progress bars to TimesFMFinetuner |
 
 ### [dfinity/icp-js-bindgen](https://github.com/dfinity/icp-js-bindgen)
