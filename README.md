@@ -6,7 +6,7 @@ My open source contribution history across various projects.
 
 | Project | Language | PRs | Merged | Open | Closed |
 |---|---|---|---|---|---|
-| [optuna](https://github.com/optuna/optuna) | Python | 5 | 5 | 0 | 0 |
+| [optuna](https://github.com/optuna/optuna) | Python | 7 | 5 | 2 | 0 |
 | [optunahub-registry](https://github.com/optuna/optunahub-registry) | Python | 2 | 1 | 1 | 0 |
 | [Kamodo](https://github.com/nasa/Kamodo) | Python | 1 | 0 | 1 | 0 |
 | [Kamodo-core](https://github.com/nasa/Kamodo-core) | Python | 1 | 0 | 1 | 0 |
@@ -27,7 +27,7 @@ My open source contribution history across various projects.
 | [marumie](https://github.com/team-mirai/marumie) | TypeScript / Next.js | 1 | 0 | 1 | 0 |
 | [line-bot-mcp-server](https://github.com/line/line-bot-mcp-server) | TypeScript | 1 | 1 | 0 | 0 |
 | [openclaw](https://github.com/openclaw/openclaw) | TypeScript | 1 | 1 | 0 | 0 |
-| **Total** | | **52** | **26** | **17** | **9** |
+| **Total** | | **54** | **26** | **19** | **9** |
 
 ## Contributions by Project
 
@@ -37,6 +37,8 @@ Hyperparameter optimization framework by Preferred Networks. Python. 13k+ stars.
 
 | # | PR | Status | Description |
 |---|---|---|---|
+| 7 | [#6545](https://github.com/optuna/optuna/pull/6545) | Open | Move type-only imports to TYPE_CHECKING in `samplers/_tpe/sampler.py` |
+| 6 | [#6546](https://github.com/optuna/optuna/pull/6546) | Open | Move type-only imports to TYPE_CHECKING in `nsgaii/_crossover.py` |
 | 5 | [#6501](https://github.com/optuna/optuna/pull/6501) | Merged | fix: move `optuna` import to TYPE_CHECKING in `pruners/_patient.py` |
 | 4 | [#6490](https://github.com/optuna/optuna/pull/6490) | Merged | fix: move JSONSerializable import to TYPE_CHECKING in study/study.py |
 | 3 | [#6447](https://github.com/optuna/optuna/pull/6447) | Merged | Use `TYPE_CHECKING` for import in `pruners/_hyperband.py` |
