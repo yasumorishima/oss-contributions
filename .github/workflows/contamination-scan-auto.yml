@@ -61,6 +61,26 @@ jobs:
           echo "fail=$FAIL" >> "$GITHUB_OUTPUT"
           echo "report_file=$REPORT_FILE" >> "$GITHUB_OUTPUT"
 
+      - name: Check CodeQL Default Setup on forks
+        id: codeql
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          REPORT_FILE=$(mktemp)
+          FAIL=false
+
+          while read -r FORK UPSTREAM; do
+            STATE=$(gh api "repos/$FORK/code-scanning/default-setup" --jq '.state' 2>/dev/null || echo "error")
+            if [ "$STATE" != "configured" ]; then
+              echo "::warning::CODEQL: $FORK の CodeQL Default Setup が未設定 (state=$STATE)"
+              echo "- ⚠️ \`$FORK\` の CodeQL Default Setup が未設定" >> "$REPORT_FILE"
+              FAIL=true
+            fi
+          done < /tmp/fork_list.txt
+
+          echo "fail=$FAIL" >> "$GITHUB_OUTPUT"
+          echo "report_file=$REPORT_FILE" >> "$GITHUB_OUTPUT"
+
       - name: Scan open PRs for contamination
         id: prscan
         env:
@@ -100,7 +120,7 @@ jobs:
           echo "report_file=$REPORT_FILE" >> "$GITHUB_OUTPUT"
 
       - name: Create issue if any problems found
-        if: steps.files.outputs.fail == 'true' || steps.prscan.outputs.fail == 'true'
+        if: steps.files.outputs.fail == 'true' || steps.codeql.outputs.fail == 'true' || steps.prscan.outputs.fail == 'true'
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
@@ -122,7 +142,7 @@ jobs:
           echo "## ⚠️ フォーク設定の問題を検出" > "$BODY_FILE"
           echo "" >> "$BODY_FILE"
 
-          for RF in "${{ steps.files.outputs.report_file }}" "${{ steps.prscan.outputs.report_file }}"; do
+          for RF in "${{ steps.files.outputs.report_file }}" "${{ steps.codeql.outputs.report_file }}" "${{ steps.prscan.outputs.report_file }}"; do
             if [ -s "$RF" ]; then
               cat "$RF" >> "$BODY_FILE"
             fi

@@ -11,7 +11,7 @@
     },
     {
       "name": "Google",
-      "prefixes": ["google-research/", "google-deepmind/"]
+      "prefixes": ["google-research/", "google-deepmind/", "GoogleCloudPlatform/"]
     },
     {
       "name": "DFINITY",
@@ -110,6 +110,10 @@
     "google-deepmind/optax": {
       "language": "Python",
       "description": "Gradient processing and optimization library for JAX by Google DeepMind."
+    },
+    "GoogleCloudPlatform/professional-services-data-validator": {
+      "language": "Python",
+      "description": "Data validation tool for migrating data to BigQuery. Python, Ibis, SQLAlchemy. 500 stars."
     },
     "nasa/condor": {
       "language": "Python",

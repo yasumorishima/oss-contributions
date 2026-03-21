@@ -54,3 +54,39 @@ jobs:
           [ "$FAILED" -eq 0 ] || exit 1
         env:
           GH_TOKEN: ${{ secrets.GH_PAT }}
+
+      - name: Ensure CodeQL Default Setup on all forks
+        run: |
+          AUTHOR=$(jq -r '.author' config.json)
+          FILTER="${{ inputs.repo }}"
+          ENABLED=0
+          ALREADY=0
+
+          while read upstream; do
+            REPO_NAME=$(echo "$upstream" | cut -d/ -f2)
+            FORK="$AUTHOR/$REPO_NAME"
+
+            if [ -n "$FILTER" ] && [ "$REPO_NAME" != "$FILTER" ]; then
+              continue
+            fi
+
+            STATE=$(gh api "repos/$FORK/code-scanning/default-setup" --jq '.state' 2>/dev/null || echo "error")
+
+            if [ "$STATE" = "configured" ]; then
+              ALREADY=$((ALREADY + 1))
+            else
+              echo "🔧 Enabling CodeQL on $FORK ..."
+              if gh api "repos/$FORK/code-scanning/default-setup" -X PATCH -f state=configured >/dev/null 2>&1; then
+                echo "✅ CodeQL enabled on $FORK"
+                ENABLED=$((ENABLED + 1))
+              else
+                echo "::warning::❌ Failed to enable CodeQL on $FORK"
+              fi
+            fi
+          done < <(jq -r '.projects | keys[]' config.json)
+
+          echo "=== CodeQL Summary ==="
+          echo "✅ Newly enabled: $ENABLED"
+          echo "⏩ Already configured: $ALREADY"
+        env:
+          GH_TOKEN: ${{ secrets.GH_PAT }}
