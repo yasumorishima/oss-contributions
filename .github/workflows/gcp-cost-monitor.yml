@@ -1,0 +1,157 @@
+name: GCP Cost Monitor
+
+on:
+  schedule:
+    - cron: "0 0 * * *"  # 毎日 UTC 00:00 (JST 09:00)
+  workflow_dispatch:
+    inputs:
+      memo:
+        description: 'この実行の意図'
+        required: false
+        type: string
+
+jobs:
+  check-costs:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          cache: 'pip'
+
+      - name: Install dependencies
+        run: pip install google-cloud-bigquery
+
+      - name: Setup GCP credentials
+        run: echo '${{ secrets.GCP_SA_KEY }}' > /tmp/gcp-sa-key.json
+
+      - name: Check BigQuery usage
+        id: check
+        env:
+          GOOGLE_APPLICATION_CREDENTIALS: /tmp/gcp-sa-key.json
+        run: |
+          python3 << 'PYEOF'
+          import os, json
+          from datetime import datetime, timedelta, timezone
+          from google.cloud import bigquery
+
+          client = bigquery.Client(project="data-platform-490901")
+
+          # 過去24時間のクエリ使用量
+          q_24h = """
+          SELECT
+            COUNT(*) AS query_count,
+            ROUND(SUM(total_bytes_processed) / POW(1024, 3), 3) AS total_gb_processed,
+            ROUND(SUM(total_bytes_billed) / POW(1024, 3), 3) AS total_gb_billed
+          FROM `region-us`.INFORMATION_SCHEMA.JOBS
+          WHERE creation_time >= TIMESTAMP_SUB(CURRENT_TIMESTAMP(), INTERVAL 24 HOUR)
+            AND job_type = 'QUERY'
+            AND state = 'DONE'
+          """
+
+          # 今月のクエリ使用量
+          q_month = """
+          SELECT
+            COUNT(*) AS query_count,
+            ROUND(SUM(total_bytes_processed) / POW(1024, 3), 3) AS total_gb_processed,
+            ROUND(SUM(total_bytes_billed) / POW(1024, 3), 3) AS total_gb_billed
+          FROM `region-us`.INFORMATION_SCHEMA.JOBS
+          WHERE creation_time >= TIMESTAMP_TRUNC(CURRENT_TIMESTAMP(), MONTH)
+            AND job_type = 'QUERY'
+            AND state = 'DONE'
+          """
+
+          # データセット別ストレージ
+          q_storage = """
+          SELECT
+            table_schema AS dataset,
+            COUNT(*) AS tables,
+            ROUND(SUM(size_bytes) / POW(1024, 2), 2) AS total_mb
+          FROM `region-us`.INFORMATION_SCHEMA.TABLE_STORAGE
+          GROUP BY table_schema
+          ORDER BY total_mb DESC
+          """
+
+          r24 = list(client.query(q_24h).result())[0]
+          rm = list(client.query(q_month).result())[0]
+          storage = list(client.query(q_storage).result())
+
+          total_storage_mb = sum(r.total_mb for r in storage)
+          month_gb = float(rm.total_gb_billed or 0)
+
+          # 閾値チェック (無料枠: 1TB/月クエリ, 10GB ストレージ)
+          alert = False
+          alert_msg = []
+          if month_gb > 500:  # 500GB = 無料枠の50%
+              alert = True
+              alert_msg.append(f"月間クエリ {month_gb:.1f}GB (無料枠50%超過)")
+          if total_storage_mb > 5000:  # 5GB = 無料枠の50%
+              alert = True
+              alert_msg.append(f"ストレージ {total_storage_mb:.1f}MB (無料枠50%超過)")
+
+          # Output for Discord
+          storage_lines = "\n".join(f"  {r.dataset}: {r.tables} tables, {r.total_mb} MB" for r in storage)
+
+          summary = f"""24h: {r24.query_count} queries, {r24.total_gb_billed or 0} GB billed
+          Month: {rm.query_count} queries, {rm.total_gb_billed or 0} GB billed ({month_gb/1000*100:.2f}% of 1TB free)
+          Storage: {total_storage_mb:.1f} MB ({total_storage_mb/10240*100:.2f}% of 10GB free)
+          {storage_lines}"""
+
+          print(summary)
+
+          with open(os.environ.get("GITHUB_OUTPUT", "/dev/null"), "a") as f:
+              f.write(f"alert={'true' if alert else 'false'}\n")
+              f.write(f"month_gb={month_gb}\n")
+              f.write(f"storage_mb={total_storage_mb}\n")
+              f.write(f"query_count_24h={r24.query_count}\n")
+              f.write(f"query_count_month={rm.query_count}\n")
+              # Multiline output for storage details
+              f.write(f"storage_detail<<STOREOF\n{storage_lines}\nSTOREOF\n")
+              f.write(f"summary<<SUMEOF\n{summary}\nSUMEOF\n")
+          PYEOF
+
+      - name: Cleanup credentials
+        if: always()
+        run: rm -f /tmp/gcp-sa-key.json
+
+      - name: Notify Discord
+        if: env.HAS_WEBHOOK == 'true'
+        env:
+          HAS_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK_URL != '' }}
+        run: |
+          ALERT="${{ steps.check.outputs.alert }}"
+          MONTH_GB="${{ steps.check.outputs.month_gb }}"
+          STORAGE_MB="${{ steps.check.outputs.storage_mb }}"
+          Q24="${{ steps.check.outputs.query_count_24h }}"
+          QMON="${{ steps.check.outputs.query_count_month }}"
+          MEMO="${{ inputs.memo }}"
+
+          if [ "$ALERT" = "true" ]; then
+            COLOR=15158332  # red
+            TITLE="⚠️ GCP Cost Alert"
+          else
+            COLOR=3066993  # green
+            TITLE="✅ GCP Daily Cost Report"
+          fi
+
+          curl -s -X POST "${{ secrets.DISCORD_WEBHOOK_URL }}" \
+            -H "Content-Type: application/json" \
+            -d "{
+              \"embeds\": [{
+                \"title\": \"${TITLE}\",
+                \"color\": ${COLOR},
+                \"fields\": [
+                  {\"name\": \"24h Queries\", \"value\": \"${Q24}\", \"inline\": true},
+                  {\"name\": \"Month Queries\", \"value\": \"${QMON}\", \"inline\": true},
+                  {\"name\": \"Month Billed\", \"value\": \"${MONTH_GB} GB / 1,000 GB free\", \"inline\": true},
+                  {\"name\": \"Storage\", \"value\": \"${STORAGE_MB} MB / 10,240 MB free\", \"inline\": true},
+                  {\"name\": \"Memo\", \"value\": \"${MEMO:-daily cron}\", \"inline\": true}
+                ],
+                \"footer\": {\"text\": \"data-platform-490901\"}
+              }]
+            }"
+        continue-on-error: true
