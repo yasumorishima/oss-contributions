@@ -69,8 +69,9 @@ jobs:
           SELECT
             table_schema AS dataset,
             COUNT(*) AS tables,
-            ROUND(SUM(size_bytes) / POW(1024, 2), 2) AS total_mb
+            ROUND(SUM(total_logical_bytes) / POW(1024, 2), 2) AS total_mb
           FROM `region-us`.INFORMATION_SCHEMA.TABLE_STORAGE
+          WHERE NOT deleted
           GROUP BY table_schema
           ORDER BY total_mb DESC
           """
