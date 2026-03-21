@@ -32,6 +32,33 @@ jobs:
           done > /tmp/fork_list.txt
           cat /tmp/fork_list.txt
 
+      - name: Detect forks not registered in config.json
+        id: unregistered
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          AUTHOR=$(jq -r '.author' config.json)
+          REPORT_FILE=$(mktemp)
+          FAIL=false
+
+          # config.json に登録済みのリポ名一覧
+          jq -r '.projects | keys[]' config.json | while read upstream; do
+            echo "$upstream" | cut -d/ -f2
+          done | sort > /tmp/registered.txt
+
+          # 実際の全フォーク一覧
+          gh repo list "$AUTHOR" --fork --no-archived --json name --jq '.[].name' | sort > /tmp/actual_forks.txt
+
+          # 差分 = config.json 未登録フォーク
+          while read REPO_NAME; do
+            echo "::warning::UNREGISTERED: $AUTHOR/$REPO_NAME が config.json に未登録"
+            echo "- ⚠️ \`$AUTHOR/$REPO_NAME\` が config.json に未登録（追加が必要）" >> "$REPORT_FILE"
+            FAIL=true
+          done < <(comm -13 /tmp/registered.txt /tmp/actual_forks.txt)
+
+          echo "fail=$FAIL" >> "$GITHUB_OUTPUT"
+          echo "report_file=$REPORT_FILE" >> "$GITHUB_OUTPUT"
+
       - name: Check fork-only files in fork default branches
         id: files
         env:
@@ -120,7 +147,7 @@ jobs:
           echo "report_file=$REPORT_FILE" >> "$GITHUB_OUTPUT"
 
       - name: Create issue if any problems found
-        if: steps.files.outputs.fail == 'true' || steps.codeql.outputs.fail == 'true' || steps.prscan.outputs.fail == 'true'
+        if: steps.unregistered.outputs.fail == 'true' || steps.files.outputs.fail == 'true' || steps.codeql.outputs.fail == 'true' || steps.prscan.outputs.fail == 'true'
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
@@ -142,7 +169,7 @@ jobs:
           echo "## ⚠️ フォーク設定の問題を検出" > "$BODY_FILE"
           echo "" >> "$BODY_FILE"
 
-          for RF in "${{ steps.files.outputs.report_file }}" "${{ steps.codeql.outputs.report_file }}" "${{ steps.prscan.outputs.report_file }}"; do
+          for RF in "${{ steps.unregistered.outputs.report_file }}" "${{ steps.files.outputs.report_file }}" "${{ steps.codeql.outputs.report_file }}" "${{ steps.prscan.outputs.report_file }}"; do
             if [ -s "$RF" ]; then
               cat "$RF" >> "$BODY_FILE"
             fi
@@ -150,6 +177,7 @@ jobs:
 
           echo "" >> "$BODY_FILE"
           echo "## ルール" >> "$BODY_FILE"
+          echo "- 新規フォークは必ず config.json に登録する" >> "$BODY_FILE"
           echo "- \`.coderabbit.yaml\` / \`codeql.yml\` はフォークに置かない（Web UI / Default Setup で代替）" >> "$BODY_FILE"
           echo "- CodeQL Default Setup は各フォークで有効化必須" >> "$BODY_FILE"
           echo "- feature ブランチは \`git checkout -b xxx upstream/main\` で切る" >> "$BODY_FILE"
