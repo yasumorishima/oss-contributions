@@ -82,36 +82,59 @@ jobs:
 
           total_storage_mb = sum(r.total_mb for r in storage)
           month_gb = float(rm.total_gb_billed or 0)
+          gb_24h = float(r24.total_gb_billed or 0)
+
+          # ペース分析
+          now = datetime.now(timezone.utc)
+          day_of_month = now.day
+          import calendar
+          days_in_month = calendar.monthrange(now.year, now.month)[1]
+          days_remaining = days_in_month - day_of_month
+
+          # 日次平均ペース（今月の実績ベース）
+          daily_avg_gb = month_gb / max(day_of_month, 1)
+          projected_gb = month_gb + (daily_avg_gb * days_remaining)
+
+          # プログレスバー生成
+          def bar(used, total, width=10):
+              pct = min(used / total, 1.0) if total > 0 else 0
+              filled = round(pct * width)
+              return "█" * filled + "░" * (width - filled) + f" {pct*100:.1f}%"
+
+          query_bar = bar(month_gb, 1000)
+          storage_bar = bar(total_storage_mb, 10240)
 
           # 閾値チェック (無料枠: 1TB/月クエリ, 10GB ストレージ)
           alert = False
-          alert_msg = []
-          if month_gb > 500:  # 500GB = 無料枠の50%
+          if projected_gb > 800:  # 月末予測が80%超
               alert = True
-              alert_msg.append(f"月間クエリ {month_gb:.1f}GB (無料枠50%超過)")
-          if total_storage_mb > 5000:  # 5GB = 無料枠の50%
+          if total_storage_mb > 5000:  # 50%超
               alert = True
-              alert_msg.append(f"ストレージ {total_storage_mb:.1f}MB (無料枠50%超過)")
 
-          # Output for Discord
-          storage_lines = "\n".join(f"  {r.dataset}: {r.tables} tables, {r.total_mb} MB" for r in storage)
+          # 判定ラベル
+          if projected_gb > 800:
+              pace_label = "⚠️ 要注意"
+          elif projected_gb > 500:
+              pace_label = "📊 やや高め"
+          else:
+              pace_label = "✅ 安全"
 
-          summary = f"""24h: {r24.query_count} queries, {r24.total_gb_billed or 0} GB billed
-          Month: {rm.query_count} queries, {rm.total_gb_billed or 0} GB billed ({month_gb/1000*100:.2f}% of 1TB free)
-          Storage: {total_storage_mb:.1f} MB ({total_storage_mb/10240*100:.2f}% of 10GB free)
-          {storage_lines}"""
+          storage_lines = ", ".join(f"{r.dataset} {r.total_mb}MB" for r in storage)
 
-          print(summary)
+          print(f"Day {day_of_month}/{days_in_month} | 24h: {gb_24h:.1f}GB | Month: {month_gb:.1f}GB | Projected: {projected_gb:.1f}GB | Storage: {total_storage_mb:.1f}MB")
 
           with open(os.environ.get("GITHUB_OUTPUT", "/dev/null"), "a") as f:
               f.write(f"alert={'true' if alert else 'false'}\n")
               f.write(f"month_gb={month_gb}\n")
               f.write(f"storage_mb={total_storage_mb}\n")
-              f.write(f"query_count_24h={r24.query_count}\n")
-              f.write(f"query_count_month={rm.query_count}\n")
-              # Multiline output for storage details
-              f.write(f"storage_detail<<STOREOF\n{storage_lines}\nSTOREOF\n")
-              f.write(f"summary<<SUMEOF\n{summary}\nSUMEOF\n")
+              f.write(f"gb_24h={gb_24h}\n")
+              f.write(f"daily_avg={daily_avg_gb:.3f}\n")
+              f.write(f"projected_gb={projected_gb:.1f}\n")
+              f.write(f"query_bar={query_bar}\n")
+              f.write(f"storage_bar={storage_bar}\n")
+              f.write(f"pace_label={pace_label}\n")
+              f.write(f"day_info={day_of_month}/{days_in_month}\n")
+              f.write(f"storage_detail={storage_lines}\n")
           PYEOF
 
       - name: Cleanup credentials
@@ -126,8 +149,14 @@ jobs:
           ALERT="${{ steps.check.outputs.alert }}"
           MONTH_GB="${{ steps.check.outputs.month_gb }}"
           STORAGE_MB="${{ steps.check.outputs.storage_mb }}"
-          Q24="${{ steps.check.outputs.query_count_24h }}"
-          QMON="${{ steps.check.outputs.query_count_month }}"
+          GB_24H="${{ steps.check.outputs.gb_24h }}"
+          DAILY_AVG="${{ steps.check.outputs.daily_avg }}"
+          PROJECTED="${{ steps.check.outputs.projected_gb }}"
+          QUERY_BAR="${{ steps.check.outputs.query_bar }}"
+          STORAGE_BAR="${{ steps.check.outputs.storage_bar }}"
+          PACE_LABEL="${{ steps.check.outputs.pace_label }}"
+          DAY_INFO="${{ steps.check.outputs.day_info }}"
+          STORAGE_DETAIL="${{ steps.check.outputs.storage_detail }}"
           MEMO="${{ inputs.memo }}"
 
           if [ "$ALERT" = "true" ]; then
@@ -145,13 +174,14 @@ jobs:
                 \"title\": \"${TITLE}\",
                 \"color\": ${COLOR},
                 \"fields\": [
-                  {\"name\": \"24h Queries\", \"value\": \"${Q24}\", \"inline\": true},
-                  {\"name\": \"Month Queries\", \"value\": \"${QMON}\", \"inline\": true},
-                  {\"name\": \"Month Billed\", \"value\": \"${MONTH_GB} GB / 1,000 GB free\", \"inline\": true},
-                  {\"name\": \"Storage\", \"value\": \"${STORAGE_MB} MB / 10,240 MB free\", \"inline\": true},
-                  {\"name\": \"Memo\", \"value\": \"${MEMO:-daily cron}\", \"inline\": true}
+                  {\"name\": \"ペース判定\", \"value\": \"${PACE_LABEL}\", \"inline\": true},
+                  {\"name\": \"経過日\", \"value\": \"${DAY_INFO}\", \"inline\": true},
+                  {\"name\": \"24h使用量\", \"value\": \"${GB_24H} GB\", \"inline\": true},
+                  {\"name\": \"クエリ (1TB無料)\", \"value\": \"\`${QUERY_BAR}\`\\n${MONTH_GB} GB → 月末予測 ${PROJECTED} GB\", \"inline\": false},
+                  {\"name\": \"ストレージ (10GB無料)\", \"value\": \"\`${STORAGE_BAR}\`\\n${STORAGE_MB} MB\", \"inline\": false},
+                  {\"name\": \"内訳\", \"value\": \"${STORAGE_DETAIL}\", \"inline\": false}
                 ],
-                \"footer\": {\"text\": \"data-platform-490901\"}
+                \"footer\": {\"text\": \"data-platform-490901 | ${MEMO:-daily cron}\"}
               }]
             }"
         continue-on-error: true
