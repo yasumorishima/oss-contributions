@@ -108,6 +108,58 @@ jobs:
           echo "fail=$FAIL" >> "$GITHUB_OUTPUT"
           echo "report_file=$REPORT_FILE" >> "$GITHUB_OUTPUT"
 
+      - name: Detect active scheduled workflows on forks
+        id: scheduled
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          AUTHOR=$(jq -r '.author' config.json)
+          REPORT_FILE=$(mktemp)
+          FAIL=false
+
+          # config.json 登録フォーク + 未登録フォーク 両方をスキャン
+          {
+            # config.json 登録済み
+            while read -r FORK UPSTREAM; do
+              echo "$FORK"
+            done < /tmp/fork_list.txt
+            # 未登録フォーク
+            gh repo list "$AUTHOR" --fork --no-archived --json name --jq ".[].name" | while read NAME; do
+              echo "$AUTHOR/$NAME"
+            done
+          } | sort -u > /tmp/all_forks.txt
+
+          while read -r FORK; do
+            # 有効なワークフロー一覧を取得
+            WORKFLOWS=$(gh api "repos/$FORK/actions/workflows" \
+              --jq '.workflows[] | select(.state == "active") | "\(.id) \(.path)"' 2>/dev/null || echo "")
+            [ -z "$WORKFLOWS" ] && continue
+
+            DEFAULT_BRANCH=$(gh api "repos/$FORK" --jq '.default_branch' 2>/dev/null || echo "main")
+
+            while IFS= read -r WF_LINE; do
+              WF_ID=$(echo "$WF_LINE" | awk '{print $1}')
+              WF_PATH=$(echo "$WF_LINE" | awk '{print $2}')
+              [ -z "$WF_ID" ] && continue
+              WF_FILE=$(basename "$WF_PATH")
+
+              # ワークフローファイルの中身を取得して schedule トリガーを検出
+              CONTENT=$(gh api "repos/$FORK/contents/$WF_PATH?ref=$DEFAULT_BRANCH" \
+                --jq '.content' 2>/dev/null | base64 -d 2>/dev/null || echo "")
+              [ -z "$CONTENT" ] && continue
+
+              if echo "$CONTENT" | grep -q "schedule:"; then
+                CRON=$(echo "$CONTENT" | grep -A1 "schedule:" | grep "cron:" | head -1 | sed 's/.*cron: *//; s/[\"'"'"']//g; s/ *$//')
+                echo "::warning::SCHEDULED: $FORK の $WF_FILE にスケジュール実行あり (cron: $CRON)"
+                echo "- \`$FORK\` の \`$WF_FILE\` にスケジュール実行が有効 (cron: \`$CRON\`)" >> "$REPORT_FILE"
+                FAIL=true
+              fi
+            done <<< "$WORKFLOWS"
+          done < /tmp/all_forks.txt
+
+          echo "fail=$FAIL" >> "$GITHUB_OUTPUT"
+          echo "report_file=$REPORT_FILE" >> "$GITHUB_OUTPUT"
+
       - name: Scan open PRs for contamination
         id: prscan
         env:
@@ -136,7 +188,7 @@ jobs:
               for f in "${FORBIDDEN_FILES[@]}"; do
                 if echo "$FILES" | grep -qxF "$f"; then
                   echo "::error::CONTAMINATION: $UPSTREAM PR #$PR に $f が混入"
-                  echo "- ❌ \`$UPSTREAM\` PR #$PR に \`$f\` が混入" >> "$REPORT_FILE"
+                  echo "- \`$UPSTREAM\` PR #$PR に \`$f\` が混入" >> "$REPORT_FILE"
                   FAIL=true
                 fi
               done
@@ -147,7 +199,7 @@ jobs:
           echo "report_file=$REPORT_FILE" >> "$GITHUB_OUTPUT"
 
       - name: Create issue if any problems found
-        if: steps.unregistered.outputs.fail == 'true' || steps.files.outputs.fail == 'true' || steps.codeql.outputs.fail == 'true' || steps.prscan.outputs.fail == 'true'
+        if: steps.unregistered.outputs.fail == 'true' || steps.files.outputs.fail == 'true' || steps.codeql.outputs.fail == 'true' || steps.scheduled.outputs.fail == 'true' || steps.prscan.outputs.fail == 'true'
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
@@ -169,7 +221,7 @@ jobs:
           echo "## ⚠️ フォーク設定の問題を検出" > "$BODY_FILE"
           echo "" >> "$BODY_FILE"
 
-          for RF in "${{ steps.unregistered.outputs.report_file }}" "${{ steps.files.outputs.report_file }}" "${{ steps.codeql.outputs.report_file }}" "${{ steps.prscan.outputs.report_file }}"; do
+          for RF in "${{ steps.unregistered.outputs.report_file }}" "${{ steps.files.outputs.report_file }}" "${{ steps.codeql.outputs.report_file }}" "${{ steps.scheduled.outputs.report_file }}" "${{ steps.prscan.outputs.report_file }}"; do
             if [ -s "$RF" ]; then
               cat "$RF" >> "$BODY_FILE"
             fi
@@ -180,6 +232,7 @@ jobs:
           echo "- 新規フォークは必ず config.json に登録する" >> "$BODY_FILE"
           echo "- \`.coderabbit.yaml\` / \`codeql.yml\` はフォークに置かない（Web UI / Default Setup で代替）" >> "$BODY_FILE"
           echo "- CodeQL Default Setup は各フォークで有効化必須" >> "$BODY_FILE"
+          echo "- フォークのスケジュールワークフローは無効化する（\`gh workflow disable <name> --repo <fork>\`）" >> "$BODY_FILE"
           echo "- feature ブランチは \`git checkout -b xxx upstream/main\` で切る" >> "$BODY_FILE"
           echo "" >> "$BODY_FILE"
           echo "> このIssueは Auto Contamination Scan ワークフローにより自動作成されました" >> "$BODY_FILE"
