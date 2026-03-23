@@ -131,6 +131,16 @@ jobs:
             echo "No changes to commit."
           fi
 
+      - name: Trigger Profile README update
+        if: ${{ env.HAS_PAT == 'true' }}
+        env:
+          HAS_PAT: ${{ secrets.CLAUDE_CONFIG_PAT != '' }}
+          GH_TOKEN: ${{ secrets.CLAUDE_CONFIG_PAT }}
+        run: |
+          gh api repos/yasumorishima/yasumorishima/dispatches \
+            -f event_type=oss-refresh-complete \
+            -f "client_payload[source]=refresh-contributions"
+
       - name: Sync totals to claude-config CLAUDE.md
         if: ${{ env.HAS_PAT == 'true' }}
         env:
