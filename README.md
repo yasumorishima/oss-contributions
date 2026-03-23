@@ -6,11 +6,12 @@ My open source contribution history across various projects.
 
 | Project | Language | PRs | Merged | Open | Closed |
 |---|---|---|---|---|---|
-| [optuna](https://github.com/optuna/optuna) | Python | 7 | 5 | 2 | 0 |
+| [optuna](https://github.com/optuna/optuna) | Python | 7 | 7 | 0 | 0 |
 | [optunahub-registry](https://github.com/optuna/optunahub-registry) | Python | 2 | 1 | 1 | 0 |
 | [Kamodo](https://github.com/nasa/Kamodo) | Python | 1 | 0 | 1 | 0 |
 | [Kamodo-core](https://github.com/nasa/Kamodo-core) | Python | 1 | 0 | 1 | 0 |
 | [condor](https://github.com/nasa/condor) | Python | 1 | 0 | 1 | 0 |
+| [professional-services-data-validator](https://github.com/GoogleCloudPlatform/professional-services-data-validator) | Python | 1 | 0 | 1 | 0 |
 | [optax](https://github.com/google-deepmind/optax) | Python | 1 | 0 | 1 | 0 |
 | [timesfm](https://github.com/google-research/timesfm) | Python | 2 | 1 | 1 | 0 |
 | [icp-js-bindgen](https://github.com/dfinity/icp-js-bindgen) | Rust | 1 | 1 | 0 | 0 |
@@ -27,7 +28,7 @@ My open source contribution history across various projects.
 | [marumie](https://github.com/team-mirai/marumie) | TypeScript / Next.js | 1 | 0 | 1 | 0 |
 | [line-bot-mcp-server](https://github.com/line/line-bot-mcp-server) | TypeScript | 1 | 1 | 0 | 0 |
 | [openclaw](https://github.com/openclaw/openclaw) | TypeScript | 1 | 1 | 0 | 0 |
-| **Total** | | **54** | **26** | **19** | **9** |
+| **Total** | | **55** | **28** | **18** | **9** |
 
 ## Contributions by Project
 
@@ -37,8 +38,8 @@ Hyperparameter optimization framework by Preferred Networks. Python. 13k+ stars.
 
 | # | PR | Status | Description |
 |---|---|---|---|
-| 7 | [#6545](https://github.com/optuna/optuna/pull/6545) | Open | Move type-only imports to TYPE_CHECKING in `samplers/_tpe/sampler.py` |
-| 6 | [#6546](https://github.com/optuna/optuna/pull/6546) | Open | Move type-only imports to TYPE_CHECKING in `nsgaii/_crossover.py` |
+| 7 | [#6545](https://github.com/optuna/optuna/pull/6545) | Merged | Move type-only imports to TYPE_CHECKING in `samplers/_tpe/sampler.py` |
+| 6 | [#6546](https://github.com/optuna/optuna/pull/6546) | Merged | Move type-only imports to TYPE_CHECKING in `nsgaii/_crossover.py` |
 | 5 | [#6501](https://github.com/optuna/optuna/pull/6501) | Merged | fix: move `optuna` import to TYPE_CHECKING in `pruners/_patient.py` |
 | 4 | [#6490](https://github.com/optuna/optuna/pull/6490) | Merged | fix: move JSONSerializable import to TYPE_CHECKING in study/study.py |
 | 3 | [#6447](https://github.com/optuna/optuna/pull/6447) | Merged | Use `TYPE_CHECKING` for import in `pruners/_hyperband.py` |
@@ -77,6 +78,14 @@ Orbital mechanics and trajectory analysis tool by NASA. Python, SciPy, CasADi.
 | # | PR | Status | Description |
 |---|---|---|---|
 | 1 | [#75](https://github.com/nasa/condor/pull/75) | Open | fix: handle 1D interpolation result in resample for single-state ODEs |
+
+### [GoogleCloudPlatform/professional-services-data-validator](https://github.com/GoogleCloudPlatform/professional-services-data-validator)
+
+Data validation tool for migrating data to BigQuery. Python, Ibis, SQLAlchemy. 500 stars.
+
+| # | PR | Status | Description |
+|---|---|---|---|
+| 1 | [#1708](https://github.com/GoogleCloudPlatform/professional-services-data-validator/pull/1708) | Open | fix: mock list_validations in config_runner tests to remove GCS dependency |
 
 ### [google-deepmind/optax](https://github.com/google-deepmind/optax)
 
