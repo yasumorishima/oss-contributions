@@ -7,7 +7,7 @@ My open source contribution history across various projects.
 | Project | Language | PRs | Merged | Open | Closed |
 |---|---|---|---|---|---|
 | [optuna](https://github.com/optuna/optuna) | Python | 7 | 7 | 0 | 0 |
-| [optunahub-registry](https://github.com/optuna/optunahub-registry) | Python | 2 | 2 | 0 | 0 |
+| [optunahub-registry](https://github.com/optuna/optunahub-registry) | Python | 3 | 2 | 1 | 0 |
 | [Kamodo](https://github.com/nasa/Kamodo) | Python | 1 | 0 | 1 | 0 |
 | [Kamodo-core](https://github.com/nasa/Kamodo-core) | Python | 1 | 0 | 1 | 0 |
 | [condor](https://github.com/nasa/condor) | Python | 1 | 0 | 1 | 0 |
@@ -28,7 +28,7 @@ My open source contribution history across various projects.
 | [marumie](https://github.com/team-mirai/marumie) | TypeScript / Next.js | 1 | 0 | 1 | 0 |
 | [line-bot-mcp-server](https://github.com/line/line-bot-mcp-server) | TypeScript | 1 | 1 | 0 | 0 |
 | [openclaw](https://github.com/openclaw/openclaw) | TypeScript | 1 | 1 | 0 | 0 |
-| **Total** | | **55** | **30** | **16** | **9** |
+| **Total** | | **56** | **30** | **17** | **9** |
 
 ## Contributions by Project
 
@@ -52,6 +52,7 @@ Registry of user-contributed Optuna packages (samplers, pruners, visualizations)
 
 | # | PR | Status | Description |
 |---|---|---|---|
+| 3 | [#366](https://github.com/optuna/optunahub-registry/pull/366) | Open | Add GP-based samplers with PI, UCB, and TS acquisition functions |
 | 2 | [#360](https://github.com/optuna/optunahub-registry/pull/360) | Merged | Add Meta-Learn TPE sampler (Warm-starting via Task Similarity) |
 | 1 | [#357](https://github.com/optuna/optunahub-registry/pull/357) | Merged | Add SHAP-like beeswarm plot visualization |
 
