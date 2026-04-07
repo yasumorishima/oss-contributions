@@ -3,27 +3,59 @@
   "groups": [
     {
       "name": "Optuna",
-      "prefixes": ["optuna/"]
+      "prefixes": [
+        "optuna/"
+      ]
     },
     {
       "name": "NASA",
-      "prefixes": ["nasa/"]
+      "prefixes": [
+        "nasa/"
+      ]
     },
     {
       "name": "Google",
-      "prefixes": ["google-research/", "google-deepmind/", "GoogleCloudPlatform/"]
+      "prefixes": [
+        "google-research/",
+        "google-deepmind/",
+        "GoogleCloudPlatform/",
+        "google/"
+      ]
     },
     {
       "name": "DFINITY",
-      "prefixes": ["dfinity/"]
+      "prefixes": [
+        "dfinity/",
+        "open-chat-labs/"
+      ]
     },
     {
       "name": "Baseball / Data",
-      "prefixes": ["jldbc/", "pyomeca/", "pandas-dev/"]
+      "prefixes": [
+        "jldbc/",
+        "pyomeca/",
+        "pandas-dev/"
+      ]
     },
     {
       "name": "Civic Tech",
-      "prefixes": ["team-mirai-volunteer/", "team-mirai/", "digitaldemocracy2030/"]
+      "prefixes": [
+        "team-mirai-volunteer/",
+        "team-mirai/",
+        "digitaldemocracy2030/"
+      ]
+    },
+    {
+      "name": "Ethereum",
+      "prefixes": [
+        "vyperlang/"
+      ]
+    },
+    {
+      "name": "Stan",
+      "prefixes": [
+        "stan-dev/"
+      ]
     },
     {
       "name": "Other",
@@ -118,6 +150,22 @@
     "nasa/condor": {
       "language": "Python",
       "description": "Orbital mechanics and trajectory analysis tool by NASA. Python, SciPy, CasADi."
+    },
+    "google/adk-python": {
+      "language": "Python",
+      "description": "An open-source, code-first Python toolkit for building, evaluating, and deploying sophisticated AI agents with flexibility and control."
+    },
+    "open-chat-labs/open-chat-bots": {
+      "language": "TypeScript",
+      "description": "SDKs for building Bots for OpenChat with examples"
+    },
+    "stan-dev/math": {
+      "language": "C++",
+      "description": "The Stan Math Library is a C++ template library for automatic differentiation of any order using forward, reverse, and mixed modes.  It includes a range of built-in functions for probabilistic modeling, linear algebra, and equation solving."
+    },
+    "vyperlang/vyper": {
+      "language": "Python",
+      "description": "Pythonic Smart Contract Language for the EVM"
     }
   }
 }

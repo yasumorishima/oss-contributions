@@ -406,6 +406,58 @@ def record_pr(url: str) -> None:
     print(f"README.md updated. Review changes before committing.")
 
 
+
+def detect_untracked_repos() -> int:
+    """Detect repos with PRs by author that are not in config.json.
+
+    Uses GitHub search API to find all PRs, then auto-adds any upstream
+    repos missing from config.json (skipping the author's own forks).
+    Returns count of newly added repos.
+    """
+    config = load_config()
+    author = config.get("author", "")
+    if not author:
+        print("No 'author' field in config.json. Skipping detection.", file=sys.stderr)
+        return 0
+
+    known_repos = set(config.get("projects", {}).keys())
+
+    # Collect all upstream repos with PRs by author
+    all_repos: set[str] = set()
+    for search_flag in (["--merged"], ["--state", "open"], ["--state", "closed"]):
+        raw = run(
+            ["gh", "search", "prs", "--author", author, *search_flag,
+             "--limit", "200", "--json", "repository",
+             "--jq", ".[].repository.nameWithOwner"]
+        )
+        if raw:
+            for repo in raw.splitlines():
+                repo = repo.strip()
+                # Skip author's own repos (forks) - only track upstream
+                if repo and not repo.startswith(f"{author}/"):
+                    all_repos.add(repo)
+
+    new_repos = all_repos - known_repos
+    if not new_repos:
+        print("No untracked repos detected.")
+        return 0
+
+    print(f"Detected {len(new_repos)} untracked repo(s):")
+    added = 0
+    for repo in sorted(new_repos):
+        print(f"  Adding: {repo}")
+        language, description = get_repo_info(repo)
+        config.setdefault("projects", {})[repo] = {
+            "language": language,
+            "description": description,
+        }
+        added += 1
+
+    save_config(config)
+    print(f"Added {added} repo(s) to config.json.")
+    return added
+
+
 def scan_new_prs() -> int:
     """Scan config.json repos for new PRs not yet in README. Returns count added."""
     config = load_config()
@@ -425,7 +477,7 @@ def scan_new_prs() -> int:
                 "--author", author,
                 "--state", "all",
                 "--json", "number,title,state,url",
-                "--limit", "100",
+                "--limit", "200",
             ]
         )
         if not raw:
@@ -448,6 +500,7 @@ def scan_new_prs() -> int:
 
 def refresh_all() -> None:
     """Scan for new PRs and refresh status of all PRs in README.md."""
+    detect_untracked_repos()
     new_count = scan_new_prs()
     if new_count:
         print(f"\nAdded {new_count} new PR(s). Now refreshing statuses...")
@@ -504,10 +557,13 @@ def main():
         print("Usage:")
         print("  python scripts/record_pr.py <PR_URL>")
         print("  python scripts/record_pr.py --refresh")
+        print("  python scripts/record_pr.py --detect-untracked")
         sys.exit(1)
 
     if sys.argv[1] == "--refresh":
         refresh_all()
+    elif sys.argv[1] == "--detect-untracked":
+        detect_untracked_repos()
     else:
         record_pr(sys.argv[1])
 
