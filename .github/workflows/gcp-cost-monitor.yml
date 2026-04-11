@@ -183,6 +183,85 @@ jobs:
           daily_avg_gb = month_gb / max(day_of_month, 1)
           projected_gb = month_gb + (daily_avg_gb * days_remaining)
 
+          # ════════════════════════════════════════════════════════
+          # Layer 3: ストレージ日次スナップショット + 成長トレンド
+          # ════════════════════════════════════════════════════════
+          # 当日のスナップショットを billing_export.storage_snapshots に idempotent に upsert。
+          # 過去14日分を読み、7日移動平均で月末予測を出す。
+          snapshot_written = False
+          try:
+              # 当日分を削除してから挿入（同一日2回実行でも重複しない）
+              del_q = f"""
+              DELETE FROM `{PROJECT}.{BILLING_DATASET}.storage_snapshots`
+              WHERE snapshot_date = CURRENT_DATE('Asia/Tokyo')
+              """
+              client.query(del_q).result()
+
+              if storage:
+                  structs = []
+                  for r in storage:
+                      size_mb = float(r.total_mb or 0)
+                      ds_name = r.dataset.replace("'", "\\'")
+                      size_bytes = int(size_mb * 1024 * 1024)
+                      structs.append(
+                          f"STRUCT('{ds_name}' AS dataset, "
+                          f"CAST({size_mb} AS FLOAT64) AS size_mb, "
+                          f"CAST({size_bytes} AS INT64) AS size_bytes)"
+                      )
+                  ins_q = f"""
+                  INSERT INTO `{PROJECT}.{BILLING_DATASET}.storage_snapshots`
+                    (snapshot_date, dataset, size_mb, tables, size_bytes)
+                  SELECT
+                    CURRENT_DATE('Asia/Tokyo'),
+                    dataset,
+                    size_mb,
+                    0,
+                    size_bytes
+                  FROM UNNEST([
+                  {",".join(structs)}
+                  ])
+                  """
+                  client.query(ins_q).result()
+                  snapshot_written = True
+          except Exception as e:
+              print(f"Snapshot write failed: {type(e).__name__}: {e}")
+
+          # 過去14日の日次合計を取る（LAGで前日比）
+          trend_rows = []
+          try:
+              trend_q = f"""
+              WITH daily AS (
+                SELECT
+                  snapshot_date,
+                  SUM(size_mb) AS total_mb
+                FROM `{PROJECT}.{BILLING_DATASET}.storage_snapshots`
+                WHERE snapshot_date >= DATE_SUB(CURRENT_DATE('Asia/Tokyo'), INTERVAL 14 DAY)
+                GROUP BY snapshot_date
+                ORDER BY snapshot_date
+              )
+              SELECT
+                snapshot_date,
+                total_mb,
+                total_mb - LAG(total_mb) OVER (ORDER BY snapshot_date) AS day_delta_mb
+              FROM daily
+              ORDER BY snapshot_date
+              """
+              trend_rows = list(client.query(trend_q).result())
+          except Exception as e:
+              print(f"Trend query failed: {type(e).__name__}: {e}")
+
+          # 7日移動平均の日次成長量
+          storage_7d_avg_growth = 0.0
+          recent_deltas = [
+              float(r.day_delta_mb) for r in trend_rows[-7:]
+              if r.day_delta_mb is not None
+          ]
+          if recent_deltas:
+              storage_7d_avg_growth = sum(recent_deltas) / len(recent_deltas)
+
+          storage_projected_mb = total_storage_mb + (storage_7d_avg_growth * days_remaining)
+          trend_days = len(trend_rows)
+
           def bar(used, total, width=10):
               pct = min(used / total, 1.0) if total > 0 else 0
               filled = round(pct * width)
@@ -191,12 +270,24 @@ jobs:
           query_bar = bar(month_gb, 1000)
           storage_bar = bar(total_storage_mb, 10240)
 
+          # BQクエリのペース（月末予測）
           if projected_gb > 800:
               pace_label = "⚠️ 要注意"
           elif projected_gb > 500:
               pace_label = "📊 やや高め"
           else:
               pace_label = "✅ 安全"
+
+          # ストレージのペース（7日成長→月末予測ベース）
+          # trend_days<3 はデータ蓄積中扱いで判定不能（グレー）
+          if trend_days < 3:
+              storage_pace_label = "🆕 蓄積中"
+          elif storage_projected_mb > 9500:
+              storage_pace_label = "⚠️ 要注意"
+          elif storage_projected_mb > 8000:
+              storage_pace_label = "📊 やや高め"
+          else:
+              storage_pace_label = "✅ 安全"
 
           storage_lines = ", ".join(f"{r.dataset} {r.total_mb}MB" for r in storage)
 
@@ -214,10 +305,14 @@ jobs:
               alert_reasons.append(f"請求監視{billing_state}")
           if projected_gb > 800:
               alert = True
-              alert_reasons.append(f"BQ月末予測 {projected_gb:.0f}GB")
-          if total_storage_mb > 5000:
+              alert_reasons.append(f"BQクエリ月末予測 {projected_gb:.0f}GB")
+          # ストレージ: 実値 >9500MB で赤、成長ペースで月末 >9500MB でも赤（3日以上のデータ必要）
+          if total_storage_mb > 9500:
               alert = True
-              alert_reasons.append(f"BQストレージ {total_storage_mb:.0f}MB")
+              alert_reasons.append(f"BQストレージ {total_storage_mb:.0f}MB (無料枠残り僅か)")
+          elif trend_days >= 3 and storage_projected_mb > 9500:
+              alert = True
+              alert_reasons.append(f"BQストレージ月末予測 {storage_projected_mb:.0f}MB")
 
           # タイトル
           if alert:
@@ -258,13 +353,18 @@ jobs:
           print(f"TITLE: {title}")
           print("--- billing summary ---")
           print(billing_summary)
-          print(f"--- BQ pace --- Day {day_of_month}/{days_in_month} | 24h: {gb_24h:.1f}GB | Month: {month_gb:.1f}GB | Projected: {projected_gb:.1f}GB | Storage: {total_storage_mb:.1f}MB")
+          print(f"--- BQ pace --- Day {day_of_month}/{days_in_month} | 24h: {gb_24h:.1f}GB | Month: {month_gb:.1f}GB | Projected: {projected_gb:.1f}GB")
+          print(f"--- Storage --- Current: {total_storage_mb:.1f}MB | 7d avg growth: {storage_7d_avg_growth:+.1f}MB/day | Month-end projection: {storage_projected_mb:.1f}MB | Trend days: {trend_days} | Snapshot written: {snapshot_written}")
 
           with open(os.environ.get("GITHUB_OUTPUT", "/dev/null"), "a") as f:
               f.write(f"alert={'true' if alert else 'false'}\n")
               f.write(f"billing_state={billing_state}\n")
               f.write(f"month_gb={month_gb}\n")
               f.write(f"storage_mb={total_storage_mb}\n")
+              f.write(f"storage_projected_mb={storage_projected_mb:.1f}\n")
+              f.write(f"storage_7d_avg={storage_7d_avg_growth:+.1f}\n")
+              f.write(f"storage_pace_label={storage_pace_label}\n")
+              f.write(f"trend_days={trend_days}\n")
               f.write(f"gb_24h={gb_24h}\n")
               f.write(f"projected_gb={projected_gb:.1f}\n")
               f.write(f"query_bar={query_bar}\n")
@@ -289,6 +389,10 @@ jobs:
           BILLING_STATE="${{ steps.check.outputs.billing_state }}"
           MONTH_GB="${{ steps.check.outputs.month_gb }}"
           STORAGE_MB="${{ steps.check.outputs.storage_mb }}"
+          STORAGE_PROJECTED="${{ steps.check.outputs.storage_projected_mb }}"
+          STORAGE_7D_AVG="${{ steps.check.outputs.storage_7d_avg }}"
+          STORAGE_PACE_LABEL="${{ steps.check.outputs.storage_pace_label }}"
+          TREND_DAYS="${{ steps.check.outputs.trend_days }}"
           GB_24H="${{ steps.check.outputs.gb_24h }}"
           PROJECTED="${{ steps.check.outputs.projected_gb }}"
           QUERY_BAR="${{ steps.check.outputs.query_bar }}"
@@ -319,11 +423,11 @@ jobs:
                 \"description\": ${BILLING_JSON},
                 \"color\": ${COLOR},
                 \"fields\": [
-                  {\"name\": \"BQペース判定\", \"value\": \"${PACE_LABEL}\", \"inline\": true},
+                  {\"name\": \"クエリペース\", \"value\": \"${PACE_LABEL}\", \"inline\": true},
+                  {\"name\": \"ストレージペース\", \"value\": \"${STORAGE_PACE_LABEL}\", \"inline\": true},
                   {\"name\": \"経過日\", \"value\": \"${DAY_INFO}\", \"inline\": true},
-                  {\"name\": \"24h使用量\", \"value\": \"${GB_24H} GB\", \"inline\": true},
-                  {\"name\": \"クエリ (1TB無料)\", \"value\": \"\`${QUERY_BAR}\`\\n${MONTH_GB} GB → 月末予測 ${PROJECTED} GB\", \"inline\": false},
-                  {\"name\": \"ストレージ (10GB無料)\", \"value\": \"\`${STORAGE_BAR}\`\\n${STORAGE_MB} MB\", \"inline\": false},
+                  {\"name\": \"クエリ (1TB無料)\", \"value\": \"\`${QUERY_BAR}\`\\n${MONTH_GB} GB → 月末予測 ${PROJECTED} GB / 24h: ${GB_24H} GB\", \"inline\": false},
+                  {\"name\": \"ストレージ (10GB無料)\", \"value\": \"\`${STORAGE_BAR}\`\\n${STORAGE_MB} MB → 月末予測 ${STORAGE_PROJECTED} MB (7日平均 ${STORAGE_7D_AVG} MB/day, trend ${TREND_DAYS}d)\", \"inline\": false},
                   {\"name\": \"BQ内訳\", \"value\": \"${STORAGE_DETAIL}\", \"inline\": false}
                 ],
                 \"footer\": {\"text\": \"data-platform-490901 | ${MEMO:-daily cron}\"}
