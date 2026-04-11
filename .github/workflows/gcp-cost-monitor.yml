@@ -42,6 +42,7 @@ jobs:
         id: check
         env:
           GOOGLE_APPLICATION_CREDENTIALS: /tmp/gcp-sa-key.json
+          WORKFLOW_MEMO: ${{ inputs.memo }}
         run: |
           python3 << 'PYEOF'
           import os, calendar
@@ -356,24 +357,50 @@ jobs:
           print(f"--- BQ pace --- Day {day_of_month}/{days_in_month} | 24h: {gb_24h:.1f}GB | Month: {month_gb:.1f}GB | Projected: {projected_gb:.1f}GB")
           print(f"--- Storage --- Current: {total_storage_mb:.1f}MB | 7d avg growth: {storage_7d_avg_growth:+.1f}MB/day | Month-end projection: {storage_projected_mb:.1f}MB | Trend days: {trend_days} | Snapshot written: {snapshot_written}")
 
+          # ── Discord ペイロードを完成形で組み立てる（shell注入回避） ──
+          import json
+          memo_raw = os.environ.get("WORKFLOW_MEMO", "") or "daily cron"
+
+          if alert:
+              if billing_state in ("setup", "stale"):
+                  color = 16776960  # yellow
+              else:
+                  color = 15158332  # red
+          else:
+              color = 3066993  # green
+
+          query_field_value = (
+              f"`{query_bar}`\n{month_gb} GB → 月末予測 {projected_gb:.1f} GB "
+              f"/ 24h: {gb_24h} GB"
+          )
+          storage_field_value = (
+              f"`{storage_bar}`\n{total_storage_mb:.1f} MB → "
+              f"月末予測 {storage_projected_mb:.1f} MB "
+              f"(7日平均 {storage_7d_avg_growth:+.1f} MB/day, trend {trend_days}d)"
+          )
+
+          payload = {
+              "embeds": [{
+                  "title": title,
+                  "description": billing_summary or "(no billing data)",
+                  "color": color,
+                  "fields": [
+                      {"name": "クエリペース", "value": pace_label, "inline": True},
+                      {"name": "ストレージペース", "value": storage_pace_label, "inline": True},
+                      {"name": "経過日", "value": f"{day_of_month}/{days_in_month}", "inline": True},
+                      {"name": "クエリ (1TB無料)", "value": query_field_value, "inline": False},
+                      {"name": "ストレージ (10GB無料)", "value": storage_field_value, "inline": False},
+                      {"name": "BQ内訳", "value": storage_lines or "(empty)", "inline": False},
+                  ],
+                  "footer": {"text": f"data-platform-490901 | {memo_raw}"},
+              }]
+          }
+          payload_json = json.dumps(payload, ensure_ascii=False)
+
           with open(os.environ.get("GITHUB_OUTPUT", "/dev/null"), "a") as f:
               f.write(f"alert={'true' if alert else 'false'}\n")
               f.write(f"billing_state={billing_state}\n")
-              f.write(f"month_gb={month_gb}\n")
-              f.write(f"storage_mb={total_storage_mb}\n")
-              f.write(f"storage_projected_mb={storage_projected_mb:.1f}\n")
-              f.write(f"storage_7d_avg={storage_7d_avg_growth:+.1f}\n")
-              f.write(f"storage_pace_label={storage_pace_label}\n")
-              f.write(f"trend_days={trend_days}\n")
-              f.write(f"gb_24h={gb_24h}\n")
-              f.write(f"projected_gb={projected_gb:.1f}\n")
-              f.write(f"query_bar={query_bar}\n")
-              f.write(f"storage_bar={storage_bar}\n")
-              f.write(f"pace_label={pace_label}\n")
-              f.write(f"day_info={day_of_month}/{days_in_month}\n")
-              f.write(f"storage_detail={storage_lines}\n")
-              f.write(f"title<<TITEOF\n{title}\nTITEOF\n")
-              f.write(f"billing_summary<<BILEOF\n{billing_summary}\nBILEOF\n")
+              f.write(f"payload<<PAYEOF\n{payload_json}\nPAYEOF\n")
           PYEOF
 
       - name: Cleanup credentials
@@ -384,68 +411,39 @@ jobs:
         if: env.HAS_WEBHOOK == 'true'
         env:
           HAS_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK_URL != '' }}
+          WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}
+          PAYLOAD: ${{ steps.check.outputs.payload }}
         run: |
-          ALERT="${{ steps.check.outputs.alert }}"
-          BILLING_STATE="${{ steps.check.outputs.billing_state }}"
-          MONTH_GB="${{ steps.check.outputs.month_gb }}"
-          STORAGE_MB="${{ steps.check.outputs.storage_mb }}"
-          STORAGE_PROJECTED="${{ steps.check.outputs.storage_projected_mb }}"
-          STORAGE_7D_AVG="${{ steps.check.outputs.storage_7d_avg }}"
-          STORAGE_PACE_LABEL="${{ steps.check.outputs.storage_pace_label }}"
-          TREND_DAYS="${{ steps.check.outputs.trend_days }}"
-          GB_24H="${{ steps.check.outputs.gb_24h }}"
-          PROJECTED="${{ steps.check.outputs.projected_gb }}"
-          QUERY_BAR="${{ steps.check.outputs.query_bar }}"
-          STORAGE_BAR="${{ steps.check.outputs.storage_bar }}"
-          PACE_LABEL="${{ steps.check.outputs.pace_label }}"
-          DAY_INFO="${{ steps.check.outputs.day_info }}"
-          STORAGE_DETAIL="${{ steps.check.outputs.storage_detail }}"
-          MEMO="${{ inputs.memo }}"
-
-          if [ "$ALERT" = "true" ]; then
-            if [ "$BILLING_STATE" = "setup" ] || [ "$BILLING_STATE" = "stale" ]; then
-              COLOR=16776960  # yellow
-            else
-              COLOR=15158332  # red
-            fi
-          else
-            COLOR=3066993  # green
-          fi
-
-          TITLE_JSON=$(printf '%s' "${{ steps.check.outputs.title }}" | python3 -c 'import sys, json; print(json.dumps(sys.stdin.read()))')
-          BILLING_JSON=$(printf '%s' "${{ steps.check.outputs.billing_summary }}" | python3 -c 'import sys, json; print(json.dumps(sys.stdin.read()))')
-
-          curl -sS -X POST "${{ secrets.DISCORD_WEBHOOK_URL }}" \
+          # --fail-with-body: HTTP 4xx/5xx で非0終了。出力にレスポンス本文も含まれる
+          # --show-error: エラー詳細を表示
+          # continue-on-error は外してあるので、失敗時は on-failure ハンドラが発火
+          printf '%s' "$PAYLOAD" | curl --fail-with-body --silent --show-error \
+            -X POST "$WEBHOOK_URL" \
             -H "Content-Type: application/json" \
-            -d "{
-              \"embeds\": [{
-                \"title\": ${TITLE_JSON},
-                \"description\": ${BILLING_JSON},
-                \"color\": ${COLOR},
-                \"fields\": [
-                  {\"name\": \"クエリペース\", \"value\": \"${PACE_LABEL}\", \"inline\": true},
-                  {\"name\": \"ストレージペース\", \"value\": \"${STORAGE_PACE_LABEL}\", \"inline\": true},
-                  {\"name\": \"経過日\", \"value\": \"${DAY_INFO}\", \"inline\": true},
-                  {\"name\": \"クエリ (1TB無料)\", \"value\": \"\`${QUERY_BAR}\`\\n${MONTH_GB} GB → 月末予測 ${PROJECTED} GB / 24h: ${GB_24H} GB\", \"inline\": false},
-                  {\"name\": \"ストレージ (10GB無料)\", \"value\": \"\`${STORAGE_BAR}\`\\n${STORAGE_MB} MB → 月末予測 ${STORAGE_PROJECTED} MB (7日平均 ${STORAGE_7D_AVG} MB/day, trend ${TREND_DAYS}d)\", \"inline\": false},
-                  {\"name\": \"BQ内訳\", \"value\": \"${STORAGE_DETAIL}\", \"inline\": false}
-                ],
-                \"footer\": {\"text\": \"data-platform-490901 | ${MEMO:-daily cron}\"}
-              }]
-            }"
-        continue-on-error: true
+            --data-binary @-
 
       - name: Notify Discord on failure
         if: failure() && env.HAS_WEBHOOK == 'true'
         env:
           HAS_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK_URL != '' }}
+          WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}
+          RUN_URL: https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}
         run: |
-          curl -sS -X POST "${{ secrets.DISCORD_WEBHOOK_URL }}" \
-            -H "Content-Type: application/json" \
-            -d "{
-              \"embeds\": [{
-                \"title\": \"🔥 GCP Cost Monitor ワークフロー失敗\",
-                \"description\": \"Run: https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}\",
-                \"color\": 15158332
+          # on-failure 通知。これも失敗したらワークフロー全体が失敗のまま → GitHub が障害メール送信
+          python3 -c "
+          import json, os, urllib.request
+          payload = {
+              'embeds': [{
+                  'title': '🔥 GCP Cost Monitor ワークフロー失敗',
+                  'description': f\"Run: {os.environ['RUN_URL']}\",
+                  'color': 15158332,
               }]
-            }"
+          }
+          req = urllib.request.Request(
+              os.environ['WEBHOOK_URL'],
+              data=json.dumps(payload).encode('utf-8'),
+              headers={'Content-Type': 'application/json'},
+          )
+          with urllib.request.urlopen(req) as resp:
+              print(f'status={resp.status}')
+          "
