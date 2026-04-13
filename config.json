@@ -166,6 +166,14 @@
     "vyperlang/vyper": {
       "language": "Python",
       "description": "Pythonic Smart Contract Language for the EVM"
+    },
+    "codeforjapan/BirdXplorer": {
+      "language": "Python",
+      "description": ""
+    },
+    "dfinity/eslint-config-oisy-wallet": {
+      "language": "JavaScript",
+      "description": "Shared ESLint configurations from the OISY Wallet team"
     }
   }
 }
