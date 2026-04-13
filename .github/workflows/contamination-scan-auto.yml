@@ -12,13 +12,27 @@ on:
 
 permissions:
   issues: write
-  contents: read
+  contents: write
+  security-events: write
 
 jobs:
   scan:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Verify FORK_ADMIN_PAT is valid
+        env:
+          GH_TOKEN: ${{ secrets.FORK_ADMIN_PAT }}
+        run: |
+          USER=$(gh api user --jq '.login' 2>&1)
+          if [ $? -ne 0 ]; then
+            echo "::error::FORK_ADMIN_PAT が無効です。secretを更新してください: gh auth token | gh secret set FORK_ADMIN_PAT --repo yasumorishima/oss-contributions"
+            exit 1
+          fi
+          echo "✅ FORK_ADMIN_PAT 有効 (user=$USER)"
 
       - name: Build fork list from config.json
         id: forks
@@ -32,37 +46,73 @@ jobs:
           done > /tmp/fork_list.txt
           cat /tmp/fork_list.txt
 
-      - name: Detect forks not registered in config.json
+      - name: Auto-register unregistered forks in config.json
         id: unregistered
         env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_TOKEN: ${{ secrets.FORK_ADMIN_PAT }}
         run: |
           AUTHOR=$(jq -r '.author' config.json)
           REPORT_FILE=$(mktemp)
+          FIXED_FILE=$(mktemp)
           FAIL=false
+          FIXED_COUNT=0
 
           # config.json に登録済みのリポ名一覧
-          jq -r '.projects | keys[]' config.json | while read upstream; do
-            echo "$upstream" | cut -d/ -f2
-          done | sort > /tmp/registered.txt
+          jq -r '.projects | keys[]' config.json | cut -d/ -f2 | sort > /tmp/registered.txt
 
           # 実際の全フォーク一覧
           gh repo list "$AUTHOR" --fork --no-archived --json name --jq '.[].name' | sort > /tmp/actual_forks.txt
 
-          # 差分 = config.json 未登録フォーク
+          # 差分 = config.json 未登録フォーク → 自動登録を試行
           while read REPO_NAME; do
-            echo "::warning::UNREGISTERED: $AUTHOR/$REPO_NAME が config.json に未登録"
-            echo "- ⚠️ \`$AUTHOR/$REPO_NAME\` が config.json に未登録（追加が必要）" >> "$REPORT_FILE"
-            FAIL=true
+            # フォーク元の upstream owner/repo を取得
+            UPSTREAM_FULL=$(gh api "repos/$AUTHOR/$REPO_NAME" --jq '.parent.full_name' 2>/dev/null || echo "")
+            if [ -z "$UPSTREAM_FULL" ]; then
+              echo "::warning::UNREGISTERED: $AUTHOR/$REPO_NAME の upstream 取得失敗"
+              echo "- ⚠️ \`$AUTHOR/$REPO_NAME\` が config.json に未登録（upstream取得失敗、手動対応が必要）" >> "$REPORT_FILE"
+              FAIL=true
+              continue
+            fi
+
+            # 言語と説明を取得
+            REPO_INFO=$(gh api "repos/$UPSTREAM_FULL" --jq '{language: .language, description: .description}' 2>/dev/null || echo '{}')
+            LANG=$(echo "$REPO_INFO" | jq -r '.language // "Unknown"')
+            DESC=$(echo "$REPO_INFO" | jq -r '.description // ""')
+
+            # config.json に追加（"Other" グループに自動分類）
+            jq --arg key "$UPSTREAM_FULL" --arg lang "$LANG" --arg desc "$DESC" \
+              '.projects[$key] = {language: $lang, description: $desc}' config.json > /tmp/config_tmp.json \
+              && mv /tmp/config_tmp.json config.json
+
+            echo "✅ AUTO-REGISTERED: $UPSTREAM_FULL (lang=$LANG)"
+            echo "- ✅ \`$UPSTREAM_FULL\` を config.json に自動登録（Other グループ）" >> "$FIXED_FILE"
+            FIXED_COUNT=$((FIXED_COUNT + 1))
           done < <(comm -13 /tmp/registered.txt /tmp/actual_forks.txt)
+
+          # 自動登録があればコミット
+          if [ "$FIXED_COUNT" -gt 0 ]; then
+            git config user.name "github-actions[bot]"
+            git config user.email "github-actions[bot]@users.noreply.github.com"
+            git add config.json
+            git commit -m "auto: register $FIXED_COUNT new fork(s) in config.json"
+            git push
+            echo "📝 $FIXED_COUNT 件を config.json に自動登録＋コミットしました"
+          fi
+
+          # fork_list.txt を再生成（新規登録分を含む）
+          jq -r '.projects | keys[]' config.json | while read upstream; do
+            REPO_NAME_RE=$(echo "$upstream" | cut -d/ -f2)
+            echo "$AUTHOR/$REPO_NAME_RE $upstream"
+          done > /tmp/fork_list.txt
 
           echo "fail=$FAIL" >> "$GITHUB_OUTPUT"
           echo "report_file=$REPORT_FILE" >> "$GITHUB_OUTPUT"
+          echo "fixed_file=$FIXED_FILE" >> "$GITHUB_OUTPUT"
 
       - name: Check fork-only files in fork default branches
         id: files
         env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_TOKEN: ${{ secrets.FORK_ADMIN_PAT }}
         run: |
           FORBIDDEN_FILES=(".coderabbit.yaml" ".github/workflows/codeql.yml")
           REPORT_FILE=$(mktemp)
@@ -88,30 +138,44 @@ jobs:
           echo "fail=$FAIL" >> "$GITHUB_OUTPUT"
           echo "report_file=$REPORT_FILE" >> "$GITHUB_OUTPUT"
 
-      - name: Check CodeQL Default Setup on forks
+      - name: Auto-enable CodeQL Default Setup on forks
         id: codeql
         env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_TOKEN: ${{ secrets.FORK_ADMIN_PAT }}
         run: |
           REPORT_FILE=$(mktemp)
+          FIXED_FILE=$(mktemp)
           FAIL=false
+          FIXED_COUNT=0
 
           while read -r FORK UPSTREAM; do
             STATE=$(gh api "repos/$FORK/code-scanning/default-setup" --jq '.state' 2>/dev/null || echo "error")
             if [ "$STATE" != "configured" ]; then
-              echo "::warning::CODEQL: $FORK の CodeQL Default Setup が未設定 (state=$STATE)"
-              echo "- ⚠️ \`$FORK\` の CodeQL Default Setup が未設定" >> "$REPORT_FILE"
-              FAIL=true
+              echo "::notice::CODEQL: $FORK が未設定 (state=$STATE) → 自動有効化を試行"
+              RESULT=$(gh api "repos/$FORK/code-scanning/default-setup" \
+                -X PATCH -f state=configured 2>&1)
+              if echo "$RESULT" | jq -e '.run_id' > /dev/null 2>&1; then
+                RUN_ID=$(echo "$RESULT" | jq -r '.run_id')
+                echo "✅ AUTO-ENABLED: $FORK (run_id=$RUN_ID)"
+                echo "- ✅ \`$FORK\` の CodeQL Default Setup を自動有効化 (run_id: $RUN_ID)" >> "$FIXED_FILE"
+                FIXED_COUNT=$((FIXED_COUNT + 1))
+              else
+                echo "::error::CODEQL: $FORK の自動有効化に失敗: $RESULT"
+                echo "- ⚠️ \`$FORK\` の CodeQL Default Setup 自動有効化に失敗（手動対応が必要）" >> "$REPORT_FILE"
+                FAIL=true
+              fi
             fi
           done < /tmp/fork_list.txt
 
+          echo "ℹ️ CodeQL 自動有効化: $FIXED_COUNT 件成功"
           echo "fail=$FAIL" >> "$GITHUB_OUTPUT"
           echo "report_file=$REPORT_FILE" >> "$GITHUB_OUTPUT"
+          echo "fixed_file=$FIXED_FILE" >> "$GITHUB_OUTPUT"
 
       - name: Detect active scheduled workflows on forks
         id: scheduled
         env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_TOKEN: ${{ secrets.FORK_ADMIN_PAT }}
         run: |
           AUTHOR=$(jq -r '.author' config.json)
           REPORT_FILE=$(mktemp)
@@ -163,7 +227,7 @@ jobs:
       - name: Scan open PRs for contamination
         id: prscan
         env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_TOKEN: ${{ secrets.FORK_ADMIN_PAT }}
         run: |
           FORBIDDEN_FILES=(".coderabbit.yaml" ".github/workflows/codeql.yml")
           REPORT_FILE=$(mktemp)
@@ -198,12 +262,12 @@ jobs:
           echo "fail=$FAIL" >> "$GITHUB_OUTPUT"
           echo "report_file=$REPORT_FILE" >> "$GITHUB_OUTPUT"
 
-      - name: Create issue if any problems found
+      - name: Create issue only for unfixed problems
         if: steps.unregistered.outputs.fail == 'true' || steps.files.outputs.fail == 'true' || steps.codeql.outputs.fail == 'true' || steps.scheduled.outputs.fail == 'true' || steps.prscan.outputs.fail == 'true'
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          ISSUE_TITLE="⚠️ [自動検知] フォーク設定の問題が検出されました"
+          ISSUE_TITLE="⚠️ [自動検知] 自動修復できない問題が検出されました"
 
           # 同タイトルのオープン Issue があればスキップ
           EXISTING=$(gh issue list \
@@ -218,21 +282,40 @@ jobs:
           fi
 
           BODY_FILE=$(mktemp)
-          echo "## ⚠️ フォーク設定の問題を検出" > "$BODY_FILE"
+          echo "## ⚠️ 自動修復できない問題" > "$BODY_FILE"
+          echo "" >> "$BODY_FILE"
+          echo "以下の問題は自動修復に失敗したため、手動対応が必要です。" >> "$BODY_FILE"
           echo "" >> "$BODY_FILE"
 
+          # 未修復の問題のみ（fail == true のステップのレポートファイル）
           for RF in "${{ steps.unregistered.outputs.report_file }}" "${{ steps.files.outputs.report_file }}" "${{ steps.codeql.outputs.report_file }}" "${{ steps.scheduled.outputs.report_file }}" "${{ steps.prscan.outputs.report_file }}"; do
             if [ -s "$RF" ]; then
               cat "$RF" >> "$BODY_FILE"
             fi
           done
 
+          # 自動修復の実績があれば記載
+          HAS_FIXED=false
+          FIXED_SECTION=$(mktemp)
+          echo "" >> "$FIXED_SECTION"
+          echo "## ✅ 自動修復済み" >> "$FIXED_SECTION"
+          echo "" >> "$FIXED_SECTION"
+          for FF in "${{ steps.unregistered.outputs.fixed_file }}" "${{ steps.codeql.outputs.fixed_file }}"; do
+            if [ -s "$FF" ]; then
+              cat "$FF" >> "$FIXED_SECTION"
+              HAS_FIXED=true
+            fi
+          done
+          if [ "$HAS_FIXED" = "true" ]; then
+            cat "$FIXED_SECTION" >> "$BODY_FILE"
+          fi
+
           echo "" >> "$BODY_FILE"
           echo "## ルール" >> "$BODY_FILE"
-          echo "- 新規フォークは必ず config.json に登録する" >> "$BODY_FILE"
+          echo "- 新規フォークは自動で config.json に登録される（Other グループ）" >> "$BODY_FILE"
+          echo "- CodeQL Default Setup は自動で有効化される" >> "$BODY_FILE"
           echo "- \`.coderabbit.yaml\` / \`codeql.yml\` はフォークに置かない（Web UI / Default Setup で代替）" >> "$BODY_FILE"
-          echo "- CodeQL Default Setup は各フォークで有効化必須" >> "$BODY_FILE"
-          echo "- フォークのスケジュールワークフローは無効化する（\`gh workflow disable <name> --repo <fork>\`）" >> "$BODY_FILE"
+          echo "- フォークのスケジュールワークフローは無効化する" >> "$BODY_FILE"
           echo "- feature ブランチは \`git checkout -b xxx upstream/main\` で切る" >> "$BODY_FILE"
           echo "" >> "$BODY_FILE"
           echo "> このIssueは Auto Contamination Scan ワークフローにより自動作成されました" >> "$BODY_FILE"
