@@ -10,7 +10,7 @@ My open source contribution history across various projects.
 | [optunahub-registry](https://github.com/optuna/optunahub-registry) | Python | 3 | 2 | 1 | 0 |
 | [Kamodo](https://github.com/nasa/Kamodo) | Python | 1 | 0 | 1 | 0 |
 | [Kamodo-core](https://github.com/nasa/Kamodo-core) | Python | 1 | 0 | 1 | 0 |
-| [condor](https://github.com/nasa/condor) | Python | 1 | 0 | 1 | 0 |
+| [condor](https://github.com/nasa/condor) | Python | 1 | 0 | 0 | 1 |
 | [professional-services-data-validator](https://github.com/GoogleCloudPlatform/professional-services-data-validator) | Python | 1 | 1 | 0 | 0 |
 | [optax](https://github.com/google-deepmind/optax) | Python | 1 | 0 | 1 | 0 |
 | [timesfm](https://github.com/google-research/timesfm) | Python | 2 | 1 | 1 | 0 |
@@ -22,17 +22,17 @@ My open source contribution history across various projects.
 | [open-chat-bots](https://github.com/open-chat-labs/open-chat-bots) | TypeScript | 2 | 0 | 0 | 2 |
 | [pybaseball](https://github.com/jldbc/pybaseball) | Python | 7 | 0 | 7 | 0 |
 | [pandas](https://github.com/pandas-dev/pandas) | Python | 1 | 1 | 0 | 0 |
-| [ezc3d](https://github.com/pyomeca/ezc3d) | C++ / Python | 1 | 0 | 1 | 0 |
+| [ezc3d](https://github.com/pyomeca/ezc3d) | C++ / Python | 1 | 1 | 0 | 0 |
 | [kouchou-ai](https://github.com/digitaldemocracy2030/kouchou-ai) | Python | 1 | 1 | 0 | 0 |
 | [action-board](https://github.com/team-mirai-volunteer/action-board) | TypeScript / Next.js | 13 | 11 | 0 | 2 |
 | [fact-checker](https://github.com/team-mirai-volunteer/fact-checker) | TypeScript | 6 | 0 | 0 | 6 |
 | [post-checker](https://github.com/team-mirai-volunteer/post-checker) | TypeScript | 1 | 0 | 1 | 0 |
 | [marumie](https://github.com/team-mirai/marumie) | TypeScript / Next.js | 1 | 0 | 1 | 0 |
-| [vyper](https://github.com/vyperlang/vyper) | Python | 1 | 0 | 1 | 0 |
+| [vyper](https://github.com/vyperlang/vyper) | Python | 2 | 0 | 2 | 0 |
 | [math](https://github.com/stan-dev/math) | C++ | 1 | 0 | 1 | 0 |
 | [line-bot-mcp-server](https://github.com/line/line-bot-mcp-server) | TypeScript | 1 | 1 | 0 | 0 |
 | [openclaw](https://github.com/openclaw/openclaw) | TypeScript | 1 | 1 | 0 | 0 |
-| **Total** | | **61** | **30** | **20** | **11** |
+| **Total** | | **62** | **31** | **19** | **12** |
 
 ## Contributions by Project
 
@@ -82,7 +82,7 @@ Orbital mechanics and trajectory analysis tool by NASA. Python, SciPy, CasADi.
 
 | # | PR | Status | Description |
 |---|---|---|---|
-| 1 | [#75](https://github.com/nasa/condor/pull/75) | Open | fix: handle 1D interpolation result in resample for single-state ODEs |
+| 1 | [#75](https://github.com/nasa/condor/pull/75) | Closed | fix: handle 1D interpolation result in resample for single-state ODEs |
 
 ### [GoogleCloudPlatform/professional-services-data-validator](https://github.com/GoogleCloudPlatform/professional-services-data-validator)
 
@@ -197,7 +197,7 @@ Easy to use C3D reader/writer for C++, Python and MATLAB. Used in biomechanics r
 
 | # | PR | Status | Description |
 |---|---|---|---|
-| 1 | [#384](https://github.com/pyomeca/ezc3d/pull/384) | Open | Fix C3dMapper.__eq__() early return skipping remaining keys (Issue #383) |
+| 1 | [#384](https://github.com/pyomeca/ezc3d/pull/384) | Merged | Fix C3dMapper.__eq__() early return skipping remaining keys (Issue #383) |
 
 #### Issues Filed
 
@@ -274,6 +274,7 @@ Pythonic Smart Contract Language for the EVM
 
 | # | PR | Status | Description |
 |---|---|---|---|
+| 2 | [#4908](https://github.com/vyperlang/vyper/pull/4908) | Open | fix[ux]: deduplicate default-argument expanded ABI entries in `from_json_abi` |
 | 1 | [#4904](https://github.com/vyperlang/vyper/pull/4904) | Open | fix: handle missing inputs/outputs keys in ABI JSON interface |
 
 ### [stan-dev/math](https://github.com/stan-dev/math)
