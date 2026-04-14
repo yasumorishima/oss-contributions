@@ -109,37 +109,54 @@ jobs:
           echo "report_file=$REPORT_FILE" >> "$GITHUB_OUTPUT"
           echo "fixed_file=$FIXED_FILE" >> "$GITHUB_OUTPUT"
 
-      - name: Check fork-only files in fork default branches
+      - name: Auto-delete fork-only files in fork default branches
         id: files
         env:
           GH_TOKEN: ${{ secrets.FORK_ADMIN_PAT }}
         run: |
+          # FORBIDDEN_FILES: fork に置く意味がなく、置くと害になるファイル
+          # - codeql.yml: CodeQL Default Setup と物理的に併存不可（SARIF upload エラー）
+          # - .coderabbit.yaml: CodeRabbit GitHub App アカウント全体設定で代替
           FORBIDDEN_FILES=(".coderabbit.yaml" ".github/workflows/codeql.yml")
           REPORT_FILE=$(mktemp)
+          FIXED_FILE=$(mktemp)
           FAIL=false
+          FIXED_COUNT=0
 
           while read -r FORK UPSTREAM; do
-            # フォークのデフォルトブランチを取得（main/master/develop 等）
             DEFAULT_BRANCH=$(gh api "repos/$FORK" --jq '.default_branch' 2>/dev/null || echo "")
             if [ -z "$DEFAULT_BRANCH" ]; then
               continue
             fi
 
             for f in "${FORBIDDEN_FILES[@]}"; do
-              HTTP_CODE=$(gh api "repos/$FORK/contents/$f?ref=$DEFAULT_BRANCH" --jq '.name' -i 2>/dev/null | head -1 | awk '{print $2}')
-              if [ "$HTTP_CODE" = "200" ]; then
-                # FORBIDDEN_FILES は upstream 由来でも fork からは削除すべき
-                # codeql.yml: Default Setup と衝突 (advanced setup と併存不可)
-                # .coderabbit.yaml: GitHub App アカウント全体設定で代替
-                echo "::error::FORK FILE: $FORK ($DEFAULT_BRANCH) に $f が存在"
-                echo "- ⚠️ \`$FORK\` ($DEFAULT_BRANCH) に \`$f\` が存在（削除が必要）" >> "$REPORT_FILE"
-                FAIL=true
+              # ファイル存在確認 + sha 取得を1回の API call で
+              FILE_INFO=$(gh api "repos/$FORK/contents/$f?ref=$DEFAULT_BRANCH" 2>/dev/null || echo "")
+              SHA=$(echo "$FILE_INFO" | jq -r '.sha // empty' 2>/dev/null)
+              if [ -n "$SHA" ]; then
+                # 自動削除を試行（upstream 由来でも fork からは削除すべきが確定なので無条件）
+                DELETE_RESULT=$(gh api "repos/$FORK/contents/$f" -X DELETE \
+                  -f message="auto: remove $f from fork (CodeQL Default Setup / CodeRabbit App で代替)" \
+                  -f sha="$SHA" \
+                  -f branch="$DEFAULT_BRANCH" 2>&1)
+                if echo "$DELETE_RESULT" | jq -e '.commit.sha' > /dev/null 2>&1; then
+                  COMMIT=$(echo "$DELETE_RESULT" | jq -r '.commit.sha[0:7]')
+                  echo "✅ AUTO-DELETED: $FORK ($DEFAULT_BRANCH) から $f を削除 (commit: $COMMIT)"
+                  echo "- ✅ \`$FORK\` ($DEFAULT_BRANCH) から \`$f\` を自動削除 (commit: \`$COMMIT\`)" >> "$FIXED_FILE"
+                  FIXED_COUNT=$((FIXED_COUNT + 1))
+                else
+                  echo "::error::DELETE FAILED: $FORK の $f 削除失敗: $DELETE_RESULT"
+                  echo "- ⚠️ \`$FORK\` ($DEFAULT_BRANCH) の \`$f\` 自動削除に失敗（手動対応が必要）" >> "$REPORT_FILE"
+                  FAIL=true
+                fi
               fi
             done
           done < /tmp/fork_list.txt
 
+          echo "ℹ️ FORBIDDEN_FILES 自動削除: $FIXED_COUNT 件成功"
           echo "fail=$FAIL" >> "$GITHUB_OUTPUT"
           echo "report_file=$REPORT_FILE" >> "$GITHUB_OUTPUT"
+          echo "fixed_file=$FIXED_FILE" >> "$GITHUB_OUTPUT"
 
       - name: Auto-enable CodeQL Default Setup on forks
         id: codeql
@@ -303,7 +320,7 @@ jobs:
           echo "" >> "$FIXED_SECTION"
           echo "## ✅ 自動修復済み" >> "$FIXED_SECTION"
           echo "" >> "$FIXED_SECTION"
-          for FF in "${{ steps.unregistered.outputs.fixed_file }}" "${{ steps.codeql.outputs.fixed_file }}"; do
+          for FF in "${{ steps.unregistered.outputs.fixed_file }}" "${{ steps.files.outputs.fixed_file }}" "${{ steps.codeql.outputs.fixed_file }}"; do
             if [ -s "$FF" ]; then
               cat "$FF" >> "$FIXED_SECTION"
               HAS_FIXED=true
