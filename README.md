@@ -19,6 +19,7 @@ My open source contribution history across various projects.
 | [icp-js-canisters](https://github.com/dfinity/icp-js-canisters) | TypeScript | 1 | 1 | 0 | 0 |
 | [icp-js-core](https://github.com/dfinity/icp-js-core) | TypeScript | 3 | 2 | 0 | 1 |
 | [pic-js](https://github.com/dfinity/pic-js) | TypeScript | 1 | 0 | 1 | 0 |
+| [open-chat-bots](https://github.com/open-chat-labs/open-chat-bots) | TypeScript | 1 | 0 | 1 | 0 |
 | [pybaseball](https://github.com/jldbc/pybaseball) | Python | 7 | 0 | 7 | 0 |
 | [pandas](https://github.com/pandas-dev/pandas) | Python | 1 | 1 | 0 | 0 |
 | [ezc3d](https://github.com/pyomeca/ezc3d) | C++ / Python | 1 | 1 | 0 | 0 |
@@ -31,7 +32,7 @@ My open source contribution history across various projects.
 | [math](https://github.com/stan-dev/math) | C++ | 1 | 0 | 1 | 0 |
 | [line-bot-mcp-server](https://github.com/line/line-bot-mcp-server) | TypeScript | 1 | 1 | 0 | 0 |
 | [openclaw](https://github.com/openclaw/openclaw) | TypeScript | 1 | 1 | 0 | 0 |
-| **Total** | | **60** | **31** | **19** | **10** |
+| **Total** | | **61** | **31** | **20** | **10** |
 
 ## Contributions by Project
 
@@ -150,6 +151,14 @@ PocketIC JavaScript/TypeScript client for testing Internet Computer canisters. 8
 | # | PR | Status | Description |
 |---|---|---|---|
 | 1 | [#235](https://github.com/dfinity/pic-js/pull/235) | Open | feat: add fetchCanisterLogs method to PocketIc (Issue #68) |
+
+### [open-chat-labs/open-chat-bots](https://github.com/open-chat-labs/open-chat-bots)
+
+SDKs for building Bots for OpenChat with examples
+
+| # | PR | Status | Description |
+|---|---|---|---|
+| 1 | [#214](https://github.com/open-chat-labs/open-chat-bots/pull/214) | Open | feat(ts/examples): add FAQ bot example (RAG over local corpus) |
 
 ### [jldbc/pybaseball](https://github.com/jldbc/pybaseball)
 
