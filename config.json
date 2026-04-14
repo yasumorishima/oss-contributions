@@ -1,5 +1,9 @@
 {
   "author": "yasumorishima",
+  "excludePRs": [
+    "https://github.com/open-chat-labs/open-chat-bots/pull/209",
+    "https://github.com/open-chat-labs/open-chat-bots/pull/210"
+  ],
   "groups": [
     {
       "name": "Optuna",

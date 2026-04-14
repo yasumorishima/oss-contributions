@@ -313,9 +313,19 @@ def recalculate_summary(lines: list[str]) -> list[str]:
     return summary_lines
 
 
+def is_excluded(url: str, config: dict) -> bool:
+    """Check whether a PR URL is in the excludePRs list."""
+    excluded = set(config.get("excludePRs", []))
+    return url in excluded
+
+
 def record_pr(url: str) -> None:
     """Record or update a single PR."""
     repo, pr_number = parse_pr_url(url)
+    config_early = load_config()
+    if is_excluded(url, config_early):
+        print(f"Skipped (excluded in config.json): {url}")
+        return
     pr_info = fetch_pr_info(url)
     if pr_info is None:
         print(f"Failed to fetch PR info: {url}", file=sys.stderr)
@@ -490,12 +500,72 @@ def scan_new_prs() -> int:
         for pr in prs:
             url = pr.get("url", "")
             if url and url not in existing_urls:
+                if is_excluded(url, config):
+                    print(f"  Skipped (excluded): {url}")
+                    continue
                 print(f"  New PR found: {url}")
                 record_pr(url)
                 existing_urls.add(url)
                 added += 1
 
     return added
+
+
+def remove_excluded_from_readme(lines: list[str], config: dict) -> tuple[list[str], int]:
+    """Remove rows for excluded PRs from README. Returns (new_lines, removed_count).
+
+    Also collapses sections that become empty (no remaining PRs) by removing
+    the entire ### section.
+    """
+    excluded = config.get("excludePRs", [])
+    if not excluded:
+        return lines, 0
+
+    # Build set of PR numbers per repo to remove
+    excluded_by_repo: dict[str, set[int]] = {}
+    for url in excluded:
+        try:
+            repo, num = parse_pr_url(url)
+        except SystemExit:
+            continue
+        excluded_by_repo.setdefault(repo, set()).add(num)
+
+    removed = 0
+    new_lines: list[str] = []
+    i = 0
+    while i < len(lines):
+        line = lines[i]
+        # Detect ### section header
+        m = re.match(r"### \[([^\]]+)\]", line)
+        if m and m.group(1) in excluded_by_repo:
+            repo = m.group(1)
+            section_end = find_next_section(lines, i)
+            section = lines[i:section_end]
+            nums_to_remove = excluded_by_repo[repo]
+            kept_section = []
+            for s_line in section:
+                row_match = re.match(r"\|\s*\d+\s*\|\s*\[#(\d+)\]", s_line)
+                if row_match and int(row_match.group(1)) in nums_to_remove:
+                    removed += 1
+                    continue
+                kept_section.append(s_line)
+            # Section is empty if no data rows remain (any "| N | [#... " line)
+            has_data_row = any(
+                re.match(r"\|\s*\d+\s*\|\s*\[#\d+\]", s) for s in kept_section
+            )
+            if not has_data_row:
+                # Drop whole section + trailing blank lines
+                while new_lines and not new_lines[-1].strip():
+                    new_lines.pop()
+                i = section_end
+                continue
+            new_lines.extend(kept_section)
+            i = section_end
+        else:
+            new_lines.append(line)
+            i += 1
+
+    return new_lines, removed
 
 
 def refresh_all() -> None:
@@ -507,7 +577,12 @@ def refresh_all() -> None:
     else:
         print("No new PRs found.")
 
+    # Remove excluded PRs from README first (before refresh wastes API calls on them)
+    config = load_config()
     lines = parse_readme()
+    lines, removed = remove_excluded_from_readme(lines, config)
+    if removed > 0:
+        print(f"Removed {removed} excluded PR row(s) from README.")
     urls = extract_all_pr_urls(lines)
     print(f"Found {len(urls)} PR URLs to refresh.")
 
