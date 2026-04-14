@@ -128,12 +128,9 @@ jobs:
             for f in "${FORBIDDEN_FILES[@]}"; do
               HTTP_CODE=$(gh api "repos/$FORK/contents/$f?ref=$DEFAULT_BRANCH" --jq '.name' -i 2>/dev/null | head -1 | awk '{print $2}')
               if [ "$HTTP_CODE" = "200" ]; then
-                # upstream にも同じファイルがあればスキップ（upstream由来なので削除不可）
-                UPSTREAM_CODE=$(gh api "repos/$UPSTREAM/contents/$f" --jq '.name' -i 2>/dev/null | head -1 | awk '{print $2}')
-                if [ "$UPSTREAM_CODE" = "200" ]; then
-                  echo "ℹ️ SKIP: $FORK の $f は upstream 由来（$UPSTREAM にも存在）"
-                  continue
-                fi
+                # FORBIDDEN_FILES は upstream 由来でも fork からは削除すべき
+                # codeql.yml: Default Setup と衝突 (advanced setup と併存不可)
+                # .coderabbit.yaml: GitHub App アカウント全体設定で代替
                 echo "::error::FORK FILE: $FORK ($DEFAULT_BRANCH) に $f が存在"
                 echo "- ⚠️ \`$FORK\` ($DEFAULT_BRANCH) に \`$f\` が存在（削除が必要）" >> "$REPORT_FILE"
                 FAIL=true
