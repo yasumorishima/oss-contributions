@@ -1,0 +1,39 @@
+name: Scan Stale Claude Branches
+
+on:
+  schedule:
+    - cron: '30 0 * * *'  # daily JST 09:30
+  workflow_dispatch:
+    inputs:
+      memo:
+        description: 'この実行の意図'
+        required: true
+        type: string
+
+permissions:
+  contents: read
+  issues: write
+
+jobs:
+  scan:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Verify FORK_ADMIN_PAT (required to read fork branches)
+        env:
+          GH_TOKEN: ${{ secrets.FORK_ADMIN_PAT }}
+        run: |
+          USER=$(gh api user --jq '.login' 2>&1) || { echo "::error::FORK_ADMIN_PAT が無効です"; exit 1; }
+          echo "✅ FORK_ADMIN_PAT 有効 (user=$USER)"
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Run stale branch scanner
+        env:
+          GH_TOKEN: ${{ secrets.FORK_ADMIN_PAT }}
+        run: |
+          python scripts/scan_stale_branches.py
