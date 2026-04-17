@@ -2,6 +2,13 @@
 
 My open source contribution history across various projects.
 
+## Bounty discovery tools
+
+Automated watchers that surface active open-source bounties.
+
+- [opire-watcher](https://github.com/yasumorishima/opire-watcher) — Opire (opire.dev), 3h cron, public
+- [algora-watcher](https://github.com/yasumorishima/algora-watcher) — Algora, daily cron, private (ToS: no scraper allowed)
+
 ## Summary
 
 | Project | Language | PRs | Merged | Open | Closed |
