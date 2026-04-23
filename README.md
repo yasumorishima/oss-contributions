@@ -14,7 +14,7 @@ Automated watchers that surface active open-source bounties.
 | Project | Language | PRs | Merged | Open | Closed |
 |---|---|---|---|---|---|
 | [optuna](https://github.com/optuna/optuna) | Python | 7 | 7 | 0 | 0 |
-| [optunahub-registry](https://github.com/optuna/optunahub-registry) | Python | 3 | 2 | 1 | 0 |
+| [optunahub-registry](https://github.com/optuna/optunahub-registry) | Python | 3 | 3 | 0 | 0 |
 | [Kamodo](https://github.com/nasa/Kamodo) | Python | 1 | 0 | 1 | 0 |
 | [Kamodo-core](https://github.com/nasa/Kamodo-core) | Python | 1 | 0 | 1 | 0 |
 | [condor](https://github.com/nasa/condor) | Python | 1 | 0 | 0 | 1 |
@@ -37,9 +37,10 @@ Automated watchers that surface active open-source bounties.
 | [marumie](https://github.com/team-mirai/marumie) | TypeScript / Next.js | 1 | 0 | 1 | 0 |
 | [vyper](https://github.com/vyperlang/vyper) | Python | 2 | 0 | 2 | 0 |
 | [math](https://github.com/stan-dev/math) | C++ | 1 | 0 | 1 | 0 |
+| [gyroflow](https://github.com/gyroflow/gyroflow) | Rust | 1 | 0 | 1 | 0 |
 | [line-bot-mcp-server](https://github.com/line/line-bot-mcp-server) | TypeScript | 1 | 1 | 0 | 0 |
 | [openclaw](https://github.com/openclaw/openclaw) | TypeScript | 1 | 1 | 0 | 0 |
-| **Total** | | **61** | **31** | **20** | **10** |
+| **Total** | | **62** | **32** | **20** | **10** |
 
 ## Contributions by Project
 
@@ -63,7 +64,7 @@ Registry of user-contributed Optuna packages (samplers, pruners, visualizations)
 
 | # | PR | Status | Description |
 |---|---|---|---|
-| 3 | [#366](https://github.com/optuna/optunahub-registry/pull/366) | Open | Add GP-based samplers with PI, UCB, and TS acquisition functions |
+| 3 | [#366](https://github.com/optuna/optunahub-registry/pull/366) | Merged | Add GP-based samplers with PI, UCB, and TS acquisition functions |
 | 2 | [#360](https://github.com/optuna/optunahub-registry/pull/360) | Merged | Add Meta-Learn TPE sampler (Warm-starting via Task Similarity) |
 | 1 | [#357](https://github.com/optuna/optunahub-registry/pull/357) | Merged | Add SHAP-like beeswarm plot visualization |
 
@@ -290,6 +291,14 @@ The Stan Math Library is a C++ template library for automatic differentiation of
 | # | PR | Status | Description |
 |---|---|---|---|
 | 1 | [#3299](https://github.com/stan-dev/math/pull/3299) | Open | Add geometric distribution (lpmf, cdf, lcdf, lccdf, rng) |
+
+### [gyroflow/gyroflow](https://github.com/gyroflow/gyroflow)
+
+Video stabilization using gyroscope data
+
+| # | PR | Status | Description |
+|---|---|---|---|
+| 1 | [#1141](https://github.com/gyroflow/gyroflow/pull/1141) | Open | Import lens profiles from Lensfun database (#150) |
 
 ### [line/line-bot-mcp-server](https://github.com/line/line-bot-mcp-server)
 
