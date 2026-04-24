@@ -178,6 +178,10 @@
     "dfinity/eslint-config-oisy-wallet": {
       "language": "JavaScript",
       "description": "Shared ESLint configurations from the OISY Wallet team"
+    },
+    "gyroflow/gyroflow": {
+      "language": "Rust",
+      "description": "Video stabilization using gyroscope data"
     }
   }
 }
