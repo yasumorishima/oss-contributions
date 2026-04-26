@@ -182,6 +182,10 @@
     "gyroflow/gyroflow": {
       "language": "Rust",
       "description": "Video stabilization using gyroscope data"
+    },
+    "zio/zio-schema": {
+      "language": "Scala",
+      "description": "Compositional, type-safe schema definitions, which enable auto-derivation of codecs and migrations."
     }
   }
 }
