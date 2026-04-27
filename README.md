@@ -37,10 +37,11 @@ Automated watchers that surface active open-source bounties.
 | [marumie](https://github.com/team-mirai/marumie) | TypeScript / Next.js | 1 | 0 | 1 | 0 |
 | [vyper](https://github.com/vyperlang/vyper) | Python | 2 | 0 | 2 | 0 |
 | [math](https://github.com/stan-dev/math) | C++ | 1 | 0 | 1 | 0 |
-| [gyroflow](https://github.com/gyroflow/gyroflow) | Rust | 1 | 0 | 1 | 0 |
+| [gyroflow](https://github.com/gyroflow/gyroflow) | Rust | 2 | 0 | 2 | 0 |
 | [line-bot-mcp-server](https://github.com/line/line-bot-mcp-server) | TypeScript | 1 | 1 | 0 | 0 |
 | [openclaw](https://github.com/openclaw/openclaw) | TypeScript | 1 | 1 | 0 | 0 |
-| **Total** | | **62** | **32** | **20** | **10** |
+| [zio](https://github.com/zio/zio) | Scala | 1 | 0 | 0 | 1 |
+| **Total** | | **64** | **32** | **21** | **11** |
 
 ## Contributions by Project
 
@@ -298,6 +299,7 @@ Video stabilization using gyroscope data
 
 | # | PR | Status | Description |
 |---|---|---|---|
+| 2 | [#1143](https://github.com/gyroflow/gyroflow/pull/1143) | Open | Implement AI-based optical flow (gmflow) for #45 |
 | 1 | [#1141](https://github.com/gyroflow/gyroflow/pull/1141) | Open | Import lens profiles from Lensfun database (#150) |
 
 ### [line/line-bot-mcp-server](https://github.com/line/line-bot-mcp-server)
@@ -315,4 +317,12 @@ Your own personal AI assistant. Any OS. Any Platform. The lobster way. 🦞
 | # | PR | Status | Description |
 |---|---|---|---|
 | 1 | [#17949](https://github.com/openclaw/openclaw/pull/17949) | Merged | fix: clear stale runningAtMs in cron.run() before already-running check (#17554) |
+
+### [zio/zio](https://github.com/zio/zio)
+
+ZIO — A type-safe, composable library for async and concurrent programming in Scala
+
+| # | PR | Status | Description |
+|---|---|---|---|
+| 1 | [#10813](https://github.com/zio/zio/pull/10813) | Closed | fix(streams): groupedWithin completes for streams of empty chunks (#8686) |
 
