@@ -190,6 +190,10 @@
     "zio/zio": {
       "language": "Scala",
       "description": "ZIO — A type-safe, composable library for async and concurrent programming in Scala"
+    },
+    "tailcallhq/tailcallhq.github.io": {
+      "language": "MDX",
+      "description": "Website for Tailcall"
     }
   }
 }
