@@ -40,8 +40,9 @@ Automated watchers that surface active open-source bounties.
 | [gyroflow](https://github.com/gyroflow/gyroflow) | Rust | 2 | 0 | 2 | 0 |
 | [line-bot-mcp-server](https://github.com/line/line-bot-mcp-server) | TypeScript | 1 | 1 | 0 | 0 |
 | [openclaw](https://github.com/openclaw/openclaw) | TypeScript | 1 | 1 | 0 | 0 |
+| [tailcallhq.github.io](https://github.com/tailcallhq/tailcallhq.github.io) | MDX | 1 | 0 | 1 | 0 |
 | [zio](https://github.com/zio/zio) | Scala | 1 | 0 | 0 | 1 |
-| **Total** | | **64** | **32** | **21** | **11** |
+| **Total** | | **65** | **32** | **22** | **11** |
 
 ## Contributions by Project
 
@@ -317,6 +318,14 @@ Your own personal AI assistant. Any OS. Any Platform. The lobster way. 🦞
 | # | PR | Status | Description |
 |---|---|---|---|
 | 1 | [#17949](https://github.com/openclaw/openclaw/pull/17949) | Merged | fix: clear stale runningAtMs in cron.run() before already-running check (#17554) |
+
+### [tailcallhq/tailcallhq.github.io](https://github.com/tailcallhq/tailcallhq.github.io)
+
+Website for Tailcall
+
+| # | PR | Status | Description |
+|---|---|---|---|
+| 1 | [#594](https://github.com/tailcallhq/tailcallhq.github.io/pull/594) | Open | perf(home): lazy-hydrate main bundle and lazy-load Vimeo for / |
 
 ### [zio/zio](https://github.com/zio/zio)
 
