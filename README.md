@@ -42,8 +42,9 @@ Automated watchers that surface active open-source bounties.
 | [line-bot-mcp-server](https://github.com/line/line-bot-mcp-server) | TypeScript | 1 | 1 | 0 | 0 |
 | [openclaw](https://github.com/openclaw/openclaw) | TypeScript | 1 | 1 | 0 | 0 |
 | [tailcallhq.github.io](https://github.com/tailcallhq/tailcallhq.github.io) | MDX | 1 | 0 | 1 | 0 |
+| [d2](https://github.com/terrastruct/d2) | Go | 1 | 0 | 1 | 0 |
 | [zio](https://github.com/zio/zio) | Scala | 1 | 0 | 0 | 1 |
-| **Total** | | **66** | **32** | **23** | **11** |
+| **Total** | | **67** | **32** | **24** | **11** |
 
 ## Contributions by Project
 
@@ -335,6 +336,14 @@ Website for Tailcall
 | # | PR | Status | Description |
 |---|---|---|---|
 | 1 | [#594](https://github.com/tailcallhq/tailcallhq.github.io/pull/594) | Open | perf(home): lazy-hydrate main bundle and lazy-load Vimeo for / |
+
+### [terrastruct/d2](https://github.com/terrastruct/d2)
+
+D2 is a modern diagram scripting language that turns text to diagrams.
+
+| # | PR | Status | Description |
+|---|---|---|---|
+| 1 | [#2742](https://github.com/terrastruct/d2/pull/2742) | Open | shape: cycle - trace arcs to shape borders (close #1578) |
 
 ### [zio/zio](https://github.com/zio/zio)
 
