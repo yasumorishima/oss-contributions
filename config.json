@@ -194,6 +194,14 @@
     "tailcallhq/tailcallhq.github.io": {
       "language": "MDX",
       "description": "Website for Tailcall"
+    },
+    "terrastruct/d2": {
+      "language": "Go",
+      "description": "D2 is a modern diagram scripting language that turns text to diagrams."
+    },
+    "hoodie/notify-rust": {
+      "language": "Rust",
+      "description": "☝️send desktop notifications from your Rust app."
     }
   }
 }
