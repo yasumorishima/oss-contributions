@@ -38,11 +38,12 @@ Automated watchers that surface active open-source bounties.
 | [vyper](https://github.com/vyperlang/vyper) | Python | 2 | 0 | 2 | 0 |
 | [math](https://github.com/stan-dev/math) | C++ | 1 | 0 | 1 | 0 |
 | [gyroflow](https://github.com/gyroflow/gyroflow) | Rust | 2 | 0 | 2 | 0 |
+| [notify-rust](https://github.com/hoodie/notify-rust) | Rust | 1 | 0 | 1 | 0 |
 | [line-bot-mcp-server](https://github.com/line/line-bot-mcp-server) | TypeScript | 1 | 1 | 0 | 0 |
 | [openclaw](https://github.com/openclaw/openclaw) | TypeScript | 1 | 1 | 0 | 0 |
 | [tailcallhq.github.io](https://github.com/tailcallhq/tailcallhq.github.io) | MDX | 1 | 0 | 1 | 0 |
 | [zio](https://github.com/zio/zio) | Scala | 1 | 0 | 0 | 1 |
-| **Total** | | **65** | **32** | **22** | **11** |
+| **Total** | | **66** | **32** | **23** | **11** |
 
 ## Contributions by Project
 
@@ -302,6 +303,14 @@ Video stabilization using gyroscope data
 |---|---|---|---|
 | 2 | [#1143](https://github.com/gyroflow/gyroflow/pull/1143) | Open | Implement AI-based optical flow (gmflow) for #45 |
 | 1 | [#1141](https://github.com/gyroflow/gyroflow/pull/1141) | Open | Import lens profiles from Lensfun database (#150) |
+
+### [hoodie/notify-rust](https://github.com/hoodie/notify-rust)
+
+☝️send desktop notifications from your Rust app.
+
+| # | PR | Status | Description |
+|---|---|---|---|
+| 1 | [#273](https://github.com/hoodie/notify-rust/pull/273) | Open | feat(macos): add wait_for_action and on_close |
 
 ### [line/line-bot-mcp-server](https://github.com/line/line-bot-mcp-server)
 
