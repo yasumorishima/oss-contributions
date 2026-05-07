@@ -1,0 +1,147 @@
+name: Commit Hygiene Scan
+
+on:
+  schedule:
+    - cron: "15 2 * * *"  # JST 11:15 (Auto Contamination Scan の 15min 後)
+  workflow_dispatch:
+    inputs:
+      memo:
+        description: "この実行の意図"
+        required: true
+        type: string
+
+permissions:
+  issues: write
+  contents: read
+
+jobs:
+  scan:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Verify FORK_ADMIN_PAT
+        env:
+          GH_TOKEN: ${{ secrets.FORK_ADMIN_PAT }}
+        run: |
+          USER=$(gh api user --jq ".login" 2>&1)
+          if [ $? -ne 0 ]; then
+            echo "::error::FORK_ADMIN_PAT が無効です"
+            exit 1
+          fi
+          echo "✅ FORK_ADMIN_PAT 有効 (user=$USER)"
+
+      - name: Scan open PRs for commit hygiene violations
+        id: scan
+        env:
+          GH_TOKEN: ${{ secrets.FORK_ADMIN_PAT }}
+        run: |
+          set +e
+          AUTHOR=$(jq -r ".author" config.json)
+          ALLOWED_EMAIL="fw_yasu11@hotmail.com"
+          REPORT_FILE=$(mktemp)
+          UPSTREAMS_FILE=$(mktemp)
+          FAIL=false
+
+          jq -r ".projects | keys[]" config.json > "$UPSTREAMS_FILE"
+
+          while read -r UPSTREAM; do
+            PRS=$(gh pr list               --repo "$UPSTREAM"               --state open               --json number,headRepositoryOwner,title               --jq ".[] | select(.headRepositoryOwner.login == \"$AUTHOR\") | \"\(.number)|\(.title)\""               2>/dev/null)
+
+            while IFS="|" read -r PR TITLE; do
+              [ -z "$PR" ] && continue
+
+              AUTHORS_JSON=$(gh pr view "$PR"                 --repo "$UPSTREAM"                 --json commits                 --jq "[.commits[].authors[] | {name, email}] | unique"                 2>/dev/null)
+              [ -z "$AUTHORS_JSON" ] && continue
+
+              PROBLEMS=""
+              if echo "$AUTHORS_JSON" | jq -e "any(.email == \"noreply@anthropic.com\")" > /dev/null 2>&1; then
+                PROBLEMS="${PROBLEMS} anthropic-trailer"
+              fi
+              if echo "$AUTHORS_JSON" | jq -e "any(.email == \"yasu@example.com\")" > /dev/null 2>&1; then
+                PROBLEMS="${PROBLEMS} dummy-email"
+              fi
+              if echo "$AUTHORS_JSON" | jq -e "any(.email == \"fwyasu11@gmail.com\")" > /dev/null 2>&1; then
+                PROBLEMS="${PROBLEMS} email-mismatch(gmail)"
+              fi
+
+              if [ -n "$PROBLEMS" ]; then
+                REVIEW_JSON=$(gh pr view "$PR"                   --repo "$UPSTREAM"                   --json reviews                   2>/dev/null)
+                HAS_HUMAN=$(echo "$REVIEW_JSON" | jq -r                   "[.reviews[] | select(.author.login | test(\"bot$|coderabbit|copilot|vercel|cla-assistant|github-actions|claassistant\"; \"i\") | not)] | length > 0")
+
+                if [ "$HAS_HUMAN" = "true" ]; then
+                  CLASS="🔴 do-not-touch (人間 review あり)"
+                else
+                  CLASS="🟢 safe-to-fix (review ゼロ or bot のみ)"
+                fi
+
+                echo "- [\`$UPSTREAM\` PR #$PR](https://github.com/$UPSTREAM/pull/$PR) — _${TITLE}_" >> "$REPORT_FILE"
+                echo "  - 検知:${PROBLEMS}" >> "$REPORT_FILE"
+                echo "  - 状態: ${CLASS}" >> "$REPORT_FILE"
+                FAIL=true
+              fi
+            done <<< "$PRS"
+          done < "$UPSTREAMS_FILE"
+
+          echo "fail=$FAIL" >> "$GITHUB_OUTPUT"
+          echo "report_file=$REPORT_FILE" >> "$GITHUB_OUTPUT"
+
+          {
+            echo "## Commit Hygiene Scan"
+            echo ""
+            if [ -s "$REPORT_FILE" ]; then
+              echo "### 検知された問題"
+              cat "$REPORT_FILE"
+            else
+              echo "✅ 全 PR clean。問題なし。"
+            fi
+          } >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Create or update issue
+        if: steps.scan.outputs.fail == 'true'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          ISSUE_TITLE="⚠️ [自動検知] OSS PR commit hygiene 違反"
+
+          EXISTING_NUM=$(gh issue list             --repo yasumorishima/oss-contributions             --state open             --json number,title             | jq -r --arg t "$ISSUE_TITLE" "[.[] | select(.title == \$t)] | .[0].number // empty")
+
+          BODY_FILE=$(mktemp)
+          {
+            echo "## ⚠️ Commit Hygiene 違反検知"
+            echo ""
+            echo "以下の OSS PR で問題が検知されました（ $(date -u +\"%Y-%m-%d %H:%MZ\") ）。"
+            echo ""
+            cat "${{ steps.scan.outputs.report_file }}"
+            echo ""
+            echo "## 凡例"
+            echo "- \`anthropic-trailer\`: \`Co-Authored-By: Claude ...\` trailer (\`noreply@anthropic.com\`) 混入"
+            echo "- \`dummy-email\`: \`yasu@example.com\` (test/default) 混入"
+            echo "- \`email-mismatch(gmail)\`: \`fwyasu11@gmail.com\` 混入 (primary は \`fw_yasu11@hotmail.com\`)"
+            echo ""
+            echo "## 対応方針"
+            echo "- 🟢 safe-to-fix: 人間 review ゼロ → \`git filter-branch\` + force-push で安全に rewrite 可能"
+            echo "- 🔴 do-not-touch: 人間 review あり → review 巻き込み害あるため cosmetic 修正は推奨しない（CLA blocking のみ修正）"
+            echo ""
+            echo "> このIssueは Commit Hygiene Scan ワークフローにより自動作成・更新されました"
+          } > "$BODY_FILE"
+
+          if [ -n "$EXISTING_NUM" ]; then
+            gh issue edit "$EXISTING_NUM"               --repo yasumorishima/oss-contributions               --body-file "$BODY_FILE"
+            echo "📝 既存 Issue #$EXISTING_NUM を更新"
+          else
+            gh issue create               --repo yasumorishima/oss-contributions               --title "$ISSUE_TITLE"               --body-file "$BODY_FILE"               --label "bug"
+            echo "📝 新規 Issue 作成"
+          fi
+
+      - name: Close issue if all clean
+        if: steps.scan.outputs.fail != 'true'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          ISSUE_TITLE="⚠️ [自動検知] OSS PR commit hygiene 違反"
+          EXISTING_NUM=$(gh issue list             --repo yasumorishima/oss-contributions             --state open             --json number,title             | jq -r --arg t "$ISSUE_TITLE" "[.[] | select(.title == \$t)] | .[0].number // empty")
+          if [ -n "$EXISTING_NUM" ]; then
+            gh issue close "$EXISTING_NUM"               --repo yasumorishima/oss-contributions               --comment "✅ 全 PR clean になりました（ $(date -u +\"%Y-%m-%d %H:%MZ\") ）。Auto-close。"
+            echo "📝 Issue #$EXISTING_NUM を auto-close"
+          fi
