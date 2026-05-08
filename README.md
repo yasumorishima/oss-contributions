@@ -43,8 +43,8 @@ Automated watchers that surface active open-source bounties.
 | [openclaw](https://github.com/openclaw/openclaw) | TypeScript | 1 | 1 | 0 | 0 |
 | [tailcallhq.github.io](https://github.com/tailcallhq/tailcallhq.github.io) | MDX | 1 | 0 | 1 | 0 |
 | [d2](https://github.com/terrastruct/d2) | Go | 1 | 0 | 1 | 0 |
-| [zio](https://github.com/zio/zio) | Scala | 1 | 0 | 0 | 1 |
-| **Total** | | **67** | **32** | **24** | **11** |
+| [zio](https://github.com/zio/zio) | Scala | 2 | 0 | 0 | 2 |
+| **Total** | | **68** | **32** | **24** | **12** |
 
 ## Contributions by Project
 
@@ -351,5 +351,6 @@ ZIO — A type-safe, composable library for async and concurrent programming in 
 
 | # | PR | Status | Description |
 |---|---|---|---|
+| 2 | [#10850](https://github.com/zio/zio/pull/10850) | Closed | fix(perf): optimize ZIO.timeoutTo by eliminating one fiber via direct Scheduler.schedule |
 | 1 | [#10813](https://github.com/zio/zio/pull/10813) | Closed | fix(streams): groupedWithin completes for streams of empty chunks (#8686) |
 
