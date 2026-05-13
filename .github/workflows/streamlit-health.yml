@@ -9,7 +9,7 @@ on:
         type: string
 jobs:
   health:
-    runs-on: ubuntu-latest
+    runs-on: self-hosted
 
     steps:
       - name: Check all Streamlit apps
