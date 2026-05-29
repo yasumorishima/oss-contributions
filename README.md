@@ -19,7 +19,7 @@ Automated watchers that surface active open-source bounties.
 | [Kamodo-core](https://github.com/nasa/Kamodo-core) | Python | 1 | 0 | 1 | 0 |
 | [condor](https://github.com/nasa/condor) | Python | 1 | 0 | 0 | 1 |
 | [professional-services-data-validator](https://github.com/GoogleCloudPlatform/professional-services-data-validator) | Python | 1 | 1 | 0 | 0 |
-| [optax](https://github.com/google-deepmind/optax) | Python | 1 | 0 | 1 | 0 |
+| [optax](https://github.com/google-deepmind/optax) | Python | 1 | 1 | 0 | 0 |
 | [timesfm](https://github.com/google-research/timesfm) | Python | 2 | 1 | 1 | 0 |
 | [adk-python](https://github.com/google/adk-python) | Python | 1 | 0 | 1 | 0 |
 | [icp-js-bindgen](https://github.com/dfinity/icp-js-bindgen) | Rust | 1 | 1 | 0 | 0 |
@@ -35,7 +35,7 @@ Automated watchers that surface active open-source bounties.
 | [fact-checker](https://github.com/team-mirai-volunteer/fact-checker) | TypeScript | 6 | 0 | 0 | 6 |
 | [post-checker](https://github.com/team-mirai-volunteer/post-checker) | TypeScript | 1 | 0 | 1 | 0 |
 | [marumie](https://github.com/team-mirai/marumie) | TypeScript / Next.js | 1 | 0 | 1 | 0 |
-| [vyper](https://github.com/vyperlang/vyper) | Python | 2 | 0 | 2 | 0 |
+| [vyper](https://github.com/vyperlang/vyper) | Python | 2 | 1 | 1 | 0 |
 | [math](https://github.com/stan-dev/math) | C++ | 1 | 0 | 1 | 0 |
 | [gyroflow](https://github.com/gyroflow/gyroflow) | Rust | 2 | 0 | 2 | 0 |
 | [notify-rust](https://github.com/hoodie/notify-rust) | Rust | 1 | 0 | 1 | 0 |
@@ -44,7 +44,7 @@ Automated watchers that surface active open-source bounties.
 | [tailcallhq.github.io](https://github.com/tailcallhq/tailcallhq.github.io) | MDX | 1 | 0 | 1 | 0 |
 | [d2](https://github.com/terrastruct/d2) | Go | 1 | 0 | 1 | 0 |
 | [zio](https://github.com/zio/zio) | Scala | 2 | 0 | 0 | 2 |
-| **Total** | | **68** | **32** | **24** | **12** |
+| **Total** | | **68** | **34** | **22** | **12** |
 
 ## Contributions by Project
 
@@ -110,7 +110,7 @@ Gradient processing and optimization library for JAX by Google DeepMind.
 
 | # | PR | Status | Description |
 |---|---|---|---|
-| 1 | [#1634](https://github.com/google-deepmind/optax/pull/1634) | Open | feat: add optional weight_decay to adabelief optimizer |
+| 1 | [#1634](https://github.com/google-deepmind/optax/pull/1634) | Merged | feat: add optional weight_decay to adabelief optimizer |
 
 ### [google-research/timesfm](https://github.com/google-research/timesfm)
 
@@ -285,7 +285,7 @@ Pythonic Smart Contract Language for the EVM
 
 | # | PR | Status | Description |
 |---|---|---|---|
-| 2 | [#4908](https://github.com/vyperlang/vyper/pull/4908) | Open | fix[ux]: deduplicate default-argument expanded ABI entries in `from_json_abi` |
+| 2 | [#4908](https://github.com/vyperlang/vyper/pull/4908) | Merged | fix[ux]: deduplicate default-argument expanded ABI entries in `from_json_abi` |
 | 1 | [#4904](https://github.com/vyperlang/vyper/pull/4904) | Open | fix: handle missing inputs/outputs keys in ABI JSON interface |
 
 ### [stan-dev/math](https://github.com/stan-dev/math)
