@@ -38,13 +38,13 @@ Automated watchers that surface active open-source bounties.
 | [vyper](https://github.com/vyperlang/vyper) | Python | 2 | 1 | 1 | 0 |
 | [math](https://github.com/stan-dev/math) | C++ | 1 | 0 | 1 | 0 |
 | [gyroflow](https://github.com/gyroflow/gyroflow) | Rust | 2 | 0 | 2 | 0 |
-| [notify-rust](https://github.com/hoodie/notify-rust) | Rust | 1 | 0 | 1 | 0 |
+| [notify-rust](https://github.com/hoodie/notify-rust) | Rust | 1 | 0 | 0 | 1 |
 | [line-bot-mcp-server](https://github.com/line/line-bot-mcp-server) | TypeScript | 1 | 1 | 0 | 0 |
 | [openclaw](https://github.com/openclaw/openclaw) | TypeScript | 1 | 1 | 0 | 0 |
 | [tailcallhq.github.io](https://github.com/tailcallhq/tailcallhq.github.io) | MDX | 1 | 0 | 1 | 0 |
 | [d2](https://github.com/terrastruct/d2) | Go | 1 | 0 | 1 | 0 |
 | [zio](https://github.com/zio/zio) | Scala | 2 | 0 | 0 | 2 |
-| **Total** | | **68** | **34** | **22** | **12** |
+| **Total** | | **68** | **34** | **21** | **13** |
 
 ## Contributions by Project
 
@@ -311,7 +311,7 @@ Video stabilization using gyroscope data
 
 | # | PR | Status | Description |
 |---|---|---|---|
-| 1 | [#273](https://github.com/hoodie/notify-rust/pull/273) | Open | feat(macos): add wait_for_action and on_close |
+| 1 | [#273](https://github.com/hoodie/notify-rust/pull/273) | Closed | feat(macos): add wait_for_action and on_close |
 
 ### [line/line-bot-mcp-server](https://github.com/line/line-bot-mcp-server)
 
