@@ -43,8 +43,9 @@ Automated watchers that surface active open-source bounties.
 | [openclaw](https://github.com/openclaw/openclaw) | TypeScript | 1 | 1 | 0 | 0 |
 | [tailcallhq.github.io](https://github.com/tailcallhq/tailcallhq.github.io) | MDX | 1 | 0 | 1 | 0 |
 | [d2](https://github.com/terrastruct/d2) | Go | 1 | 0 | 1 | 0 |
+| [burn](https://github.com/tracel-ai/burn) | Rust | 1 | 0 | 1 | 0 |
 | [zio](https://github.com/zio/zio) | Scala | 2 | 0 | 0 | 2 |
-| **Total** | | **68** | **34** | **21** | **13** |
+| **Total** | | **69** | **34** | **22** | **13** |
 
 ## Contributions by Project
 
@@ -344,6 +345,14 @@ D2 is a modern diagram scripting language that turns text to diagrams.
 | # | PR | Status | Description |
 |---|---|---|---|
 | 1 | [#2742](https://github.com/terrastruct/d2/pull/2742) | Open | shape: cycle - trace arcs to shape borders (close #1578) |
+
+### [tracel-ai/burn](https://github.com/tracel-ai/burn)
+
+Burn is a next generation tensor library and Deep Learning Framework that doesn't compromise on flexibility, efficiency and portability.
+
+| # | PR | Status | Description |
+|---|---|---|---|
+| 1 | [#5094](https://github.com/tracel-ai/burn/pull/5094) | Open | fix(cubecl): accept native bool store in bool_from_data |
 
 ### [zio/zio](https://github.com/zio/zio)
 
