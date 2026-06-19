@@ -202,6 +202,10 @@
     "hoodie/notify-rust": {
       "language": "Rust",
       "description": "☝️send desktop notifications from your Rust app."
+    },
+    "tracel-ai/burn": {
+      "language": "Rust",
+      "description": "Burn is a next generation tensor library and Deep Learning Framework that doesn't compromise on flexibility, efficiency and portability."
     }
   }
 }
