@@ -43,9 +43,9 @@ Automated watchers that surface active open-source bounties.
 | [openclaw](https://github.com/openclaw/openclaw) | TypeScript | 1 | 1 | 0 | 0 |
 | [tailcallhq.github.io](https://github.com/tailcallhq/tailcallhq.github.io) | MDX | 1 | 0 | 1 | 0 |
 | [d2](https://github.com/terrastruct/d2) | Go | 1 | 0 | 1 | 0 |
-| [burn](https://github.com/tracel-ai/burn) | Rust | 1 | 0 | 1 | 0 |
+| [burn](https://github.com/tracel-ai/burn) | Rust | 1 | 1 | 0 | 0 |
 | [zio](https://github.com/zio/zio) | Scala | 2 | 0 | 0 | 2 |
-| **Total** | | **69** | **34** | **22** | **13** |
+| **Total** | | **69** | **35** | **21** | **13** |
 
 ## Contributions by Project
 
@@ -352,7 +352,7 @@ Burn is a next generation tensor library and Deep Learning Framework that doesn'
 
 | # | PR | Status | Description |
 |---|---|---|---|
-| 1 | [#5094](https://github.com/tracel-ai/burn/pull/5094) | Open | fix(cubecl): accept native bool store in bool_from_data |
+| 1 | [#5094](https://github.com/tracel-ai/burn/pull/5094) | Merged | fix(cubecl): accept native bool store in bool_from_data |
 
 ### [zio/zio](https://github.com/zio/zio)
 
