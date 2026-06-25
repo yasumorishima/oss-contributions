@@ -37,6 +37,7 @@ Automated watchers that surface active open-source bounties.
 | [marumie](https://github.com/team-mirai/marumie) | TypeScript / Next.js | 1 | 0 | 1 | 0 |
 | [vyper](https://github.com/vyperlang/vyper) | Python | 2 | 1 | 1 | 0 |
 | [math](https://github.com/stan-dev/math) | C++ | 1 | 0 | 1 | 0 |
+| [PHPPresentation](https://github.com/PHPOffice/PHPPresentation) | PHP | 1 | 0 | 1 | 0 |
 | [gyroflow](https://github.com/gyroflow/gyroflow) | Rust | 2 | 0 | 2 | 0 |
 | [notify-rust](https://github.com/hoodie/notify-rust) | Rust | 1 | 0 | 0 | 1 |
 | [line-bot-mcp-server](https://github.com/line/line-bot-mcp-server) | TypeScript | 1 | 1 | 0 | 0 |
@@ -45,7 +46,7 @@ Automated watchers that surface active open-source bounties.
 | [d2](https://github.com/terrastruct/d2) | Go | 1 | 0 | 1 | 0 |
 | [burn](https://github.com/tracel-ai/burn) | Rust | 1 | 1 | 0 | 0 |
 | [zio](https://github.com/zio/zio) | Scala | 2 | 0 | 0 | 2 |
-| **Total** | | **69** | **35** | **21** | **13** |
+| **Total** | | **70** | **35** | **22** | **13** |
 
 ## Contributions by Project
 
@@ -296,6 +297,14 @@ The Stan Math Library is a C++ template library for automatic differentiation of
 | # | PR | Status | Description |
 |---|---|---|---|
 | 1 | [#3299](https://github.com/stan-dev/math/pull/3299) | Open | Add geometric distribution (lpmf, cdf, lcdf, lccdf, rng) |
+
+### [PHPOffice/PHPPresentation](https://github.com/PHPOffice/PHPPresentation)
+
+A pure PHP library for reading and writing presentations documents
+
+| # | PR | Status | Description |
+|---|---|---|---|
+| 1 | [#891](https://github.com/PHPOffice/PHPPresentation/pull/891) | Open | Add Keynote reader and writer |
 
 ### [gyroflow/gyroflow](https://github.com/gyroflow/gyroflow)
 
