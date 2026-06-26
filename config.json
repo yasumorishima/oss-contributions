@@ -206,6 +206,10 @@
     "tracel-ai/burn": {
       "language": "Rust",
       "description": "Burn is a next generation tensor library and Deep Learning Framework that doesn't compromise on flexibility, efficiency and portability."
+    },
+    "PHPOffice/PHPPresentation": {
+      "language": "PHP",
+      "description": "A pure PHP library for reading and writing presentations documents "
     }
   }
 }
