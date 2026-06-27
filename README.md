@@ -30,7 +30,7 @@ Automated watchers that surface active open-source bounties.
 | [pybaseball](https://github.com/jldbc/pybaseball) | Python | 7 | 0 | 7 | 0 |
 | [pandas](https://github.com/pandas-dev/pandas) | Python | 1 | 1 | 0 | 0 |
 | [ezc3d](https://github.com/pyomeca/ezc3d) | C++ / Python | 1 | 1 | 0 | 0 |
-| [kouchou-ai](https://github.com/digitaldemocracy2030/kouchou-ai) | Python | 1 | 1 | 0 | 0 |
+| [kouchou-ai](https://github.com/digitaldemocracy2030/kouchou-ai) | Python | 2 | 1 | 1 | 0 |
 | [action-board](https://github.com/team-mirai-volunteer/action-board) | TypeScript / Next.js | 13 | 11 | 0 | 2 |
 | [fact-checker](https://github.com/team-mirai-volunteer/fact-checker) | TypeScript | 6 | 0 | 0 | 6 |
 | [post-checker](https://github.com/team-mirai-volunteer/post-checker) | TypeScript | 1 | 0 | 1 | 0 |
@@ -46,7 +46,7 @@ Automated watchers that surface active open-source bounties.
 | [d2](https://github.com/terrastruct/d2) | Go | 1 | 0 | 1 | 0 |
 | [burn](https://github.com/tracel-ai/burn) | Rust | 1 | 1 | 0 | 0 |
 | [zio](https://github.com/zio/zio) | Scala | 2 | 0 | 0 | 2 |
-| **Total** | | **70** | **35** | **22** | **13** |
+| **Total** | | **71** | **35** | **23** | **13** |
 
 ## Contributions by Project
 
@@ -224,6 +224,7 @@ Easy to use C3D reader/writer for C++, Python and MATLAB. Used in biomechanics r
 
 | # | PR | Status | Description |
 |---|---|---|---|
+| 2 | [#903](https://github.com/digitaldemocracy2030/kouchou-ai/pull/903) | Open | docs: Web UI の Node runtime 依存インベントリを追加 (#885) |
 | 1 | [#796](https://github.com/digitaldemocracy2030/kouchou-ai/pull/796) | Merged | fix: filter out empty/whitespace-only comments before LLM processing (#583) |
 
 #### Issue Comments
