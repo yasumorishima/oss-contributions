@@ -210,6 +210,10 @@
     "PHPOffice/PHPPresentation": {
       "language": "PHP",
       "description": "A pure PHP library for reading and writing presentations documents "
+    },
+    "digital-go-jp/abr-geocoder": {
+      "language": "TypeScript",
+      "description": "Address Base Registry Geocoder by digital.go.jp"
     }
   }
 }
