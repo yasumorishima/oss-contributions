@@ -15,8 +15,8 @@ Automated watchers that surface active open-source bounties.
 |---|---|---|---|---|---|
 | [optuna](https://github.com/optuna/optuna) | Python | 7 | 7 | 0 | 0 |
 | [optunahub-registry](https://github.com/optuna/optunahub-registry) | Python | 3 | 3 | 0 | 0 |
-| [Kamodo](https://github.com/nasa/Kamodo) | Python | 1 | 0 | 1 | 0 |
-| [Kamodo-core](https://github.com/nasa/Kamodo-core) | Python | 1 | 0 | 1 | 0 |
+| [Kamodo](https://github.com/nasa/Kamodo) | Python | 1 | 1 | 0 | 0 |
+| [Kamodo-core](https://github.com/nasa/Kamodo-core) | Python | 1 | 1 | 0 | 0 |
 | [condor](https://github.com/nasa/condor) | Python | 1 | 0 | 0 | 1 |
 | [professional-services-data-validator](https://github.com/GoogleCloudPlatform/professional-services-data-validator) | Python | 1 | 1 | 0 | 0 |
 | [optax](https://github.com/google-deepmind/optax) | Python | 1 | 1 | 0 | 0 |
@@ -46,7 +46,7 @@ Automated watchers that surface active open-source bounties.
 | [d2](https://github.com/terrastruct/d2) | Go | 1 | 0 | 1 | 0 |
 | [burn](https://github.com/tracel-ai/burn) | Rust | 1 | 1 | 0 | 0 |
 | [zio](https://github.com/zio/zio) | Scala | 2 | 0 | 0 | 2 |
-| **Total** | | **72** | **36** | **23** | **13** |
+| **Total** | | **72** | **38** | **21** | **13** |
 
 ## Contributions by Project
 
@@ -80,7 +80,7 @@ Space weather data visualization and analysis tool by NASA CCMC. Python, NumPy, 
 
 | # | PR | Status | Description |
 |---|---|---|---|
-| 1 | [#156](https://github.com/nasa/Kamodo/pull/156) | Open | fix: replace numpy 2.0 removed APIs (np.NaN, np.float) |
+| 1 | [#156](https://github.com/nasa/Kamodo/pull/156) | Merged | fix: replace numpy 2.0 removed APIs (np.NaN, np.float) |
 
 ### [nasa/Kamodo-core](https://github.com/nasa/Kamodo-core)
 
@@ -88,7 +88,7 @@ Core functional API for scientific data by NASA CCMC. Python, SymPy, NumPy.
 
 | # | PR | Status | Description |
 |---|---|---|---|
-| 1 | [#3](https://github.com/nasa/Kamodo-core/pull/3) | Open | fix: support numpy 2.0 by removing deprecated APIs |
+| 1 | [#3](https://github.com/nasa/Kamodo-core/pull/3) | Merged | fix: support numpy 2.0 by removing deprecated APIs |
 
 ### [nasa/condor](https://github.com/nasa/condor)
 
