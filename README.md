@@ -38,6 +38,7 @@ Automated watchers that surface active open-source bounties.
 | [vyper](https://github.com/vyperlang/vyper) | Python | 2 | 1 | 1 | 0 |
 | [math](https://github.com/stan-dev/math) | C++ | 1 | 0 | 1 | 0 |
 | [PHPPresentation](https://github.com/PHPOffice/PHPPresentation) | PHP | 1 | 0 | 1 | 0 |
+| [abr-geocoder](https://github.com/digital-go-jp/abr-geocoder) | TypeScript | 1 | 0 | 0 | 1 |
 | [gyroflow](https://github.com/gyroflow/gyroflow) | Rust | 2 | 0 | 2 | 0 |
 | [notify-rust](https://github.com/hoodie/notify-rust) | Rust | 1 | 0 | 0 | 1 |
 | [line-bot-mcp-server](https://github.com/line/line-bot-mcp-server) | TypeScript | 1 | 1 | 0 | 0 |
@@ -46,7 +47,7 @@ Automated watchers that surface active open-source bounties.
 | [d2](https://github.com/terrastruct/d2) | Go | 1 | 0 | 1 | 0 |
 | [burn](https://github.com/tracel-ai/burn) | Rust | 1 | 1 | 0 | 0 |
 | [zio](https://github.com/zio/zio) | Scala | 2 | 0 | 0 | 2 |
-| **Total** | | **72** | **38** | **21** | **13** |
+| **Total** | | **73** | **38** | **21** | **14** |
 
 ## Contributions by Project
 
@@ -307,6 +308,14 @@ A pure PHP library for reading and writing presentations documents
 | # | PR | Status | Description |
 |---|---|---|---|
 | 1 | [#891](https://github.com/PHPOffice/PHPPresentation/pull/891) | Open | Add Keynote reader and writer |
+
+### [digital-go-jp/abr-geocoder](https://github.com/digital-go-jp/abr-geocoder)
+
+Address Base Registry Geocoder by Japan's Digital Agency (digital.go.jp). Nationwide official address normalization service.
+
+| # | PR | Status | Description |
+|---|---|---|---|
+| 1 | [#247 comment](https://github.com/digital-go-jp/abr-geocoder/issues/247#issuecomment-4835822925) | Done | Fix for anchorless Levenshtein full-table scan timeout (v3-beta): early-return guard skips 680k-row editdist3 when no region anchor. Offered via issue (upstream PRs are collaborator-only); fork branch verified by maintainer (715 regression tests pass) |
 
 ### [gyroflow/gyroflow](https://github.com/gyroflow/gyroflow)
 
