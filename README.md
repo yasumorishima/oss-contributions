@@ -43,11 +43,11 @@ Automated watchers that surface active open-source bounties.
 | [notify-rust](https://github.com/hoodie/notify-rust) | Rust | 1 | 0 | 0 | 1 |
 | [line-bot-mcp-server](https://github.com/line/line-bot-mcp-server) | TypeScript | 1 | 1 | 0 | 0 |
 | [openclaw](https://github.com/openclaw/openclaw) | TypeScript | 1 | 1 | 0 | 0 |
-| [tailcallhq.github.io](https://github.com/tailcallhq/tailcallhq.github.io) | MDX | 1 | 0 | 1 | 0 |
+| [tailcallhq.github.io](https://github.com/tailcallhq/tailcallhq.github.io) | MDX | 1 | 0 | 0 | 1 |
 | [d2](https://github.com/terrastruct/d2) | Go | 1 | 0 | 1 | 0 |
 | [burn](https://github.com/tracel-ai/burn) | Rust | 1 | 1 | 0 | 0 |
 | [zio](https://github.com/zio/zio) | Scala | 2 | 0 | 0 | 2 |
-| **Total** | | **73** | **38** | **21** | **14** |
+| **Total** | | **73** | **38** | **20** | **15** |
 
 ## Contributions by Project
 
@@ -356,7 +356,7 @@ Website for Tailcall
 
 | # | PR | Status | Description |
 |---|---|---|---|
-| 1 | [#594](https://github.com/tailcallhq/tailcallhq.github.io/pull/594) | Open | perf(home): lazy-hydrate main bundle and lazy-load Vimeo for / |
+| 1 | [#594](https://github.com/tailcallhq/tailcallhq.github.io/pull/594) | Closed | perf(home): lazy-hydrate main bundle and lazy-load Vimeo for / |
 
 ### [terrastruct/d2](https://github.com/terrastruct/d2)
 
