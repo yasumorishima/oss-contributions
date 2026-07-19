@@ -214,6 +214,10 @@
     "digital-go-jp/abr-geocoder": {
       "language": "TypeScript",
       "description": "Address Base Registry Geocoder by digital.go.jp"
+    },
+    "team-mirai/mirai-gikai": {
+      "language": "TypeScript",
+      "description": ""
     }
   }
 }
