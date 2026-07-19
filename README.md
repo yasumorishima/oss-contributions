@@ -35,6 +35,7 @@ Automated watchers that surface active open-source bounties.
 | [fact-checker](https://github.com/team-mirai-volunteer/fact-checker) | TypeScript | 6 | 0 | 0 | 6 |
 | [post-checker](https://github.com/team-mirai-volunteer/post-checker) | TypeScript | 1 | 0 | 1 | 0 |
 | [marumie](https://github.com/team-mirai/marumie) | TypeScript / Next.js | 1 | 0 | 1 | 0 |
+| [mirai-gikai](https://github.com/team-mirai/mirai-gikai) | TypeScript | 1 | 0 | 1 | 0 |
 | [vyper](https://github.com/vyperlang/vyper) | Python | 2 | 1 | 1 | 0 |
 | [math](https://github.com/stan-dev/math) | C++ | 1 | 0 | 1 | 0 |
 | [PHPPresentation](https://github.com/PHPOffice/PHPPresentation) | PHP | 1 | 0 | 1 | 0 |
@@ -47,7 +48,7 @@ Automated watchers that surface active open-source bounties.
 | [d2](https://github.com/terrastruct/d2) | Go | 1 | 0 | 1 | 0 |
 | [burn](https://github.com/tracel-ai/burn) | Rust | 1 | 1 | 0 | 0 |
 | [zio](https://github.com/zio/zio) | Scala | 2 | 0 | 0 | 2 |
-| **Total** | | **73** | **38** | **20** | **15** |
+| **Total** | | **74** | **38** | **21** | **15** |
 
 ## Contributions by Project
 
@@ -283,6 +284,14 @@ Political finance transparency platform. Built with Next.js, TypeScript, Prisma,
 | # | PR | Status | Description |
 |---|---|---|---|
 | 1 | [#1141](https://github.com/team-mirai/marumie/pull/1141) | Open | feat: Display total amount when category filter is applied (Issue #248) |
+
+### [team-mirai/mirai-gikai](https://github.com/team-mirai/mirai-gikai)
+
+
+
+| # | PR | Status | Description |
+|---|---|---|---|
+| 1 | [#930](https://github.com/team-mirai/mirai-gikai/pull/930) | Open | fix: Supabase CLI v2.106.0 以降で pnpm seed が permission denied になる問題を修正 |
 
 ### [vyperlang/vyper](https://github.com/vyperlang/vyper)
 
