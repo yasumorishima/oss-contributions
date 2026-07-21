@@ -31,11 +31,11 @@ Automated watchers that surface active open-source bounties.
 | [pandas](https://github.com/pandas-dev/pandas) | Python | 1 | 1 | 0 | 0 |
 | [ezc3d](https://github.com/pyomeca/ezc3d) | C++ / Python | 1 | 1 | 0 | 0 |
 | [kouchou-ai](https://github.com/digitaldemocracy2030/kouchou-ai) | Python | 2 | 1 | 1 | 0 |
-| [action-board](https://github.com/team-mirai-volunteer/action-board) | TypeScript / Next.js | 14 | 12 | 0 | 2 |
+| [action-board](https://github.com/team-mirai-volunteer/action-board) | TypeScript / Next.js | 15 | 12 | 1 | 2 |
 | [fact-checker](https://github.com/team-mirai-volunteer/fact-checker) | TypeScript | 6 | 0 | 0 | 6 |
 | [post-checker](https://github.com/team-mirai-volunteer/post-checker) | TypeScript | 1 | 0 | 1 | 0 |
 | [marumie](https://github.com/team-mirai/marumie) | TypeScript / Next.js | 1 | 0 | 1 | 0 |
-| [mirai-gikai](https://github.com/team-mirai/mirai-gikai) | TypeScript | 1 | 0 | 1 | 0 |
+| [mirai-gikai](https://github.com/team-mirai/mirai-gikai) | TypeScript | 2 | 1 | 1 | 0 |
 | [vyper](https://github.com/vyperlang/vyper) | Python | 2 | 1 | 1 | 0 |
 | [math](https://github.com/stan-dev/math) | C++ | 1 | 0 | 1 | 0 |
 | [PHPPresentation](https://github.com/PHPOffice/PHPPresentation) | PHP | 1 | 0 | 1 | 0 |
@@ -48,7 +48,7 @@ Automated watchers that surface active open-source bounties.
 | [d2](https://github.com/terrastruct/d2) | Go | 1 | 0 | 1 | 0 |
 | [burn](https://github.com/tracel-ai/burn) | Rust | 1 | 1 | 0 | 0 |
 | [zio](https://github.com/zio/zio) | Scala | 2 | 0 | 0 | 2 |
-| **Total** | | **74** | **38** | **21** | **15** |
+| **Total** | | **76** | **39** | **22** | **15** |
 
 ## Contributions by Project
 
@@ -241,6 +241,7 @@ Civic tech platform for citizen participation in Japan. Built with Next.js, Type
 
 | # | PR | Status | Description |
 |---|---|---|---|
+| 15 | [#2265](https://github.com/team-mirai-volunteer/action-board/pull/2265) | Open | fix(youtube): YouTube API呼び出しに指数バックオフ付きリトライを追加 |
 | 14 | [#2245](https://github.com/team-mirai-volunteer/action-board/pull/2245) | Merged | feat(map-poster): ポスター掲示板マップにテキスト検索機能を追加 (#911) |
 | 13 | [#1969](https://github.com/team-mirai-volunteer/action-board/pull/1969) | Merged | Add pure function unit tests (48 tests across 4 files) |
 | 12 | [#1918](https://github.com/team-mirai-volunteer/action-board/pull/1918) | Merged | Disable Supabase Image Transformation to fix broken images |
@@ -291,7 +292,8 @@ Political finance transparency platform. Built with Next.js, TypeScript, Prisma,
 
 | # | PR | Status | Description |
 |---|---|---|---|
-| 1 | [#930](https://github.com/team-mirai/mirai-gikai/pull/930) | Open | fix: Supabase CLI v2.106.0 以降で pnpm seed が permission denied になる問題を修正 |
+| 2 | [#932](https://github.com/team-mirai/mirai-gikai/pull/932) | Open | fix: Safari/iOS でふりがなのルビと漢字の間隔が広くなる問題を修正 |
+| 1 | [#930](https://github.com/team-mirai/mirai-gikai/pull/930) | Merged | fix: Supabase CLI v2.106.0 以降で pnpm seed が permission denied になる問題を修正 |
 
 ### [vyperlang/vyper](https://github.com/vyperlang/vyper)
 
