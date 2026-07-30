@@ -218,6 +218,10 @@
     "team-mirai/mirai-gikai": {
       "language": "TypeScript",
       "description": ""
+    },
+    "codeforjapan/mapprint": {
+      "language": "SCSS",
+      "description": ""
     }
   }
 }
