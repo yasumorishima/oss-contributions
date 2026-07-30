@@ -39,7 +39,7 @@ Automated watchers that surface active open-source bounties.
 | [vyper](https://github.com/vyperlang/vyper) | Python | 2 | 1 | 1 | 0 |
 | [math](https://github.com/stan-dev/math) | C++ | 1 | 0 | 1 | 0 |
 | [PHPPresentation](https://github.com/PHPOffice/PHPPresentation) | PHP | 1 | 0 | 1 | 0 |
-| [mapprint](https://github.com/codeforjapan/mapprint) | SCSS | 1 | 1 | 0 | 0 |
+| [mapprint](https://github.com/codeforjapan/mapprint) | SCSS | 2 | 1 | 1 | 0 |
 | [abr-geocoder](https://github.com/digital-go-jp/abr-geocoder) | TypeScript | 1 | 0 | 0 | 1 |
 | [gyroflow](https://github.com/gyroflow/gyroflow) | Rust | 2 | 0 | 2 | 0 |
 | [notify-rust](https://github.com/hoodie/notify-rust) | Rust | 1 | 0 | 0 | 1 |
@@ -49,7 +49,7 @@ Automated watchers that surface active open-source bounties.
 | [d2](https://github.com/terrastruct/d2) | Go | 1 | 0 | 1 | 0 |
 | [burn](https://github.com/tracel-ai/burn) | Rust | 1 | 1 | 0 | 0 |
 | [zio](https://github.com/zio/zio) | Scala | 2 | 0 | 0 | 2 |
-| **Total** | | **77** | **41** | **21** | **15** |
+| **Total** | | **78** | **41** | **22** | **15** |
 
 ## Contributions by Project
 
@@ -327,6 +327,7 @@ A pure PHP library for reading and writing presentations documents
 
 | # | PR | Status | Description |
 |---|---|---|---|
+| 2 | [#562](https://github.com/codeforjapan/mapprint/pull/562) | Open | fix(map): 印刷される一覧の並び順を取得の完了順に依存させない |
 | 1 | [#556](https://github.com/codeforjapan/mapprint/pull/556) | Merged | feat(map): 地図ページにシェアボタンを追加する |
 
 ### [digital-go-jp/abr-geocoder](https://github.com/digital-go-jp/abr-geocoder)
