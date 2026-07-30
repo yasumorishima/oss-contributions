@@ -39,6 +39,7 @@ Automated watchers that surface active open-source bounties.
 | [vyper](https://github.com/vyperlang/vyper) | Python | 2 | 1 | 1 | 0 |
 | [math](https://github.com/stan-dev/math) | C++ | 1 | 0 | 1 | 0 |
 | [PHPPresentation](https://github.com/PHPOffice/PHPPresentation) | PHP | 1 | 0 | 1 | 0 |
+| [BirdXplorer](https://github.com/codeforjapan/BirdXplorer) | Python | 1 | 0 | 1 | 0 |
 | [mapprint](https://github.com/codeforjapan/mapprint) | SCSS | 2 | 1 | 1 | 0 |
 | [abr-geocoder](https://github.com/digital-go-jp/abr-geocoder) | TypeScript | 1 | 0 | 0 | 1 |
 | [gyroflow](https://github.com/gyroflow/gyroflow) | Rust | 2 | 0 | 2 | 0 |
@@ -49,7 +50,7 @@ Automated watchers that surface active open-source bounties.
 | [d2](https://github.com/terrastruct/d2) | Go | 1 | 0 | 1 | 0 |
 | [burn](https://github.com/tracel-ai/burn) | Rust | 1 | 1 | 0 | 0 |
 | [zio](https://github.com/zio/zio) | Scala | 2 | 0 | 0 | 2 |
-| **Total** | | **78** | **41** | **22** | **15** |
+| **Total** | | **79** | **41** | **23** | **15** |
 
 ## Contributions by Project
 
@@ -320,6 +321,14 @@ A pure PHP library for reading and writing presentations documents
 | # | PR | Status | Description |
 |---|---|---|---|
 | 1 | [#891](https://github.com/PHPOffice/PHPPresentation/pull/891) | Open | Add Keynote reader and writer |
+
+### [codeforjapan/BirdXplorer](https://github.com/codeforjapan/BirdXplorer)
+
+
+
+| # | PR | Status | Description |
+|---|---|---|---|
+| 1 | [#281](https://github.com/codeforjapan/BirdXplorer/pull/281) | Open | feat(common): DB クエリに statement_timeout を設定（既定 30 秒） (#278) |
 
 ### [codeforjapan/mapprint](https://github.com/codeforjapan/mapprint)
 
