@@ -40,7 +40,7 @@ Automated watchers that surface active open-source bounties.
 | [math](https://github.com/stan-dev/math) | C++ | 1 | 0 | 1 | 0 |
 | [PHPPresentation](https://github.com/PHPOffice/PHPPresentation) | PHP | 1 | 0 | 1 | 0 |
 | [BirdXplorer](https://github.com/codeforjapan/BirdXplorer) | Python | 1 | 0 | 1 | 0 |
-| [mapprint](https://github.com/codeforjapan/mapprint) | SCSS | 4 | 2 | 1 | 1 |
+| [mapprint](https://github.com/codeforjapan/mapprint) | SCSS | 4 | 3 | 0 | 1 |
 | [abr-geocoder](https://github.com/digital-go-jp/abr-geocoder) | TypeScript | 1 | 0 | 0 | 1 |
 | [gyroflow](https://github.com/gyroflow/gyroflow) | Rust | 2 | 0 | 2 | 0 |
 | [notify-rust](https://github.com/hoodie/notify-rust) | Rust | 1 | 0 | 0 | 1 |
@@ -50,7 +50,7 @@ Automated watchers that surface active open-source bounties.
 | [d2](https://github.com/terrastruct/d2) | Go | 1 | 0 | 1 | 0 |
 | [burn](https://github.com/tracel-ai/burn) | Rust | 1 | 1 | 0 | 0 |
 | [zio](https://github.com/zio/zio) | Scala | 2 | 0 | 0 | 2 |
-| **Total** | | **81** | **42** | **23** | **16** |
+| **Total** | | **81** | **43** | **22** | **16** |
 
 ## Contributions by Project
 
@@ -336,7 +336,7 @@ A pure PHP library for reading and writing presentations documents
 
 | # | PR | Status | Description |
 |---|---|---|---|
-| 4 | [#563](https://github.com/codeforjapan/mapprint/pull/563) | Open | feat: 令和8年熊本地震の紙マップを追加する |
+| 4 | [#563](https://github.com/codeforjapan/mapprint/pull/563) | Merged | feat: 令和8年熊本地震の紙マップを追加する |
 | 3 | [#564](https://github.com/codeforjapan/mapprint/pull/564) | Merged | fix(map): 印刷される一覧の並び順を取得の完了順に依存させない |
 | 2 | [#562](https://github.com/codeforjapan/mapprint/pull/562) | Closed | fix(map): 印刷される一覧の並び順を取得の完了順に依存させない |
 | 1 | [#556](https://github.com/codeforjapan/mapprint/pull/556) | Merged | feat(map): 地図ページにシェアボタンを追加する |
