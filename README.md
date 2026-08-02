@@ -41,16 +41,18 @@ Automated watchers that surface active open-source bounties.
 | [PHPPresentation](https://github.com/PHPOffice/PHPPresentation) | PHP | 1 | 0 | 1 | 0 |
 | [BirdXplorer](https://github.com/codeforjapan/BirdXplorer) | Python | 1 | 0 | 1 | 0 |
 | [mapprint](https://github.com/codeforjapan/mapprint) | SCSS | 4 | 3 | 0 | 1 |
+| [d2](https://github.com/d2lang/d2) | Go | 1 | 0 | 1 | 0 |
 | [abr-geocoder](https://github.com/digital-go-jp/abr-geocoder) | TypeScript | 1 | 0 | 0 | 1 |
 | [gyroflow](https://github.com/gyroflow/gyroflow) | Rust | 2 | 0 | 2 | 0 |
 | [notify-rust](https://github.com/hoodie/notify-rust) | Rust | 1 | 0 | 0 | 1 |
 | [line-bot-mcp-server](https://github.com/line/line-bot-mcp-server) | TypeScript | 1 | 1 | 0 | 0 |
 | [openclaw](https://github.com/openclaw/openclaw) | TypeScript | 1 | 1 | 0 | 0 |
+| [graph_weather](https://github.com/openclimatefix/graph_weather) | Python | 2 | 0 | 2 | 0 |
 | [tailcallhq.github.io](https://github.com/tailcallhq/tailcallhq.github.io) | MDX | 1 | 0 | 0 | 1 |
 | [d2](https://github.com/terrastruct/d2) | Go | 1 | 0 | 1 | 0 |
 | [burn](https://github.com/tracel-ai/burn) | Rust | 1 | 1 | 0 | 0 |
 | [zio](https://github.com/zio/zio) | Scala | 2 | 0 | 0 | 2 |
-| **Total** | | **81** | **43** | **22** | **16** |
+| **Total** | | **84** | **43** | **25** | **16** |
 
 ## Contributions by Project
 
@@ -341,6 +343,14 @@ A pure PHP library for reading and writing presentations documents
 | 2 | [#562](https://github.com/codeforjapan/mapprint/pull/562) | Closed | fix(map): 印刷される一覧の並び順を取得の完了順に依存させない |
 | 1 | [#556](https://github.com/codeforjapan/mapprint/pull/556) | Merged | feat(map): 地図ページにシェアボタンを追加する |
 
+### [d2lang/d2](https://github.com/d2lang/d2)
+
+D2 is a modern diagram scripting language that turns text to diagrams.
+
+| # | PR | Status | Description |
+|---|---|---|---|
+| 1 | [#2742](https://github.com/d2lang/d2/pull/2742) | Open | shape: cycle - trace arcs to shape borders (close #1578) |
+
 ### [digital-go-jp/abr-geocoder](https://github.com/digital-go-jp/abr-geocoder)
 
 Address Base Registry Geocoder by Japan's Digital Agency (digital.go.jp). Nationwide official address normalization service.
@@ -381,6 +391,15 @@ Your own personal AI assistant. Any OS. Any Platform. The lobster way. 🦞
 | # | PR | Status | Description |
 |---|---|---|---|
 | 1 | [#17949](https://github.com/openclaw/openclaw/pull/17949) | Merged | fix: clear stale runningAtMs in cron.run() before already-running check (#17554) |
+
+### [openclimatefix/graph_weather](https://github.com/openclimatefix/graph_weather)
+
+Graph-based weather forecasting models. Originally, PyTorch implementation of Ryan Keisler's 2022 "Forecasting Global Weather with Graph Neural Networks" paper (https://arxiv.org/abs/2202.07575)
+
+| # | PR | Status | Description |
+|---|---|---|---|
+| 2 | [#241](https://github.com/openclimatefix/graph_weather/pull/241) | Open | fix: pin pytorch and align the PyG wheel index (#232) |
+| 1 | [#242](https://github.com/openclimatefix/graph_weather/pull/242) | Open | feat: add MOSAIC block-sparse attention and native-grid processing (#217) |
 
 ### [tailcallhq/tailcallhq.github.io](https://github.com/tailcallhq/tailcallhq.github.io)
 
