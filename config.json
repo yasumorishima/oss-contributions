@@ -222,6 +222,10 @@
     "codeforjapan/mapprint": {
       "language": "SCSS",
       "description": ""
+    },
+    "openclimatefix/graph_weather": {
+      "language": "Python",
+      "description": "Graph-based weather forecasting models. Originally, PyTorch implementation of Ryan Keisler's 2022 \"Forecasting Global Weather with Graph Neural Networks\" paper (https://arxiv.org/abs/2202.07575)"
     }
   }
 }
