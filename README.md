@@ -35,7 +35,7 @@ Automated watchers that surface active open-source bounties.
 | [fact-checker](https://github.com/team-mirai-volunteer/fact-checker) | TypeScript | 6 | 0 | 0 | 6 |
 | [post-checker](https://github.com/team-mirai-volunteer/post-checker) | TypeScript | 1 | 0 | 1 | 0 |
 | [marumie](https://github.com/team-mirai/marumie) | TypeScript / Next.js | 1 | 0 | 1 | 0 |
-| [mirai-gikai](https://github.com/team-mirai/mirai-gikai) | TypeScript | 2 | 2 | 0 | 0 |
+| [mirai-gikai](https://github.com/team-mirai/mirai-gikai) | TypeScript | 3 | 2 | 1 | 0 |
 | [vyper](https://github.com/vyperlang/vyper) | Python | 2 | 1 | 1 | 0 |
 | [math](https://github.com/stan-dev/math) | C++ | 1 | 0 | 1 | 0 |
 | [PHPPresentation](https://github.com/PHPOffice/PHPPresentation) | PHP | 1 | 0 | 1 | 0 |
@@ -52,7 +52,7 @@ Automated watchers that surface active open-source bounties.
 | [d2](https://github.com/terrastruct/d2) | Go | 1 | 0 | 1 | 0 |
 | [burn](https://github.com/tracel-ai/burn) | Rust | 1 | 1 | 0 | 0 |
 | [zio](https://github.com/zio/zio) | Scala | 2 | 0 | 0 | 2 |
-| **Total** | | **84** | **43** | **25** | **16** |
+| **Total** | | **85** | **43** | **26** | **16** |
 
 ## Contributions by Project
 
@@ -296,6 +296,7 @@ Political finance transparency platform. Built with Next.js, TypeScript, Prisma,
 
 | # | PR | Status | Description |
 |---|---|---|---|
+| 3 | [#940](https://github.com/team-mirai/mirai-gikai/pull/940) | Open | feat: 法案本文の Markdown で表とタスクリストを使えるようにする |
 | 2 | [#932](https://github.com/team-mirai/mirai-gikai/pull/932) | Merged | fix: Safari/iOS でふりがなのルビと漢字の間隔が広くなる問題を修正 |
 | 1 | [#930](https://github.com/team-mirai/mirai-gikai/pull/930) | Merged | fix: Supabase CLI v2.106.0 以降で pnpm seed が permission denied になる問題を修正 |
 
