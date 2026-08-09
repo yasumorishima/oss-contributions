@@ -47,13 +47,14 @@ Automated watchers that surface active open-source bounties.
 | [notify-rust](https://github.com/hoodie/notify-rust) | Rust | 1 | 0 | 0 | 1 |
 | [openaerialmap](https://github.com/hotosm/openaerialmap) | Jupyter Notebook | 1 | 1 | 0 | 0 |
 | [line-bot-mcp-server](https://github.com/line/line-bot-mcp-server) | TypeScript | 1 | 1 | 0 | 0 |
+| [nvda](https://github.com/nvaccess/nvda) | Python | 1 | 0 | 1 | 0 |
 | [openclaw](https://github.com/openclaw/openclaw) | TypeScript | 1 | 1 | 0 | 0 |
 | [graph_weather](https://github.com/openclimatefix/graph_weather) | Python | 2 | 0 | 2 | 0 |
 | [tailcallhq.github.io](https://github.com/tailcallhq/tailcallhq.github.io) | MDX | 1 | 0 | 0 | 1 |
 | [d2](https://github.com/terrastruct/d2) | Go | 1 | 0 | 1 | 0 |
 | [burn](https://github.com/tracel-ai/burn) | Rust | 1 | 1 | 0 | 0 |
 | [zio](https://github.com/zio/zio) | Scala | 2 | 0 | 0 | 2 |
-| **Total** | | **87** | **45** | **26** | **16** |
+| **Total** | | **88** | **45** | **27** | **16** |
 
 ## Contributions by Project
 
@@ -394,6 +395,14 @@ MCP server for LINE Messaging API integration with AI agents. Built with TypeScr
 | # | PR | Status | Description |
 |---|---|---|---|
 | 1 | [#369](https://github.com/line/line-bot-mcp-server/pull/369) | Merged | Add get_follower_ids tool to retrieve follower user IDs |
+
+### [nvaccess/nvda](https://github.com/nvaccess/nvda)
+
+NVDA, the free and open source Screen Reader for Microsoft Windows
+
+| # | PR | Status | Description |
+|---|---|---|---|
+| 1 | [#20635](https://github.com/nvaccess/nvda/pull/20635) | Open | Retry copying a file while its source is briefly in use |
 
 ### [openclaw/openclaw](https://github.com/openclaw/openclaw)
 
