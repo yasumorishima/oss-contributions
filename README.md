@@ -38,13 +38,14 @@ Automated watchers that surface active open-source bounties.
 | [mirai-gikai](https://github.com/team-mirai/mirai-gikai) | TypeScript | 3 | 2 | 1 | 0 |
 | [vyper](https://github.com/vyperlang/vyper) | Python | 2 | 1 | 1 | 0 |
 | [math](https://github.com/stan-dev/math) | C++ | 1 | 0 | 1 | 0 |
-| [PHPPresentation](https://github.com/PHPOffice/PHPPresentation) | PHP | 1 | 0 | 1 | 0 |
+| [PHPPresentation](https://github.com/PHPOffice/PHPPresentation) | PHP | 2 | 0 | 2 | 0 |
 | [BirdXplorer](https://github.com/codeforjapan/BirdXplorer) | Python | 1 | 1 | 0 | 0 |
 | [mapprint](https://github.com/codeforjapan/mapprint) | SCSS | 4 | 3 | 0 | 1 |
 | [d2](https://github.com/d2lang/d2) | Go | 1 | 0 | 1 | 0 |
 | [abr-geocoder](https://github.com/digital-go-jp/abr-geocoder) | TypeScript | 1 | 0 | 0 | 1 |
 | [gyroflow](https://github.com/gyroflow/gyroflow) | Rust | 2 | 0 | 2 | 0 |
 | [notify-rust](https://github.com/hoodie/notify-rust) | Rust | 1 | 0 | 0 | 1 |
+| [openaerialmap](https://github.com/hotosm/openaerialmap) | Jupyter Notebook | 1 | 1 | 0 | 0 |
 | [line-bot-mcp-server](https://github.com/line/line-bot-mcp-server) | TypeScript | 1 | 1 | 0 | 0 |
 | [openclaw](https://github.com/openclaw/openclaw) | TypeScript | 1 | 1 | 0 | 0 |
 | [graph_weather](https://github.com/openclimatefix/graph_weather) | Python | 2 | 0 | 2 | 0 |
@@ -52,7 +53,7 @@ Automated watchers that surface active open-source bounties.
 | [d2](https://github.com/terrastruct/d2) | Go | 1 | 0 | 1 | 0 |
 | [burn](https://github.com/tracel-ai/burn) | Rust | 1 | 1 | 0 | 0 |
 | [zio](https://github.com/zio/zio) | Scala | 2 | 0 | 0 | 2 |
-| **Total** | | **85** | **44** | **25** | **16** |
+| **Total** | | **87** | **45** | **26** | **16** |
 
 ## Contributions by Project
 
@@ -323,6 +324,7 @@ A pure PHP library for reading and writing presentations documents
 
 | # | PR | Status | Description |
 |---|---|---|---|
+| 2 | [#897](https://github.com/PHPOffice/PHPPresentation/pull/897) | Open | Fix static analysis on PHP 8.4 and 8.5 |
 | 1 | [#891](https://github.com/PHPOffice/PHPPresentation/pull/891) | Open | Add Keynote reader and writer |
 
 ### [codeforjapan/BirdXplorer](https://github.com/codeforjapan/BirdXplorer)
@@ -376,6 +378,14 @@ Video stabilization using gyroscope data
 | # | PR | Status | Description |
 |---|---|---|---|
 | 1 | [#273](https://github.com/hoodie/notify-rust/pull/273) | Closed | feat(macos): add wait_for_action and on_close |
+
+### [hotosm/openaerialmap](https://github.com/hotosm/openaerialmap)
+
+OpenAerialMap is an open service to provide access to a commons of openly licensed imagery and map layer services.
+
+| # | PR | Status | Description |
+|---|---|---|---|
+| 1 | [#289](https://github.com/hotosm/openaerialmap/pull/289) | Merged | fix(stactools-hotosm): skip metadata entries that fail STAC Item creation |
 
 ### [line/line-bot-mcp-server](https://github.com/line/line-bot-mcp-server)
 
