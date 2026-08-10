@@ -38,23 +38,27 @@ Automated watchers that surface active open-source bounties.
 | [mirai-gikai](https://github.com/team-mirai/mirai-gikai) | TypeScript | 3 | 2 | 1 | 0 |
 | [vyper](https://github.com/vyperlang/vyper) | Python | 2 | 1 | 1 | 0 |
 | [math](https://github.com/stan-dev/math) | C++ | 1 | 0 | 1 | 0 |
+| [PythonRobotics](https://github.com/AtsushiSakai/PythonRobotics) | Python | 1 | 0 | 1 | 0 |
 | [PHPPresentation](https://github.com/PHPOffice/PHPPresentation) | PHP | 2 | 0 | 2 | 0 |
+| [fineract-backoffice-ui](https://github.com/apache/fineract-backoffice-ui) | TypeScript | 1 | 0 | 1 | 0 |
 | [BirdXplorer](https://github.com/codeforjapan/BirdXplorer) | Python | 1 | 1 | 0 | 0 |
 | [mapprint](https://github.com/codeforjapan/mapprint) | SCSS | 4 | 3 | 0 | 1 |
 | [d2](https://github.com/d2lang/d2) | Go | 1 | 0 | 1 | 0 |
+| [MathCAT](https://github.com/daisy/MathCAT) | Rust | 1 | 0 | 1 | 0 |
 | [abr-geocoder](https://github.com/digital-go-jp/abr-geocoder) | TypeScript | 1 | 0 | 0 | 1 |
 | [gyroflow](https://github.com/gyroflow/gyroflow) | Rust | 2 | 0 | 2 | 0 |
 | [notify-rust](https://github.com/hoodie/notify-rust) | Rust | 1 | 0 | 0 | 1 |
 | [openaerialmap](https://github.com/hotosm/openaerialmap) | Jupyter Notebook | 1 | 1 | 0 | 0 |
 | [line-bot-mcp-server](https://github.com/line/line-bot-mcp-server) | TypeScript | 1 | 1 | 0 | 0 |
-| [nvda](https://github.com/nvaccess/nvda) | Python | 1 | 0 | 1 | 0 |
+| [nvda](https://github.com/nvaccess/nvda) | Python | 2 | 0 | 1 | 1 |
 | [openclaw](https://github.com/openclaw/openclaw) | TypeScript | 1 | 1 | 0 | 0 |
 | [graph_weather](https://github.com/openclimatefix/graph_weather) | Python | 2 | 0 | 2 | 0 |
+| [musicblocks-v4](https://github.com/sugarlabs/musicblocks-v4) | TypeScript | 1 | 0 | 1 | 0 |
 | [tailcallhq.github.io](https://github.com/tailcallhq/tailcallhq.github.io) | MDX | 1 | 0 | 0 | 1 |
 | [d2](https://github.com/terrastruct/d2) | Go | 1 | 0 | 1 | 0 |
 | [burn](https://github.com/tracel-ai/burn) | Rust | 1 | 1 | 0 | 0 |
 | [zio](https://github.com/zio/zio) | Scala | 2 | 0 | 0 | 2 |
-| **Total** | | **88** | **45** | **27** | **16** |
+| **Total** | | **93** | **45** | **31** | **17** |
 
 ## Contributions by Project
 
@@ -319,6 +323,14 @@ The Stan Math Library is a C++ template library for automatic differentiation of
 |---|---|---|---|
 | 1 | [#3299](https://github.com/stan-dev/math/pull/3299) | Open | Add geometric distribution (lpmf, cdf, lcdf, lccdf, rng) |
 
+### [AtsushiSakai/PythonRobotics](https://github.com/AtsushiSakai/PythonRobotics)
+
+Python sample codes and textbook for robotics algorithms.
+
+| # | PR | Status | Description |
+|---|---|---|---|
+| 1 | [#1408](https://github.com/AtsushiSakai/PythonRobotics/pull/1408) | Open | Run CI on Python 3.14 as well as 3.13 |
+
 ### [PHPOffice/PHPPresentation](https://github.com/PHPOffice/PHPPresentation)
 
 A pure PHP library for reading and writing presentations documents
@@ -327,6 +339,14 @@ A pure PHP library for reading and writing presentations documents
 |---|---|---|---|
 | 2 | [#897](https://github.com/PHPOffice/PHPPresentation/pull/897) | Open | Fix static analysis on PHP 8.4 and 8.5 |
 | 1 | [#891](https://github.com/PHPOffice/PHPPresentation/pull/891) | Open | Add Keynote reader and writer |
+
+### [apache/fineract-backoffice-ui](https://github.com/apache/fineract-backoffice-ui)
+
+Angular back-office UI for Apache Fineract, the open-source core banking platform
+
+| # | PR | Status | Description |
+|---|---|---|---|
+| 1 | [#321](https://github.com/apache/fineract-backoffice-ui/pull/321) | Open | fix(accounting): use translation keys for list screen titles and tooltips |
 
 ### [codeforjapan/BirdXplorer](https://github.com/codeforjapan/BirdXplorer)
 
@@ -354,6 +374,14 @@ D2 is a modern diagram scripting language that turns text to diagrams.
 | # | PR | Status | Description |
 |---|---|---|---|
 | 1 | [#2742](https://github.com/d2lang/d2/pull/2742) | Open | shape: cycle - trace arcs to shape borders (close #1578) |
+
+### [daisy/MathCAT](https://github.com/daisy/MathCAT)
+
+MathCAT: Math Capable Assistive Technology for generating speech, braille, and navigation.
+
+| # | PR | Status | Description |
+|---|---|---|---|
+| 1 | [#665](https://github.com/daisy/MathCAT/pull/665) | Open | Fix assertions in chemistry.rs that could never fail (#551) |
 
 ### [digital-go-jp/abr-geocoder](https://github.com/digital-go-jp/abr-geocoder)
 
@@ -402,6 +430,7 @@ NVDA, the free and open source Screen Reader for Microsoft Windows
 
 | # | PR | Status | Description |
 |---|---|---|---|
+| 2 | [#20637](https://github.com/nvaccess/nvda/pull/20637) | Closed | Add type annotations to the Java Access Bridge files |
 | 1 | [#20635](https://github.com/nvaccess/nvda/pull/20635) | Open | Retry copying a file while its source is briefly in use |
 
 ### [openclaw/openclaw](https://github.com/openclaw/openclaw)
@@ -420,6 +449,14 @@ Graph-based weather forecasting models. Originally, PyTorch implementation of Ry
 |---|---|---|---|
 | 2 | [#241](https://github.com/openclimatefix/graph_weather/pull/241) | Open | fix: pin pytorch and align the PyG wheel index (#232) |
 | 1 | [#242](https://github.com/openclimatefix/graph_weather/pull/242) | Open | feat: add MOSAIC block-sparse attention and native-grid processing (#217) |
+
+### [sugarlabs/musicblocks-v4](https://github.com/sugarlabs/musicblocks-v4)
+
+A complete overhaul of Music Blocks
+
+| # | PR | Status | Description |
+|---|---|---|---|
+| 1 | [#774](https://github.com/sugarlabs/musicblocks-v4/pull/774) | Open | #680 | feat(masonry): improve Palette interactions |
 
 ### [tailcallhq/tailcallhq.github.io](https://github.com/tailcallhq/tailcallhq.github.io)
 
