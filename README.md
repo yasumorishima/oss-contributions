@@ -40,7 +40,7 @@ Automated watchers that surface active open-source bounties.
 | [math](https://github.com/stan-dev/math) | C++ | 1 | 0 | 1 | 0 |
 | [PythonRobotics](https://github.com/AtsushiSakai/PythonRobotics) | Python | 1 | 0 | 1 | 0 |
 | [PHPPresentation](https://github.com/PHPOffice/PHPPresentation) | PHP | 2 | 0 | 2 | 0 |
-| [fineract-backoffice-ui](https://github.com/apache/fineract-backoffice-ui) | TypeScript | 1 | 0 | 1 | 0 |
+| [fineract-backoffice-ui](https://github.com/apache/fineract-backoffice-ui) | TypeScript | 1 | 1 | 0 | 0 |
 | [BirdXplorer](https://github.com/codeforjapan/BirdXplorer) | Python | 1 | 1 | 0 | 0 |
 | [mapprint](https://github.com/codeforjapan/mapprint) | SCSS | 4 | 3 | 0 | 1 |
 | [d2](https://github.com/d2lang/d2) | Go | 1 | 0 | 1 | 0 |
@@ -58,7 +58,7 @@ Automated watchers that surface active open-source bounties.
 | [d2](https://github.com/terrastruct/d2) | Go | 1 | 0 | 1 | 0 |
 | [burn](https://github.com/tracel-ai/burn) | Rust | 1 | 1 | 0 | 0 |
 | [zio](https://github.com/zio/zio) | Scala | 2 | 0 | 0 | 2 |
-| **Total** | | **93** | **45** | **31** | **17** |
+| **Total** | | **93** | **46** | **30** | **17** |
 
 ## Contributions by Project
 
@@ -346,7 +346,7 @@ Angular back-office UI for Apache Fineract, the open-source core banking platfor
 
 | # | PR | Status | Description |
 |---|---|---|---|
-| 1 | [#321](https://github.com/apache/fineract-backoffice-ui/pull/321) | Open | fix(accounting): use translation keys for list screen titles and tooltips |
+| 1 | [#321](https://github.com/apache/fineract-backoffice-ui/pull/321) | Merged | fix(accounting): use translation keys for list screen titles and tooltips |
 
 ### [codeforjapan/BirdXplorer](https://github.com/codeforjapan/BirdXplorer)
 
