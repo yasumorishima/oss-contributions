@@ -230,6 +230,22 @@
     "hotosm/openaerialmap": {
       "language": "Jupyter Notebook",
       "description": "OpenAerialMap is an open service to provide access to a commons of openly licensed imagery and map layer services."
+    },
+    "AtsushiSakai/PythonRobotics": {
+      "language": "Python",
+      "description": "Python sample codes and textbook for robotics algorithms."
+    },
+    "apache/fineract-backoffice-ui": {
+      "language": "TypeScript",
+      "description": "Angular back-office UI for Apache Fineract, the open-source core banking platform"
+    },
+    "sugarlabs/musicblocks-v4": {
+      "language": "TypeScript",
+      "description": "A complete overhaul of Music Blocks"
+    },
+    "nvaccess/nvda": {
+      "language": "Python",
+      "description": "NVDA, the free and open source Screen Reader for Microsoft Windows"
     }
   }
 }
