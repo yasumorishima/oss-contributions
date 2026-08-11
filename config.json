@@ -246,6 +246,10 @@
     "nvaccess/nvda": {
       "language": "Python",
       "description": "NVDA, the free and open source Screen Reader for Microsoft Windows"
+    },
+    "daisy/MathCAT": {
+      "language": "Rust",
+      "description": "MathCAT: Math Capable Assistive Technology for generating speech, braille, and navigation."
     }
   }
 }
