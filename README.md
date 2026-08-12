@@ -53,13 +53,13 @@ Automated watchers that surface active open-source bounties.
 | [nvda](https://github.com/nvaccess/nvda) | Python | 2 | 0 | 1 | 1 |
 | [openclaw](https://github.com/openclaw/openclaw) | TypeScript | 1 | 1 | 0 | 0 |
 | [graph_weather](https://github.com/openclimatefix/graph_weather) | Python | 2 | 0 | 2 | 0 |
-| [OpenFisca-Japan](https://github.com/project-inclusive/OpenFisca-Japan) | TypeScript | 5 | 4 | 1 | 0 |
+| [OpenFisca-Japan](https://github.com/project-inclusive/OpenFisca-Japan) | TypeScript | 5 | 5 | 0 | 0 |
 | [musicblocks-v4](https://github.com/sugarlabs/musicblocks-v4) | TypeScript | 1 | 0 | 1 | 0 |
 | [tailcallhq.github.io](https://github.com/tailcallhq/tailcallhq.github.io) | MDX | 1 | 0 | 0 | 1 |
 | [d2](https://github.com/terrastruct/d2) | Go | 1 | 0 | 1 | 0 |
 | [burn](https://github.com/tracel-ai/burn) | Rust | 1 | 1 | 0 | 0 |
 | [zio](https://github.com/zio/zio) | Scala | 2 | 0 | 0 | 2 |
-| **Total** | | **98** | **52** | **29** | **17** |
+| **Total** | | **98** | **53** | **28** | **17** |
 
 ## Contributions by Project
 
@@ -457,7 +457,7 @@ Graph-based weather forecasting models. Originally, PyTorch implementation of Ry
 
 | # | PR | Status | Description |
 |---|---|---|---|
-| 5 | [#483](https://github.com/project-inclusive/OpenFisca-Japan/pull/483) | Open | 高等教育の修学支援新制度（授業料等減免）を実装 |
+| 5 | [#483](https://github.com/project-inclusive/OpenFisca-Japan/pull/483) | Merged | 高等教育の修学支援新制度（授業料等減免）を実装 |
 | 4 | [#481](https://github.com/project-inclusive/OpenFisca-Japan/pull/481) | Merged | 母子父子寡婦福祉資金貸付金を実装 |
 | 3 | [#482](https://github.com/project-inclusive/OpenFisca-Japan/pull/482) | Merged | 就学援助の対象者判定を実装 |
 | 2 | [#479](https://github.com/project-inclusive/OpenFisca-Japan/pull/479) | Merged | 高等職業訓練促進給付金を実装 |
