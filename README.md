@@ -52,14 +52,14 @@ Automated watchers that surface active open-source bounties.
 | [line-bot-mcp-server](https://github.com/line/line-bot-mcp-server) | TypeScript | 1 | 1 | 0 | 0 |
 | [nvda](https://github.com/nvaccess/nvda) | Python | 2 | 0 | 1 | 1 |
 | [openclaw](https://github.com/openclaw/openclaw) | TypeScript | 1 | 1 | 0 | 0 |
-| [graph_weather](https://github.com/openclimatefix/graph_weather) | Python | 3 | 0 | 2 | 1 |
+| [graph_weather](https://github.com/openclimatefix/graph_weather) | Python | 4 | 0 | 3 | 1 |
 | [OpenFisca-Japan](https://github.com/project-inclusive/OpenFisca-Japan) | TypeScript | 6 | 6 | 0 | 0 |
 | [musicblocks-v4](https://github.com/sugarlabs/musicblocks-v4) | TypeScript | 1 | 0 | 1 | 0 |
 | [tailcallhq.github.io](https://github.com/tailcallhq/tailcallhq.github.io) | MDX | 1 | 0 | 0 | 1 |
 | [d2](https://github.com/terrastruct/d2) | Go | 1 | 0 | 1 | 0 |
 | [burn](https://github.com/tracel-ai/burn) | Rust | 1 | 1 | 0 | 0 |
 | [zio](https://github.com/zio/zio) | Scala | 2 | 0 | 0 | 2 |
-| **Total** | | **100** | **54** | **28** | **18** |
+| **Total** | | **101** | **54** | **29** | **18** |
 
 ## Contributions by Project
 
@@ -448,6 +448,7 @@ Graph-based weather forecasting models. Originally, PyTorch implementation of Ry
 
 | # | PR | Status | Description |
 |---|---|---|---|
+| 4 | [#246](https://github.com/openclimatefix/graph_weather/pull/246) | Open | fix: repair three runtime defects in the WeatherMesh and Aurora models |
 | 3 | [#245](https://github.com/openclimatefix/graph_weather/pull/245) | Closed | style: fix the 156 ruff errors that keep pre-commit.ci red on main (#244) |
 | 2 | [#241](https://github.com/openclimatefix/graph_weather/pull/241) | Open | fix: pin pytorch and align the PyG wheel index (#232) |
 | 1 | [#242](https://github.com/openclimatefix/graph_weather/pull/242) | Open | feat: add MOSAIC block-sparse attention and native-grid processing (#217) |
