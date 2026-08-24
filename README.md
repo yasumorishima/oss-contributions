@@ -41,7 +41,7 @@ Automated watchers that surface active open-source bounties.
 | [PythonRobotics](https://github.com/AtsushiSakai/PythonRobotics) | Python | 1 | 0 | 1 | 0 |
 | [PHPPresentation](https://github.com/PHPOffice/PHPPresentation) | PHP | 2 | 1 | 1 | 0 |
 | [fineract-backoffice-ui](https://github.com/apache/fineract-backoffice-ui) | TypeScript | 1 | 1 | 0 | 0 |
-| [BirdXplorer](https://github.com/codeforjapan/BirdXplorer) | Python | 1 | 1 | 0 | 0 |
+| [BirdXplorer](https://github.com/codeforjapan/BirdXplorer) | Python | 2 | 1 | 1 | 0 |
 | [mapprint](https://github.com/codeforjapan/mapprint) | SCSS | 4 | 3 | 0 | 1 |
 | [d2](https://github.com/d2lang/d2) | Go | 1 | 0 | 1 | 0 |
 | [MathCAT](https://github.com/daisy/MathCAT) | Rust | 1 | 1 | 0 | 0 |
@@ -50,7 +50,7 @@ Automated watchers that surface active open-source bounties.
 | [notify-rust](https://github.com/hoodie/notify-rust) | Rust | 1 | 0 | 0 | 1 |
 | [openaerialmap](https://github.com/hotosm/openaerialmap) | Jupyter Notebook | 1 | 1 | 0 | 0 |
 | [line-bot-mcp-server](https://github.com/line/line-bot-mcp-server) | TypeScript | 1 | 1 | 0 | 0 |
-| [nvda](https://github.com/nvaccess/nvda) | Python | 2 | 0 | 1 | 1 |
+| [nvda](https://github.com/nvaccess/nvda) | Python | 2 | 0 | 0 | 2 |
 | [openclaw](https://github.com/openclaw/openclaw) | TypeScript | 1 | 1 | 0 | 0 |
 | [graph_weather](https://github.com/openclimatefix/graph_weather) | Python | 4 | 0 | 3 | 1 |
 | [OpenFisca-Japan](https://github.com/project-inclusive/OpenFisca-Japan) | TypeScript | 6 | 6 | 0 | 0 |
@@ -59,7 +59,7 @@ Automated watchers that surface active open-source bounties.
 | [d2](https://github.com/terrastruct/d2) | Go | 1 | 0 | 1 | 0 |
 | [burn](https://github.com/tracel-ai/burn) | Rust | 1 | 1 | 0 | 0 |
 | [zio](https://github.com/zio/zio) | Scala | 2 | 0 | 0 | 2 |
-| **Total** | | **101** | **54** | **29** | **18** |
+| **Total** | | **102** | **54** | **29** | **19** |
 
 ## Contributions by Project
 
@@ -355,6 +355,7 @@ Angular back-office UI for Apache Fineract, the open-source core banking platfor
 
 | # | PR | Status | Description |
 |---|---|---|---|
+| 2 | [#286](https://github.com/codeforjapan/BirdXplorer/pull/286) | Open | feat(api): statement_timeout で打ち切られたクエリを 504、その他の DB 障害を 503 に返す (#284) |
 | 1 | [#281](https://github.com/codeforjapan/BirdXplorer/pull/281) | Merged | feat(common): DB クエリに statement_timeout を設定（既定 30 秒） (#278) |
 
 ### [codeforjapan/mapprint](https://github.com/codeforjapan/mapprint)
@@ -432,7 +433,7 @@ NVDA, the free and open source Screen Reader for Microsoft Windows
 | # | PR | Status | Description |
 |---|---|---|---|
 | 2 | [#20637](https://github.com/nvaccess/nvda/pull/20637) | Closed | Add type annotations to the Java Access Bridge files |
-| 1 | [#20635](https://github.com/nvaccess/nvda/pull/20635) | Open | Retry copying a file while its source is briefly in use |
+| 1 | [#20635](https://github.com/nvaccess/nvda/pull/20635) | Closed | Retry copying a file while its source is briefly in use |
 
 ### [openclaw/openclaw](https://github.com/openclaw/openclaw)
 
