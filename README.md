@@ -17,7 +17,7 @@ Automated watchers that surface active open-source bounties.
 | [optunahub-registry](https://github.com/optuna/optunahub-registry) | Python | 3 | 3 | 0 | 0 |
 | [Kamodo](https://github.com/nasa/Kamodo) | Python | 1 | 1 | 0 | 0 |
 | [Kamodo-core](https://github.com/nasa/Kamodo-core) | Python | 1 | 1 | 0 | 0 |
-| [condor](https://github.com/nasa/condor) | Python | 1 | 0 | 0 | 1 |
+| [condor](https://github.com/nasa/condor) | Unknown | 1 | 0 | 0 | 1 |
 | [professional-services-data-validator](https://github.com/GoogleCloudPlatform/professional-services-data-validator) | Python | 1 | 1 | 0 | 0 |
 | [optax](https://github.com/google-deepmind/optax) | Python | 1 | 1 | 0 | 0 |
 | [timesfm](https://github.com/google-research/timesfm) | Python | 2 | 1 | 1 | 0 |
@@ -36,7 +36,7 @@ Automated watchers that surface active open-source bounties.
 | [post-checker](https://github.com/team-mirai-volunteer/post-checker) | TypeScript | 1 | 0 | 1 | 0 |
 | [marumie](https://github.com/team-mirai/marumie) | TypeScript / Next.js | 1 | 0 | 1 | 0 |
 | [mirai-gikai](https://github.com/team-mirai/mirai-gikai) | TypeScript | 3 | 2 | 1 | 0 |
-| [vyper](https://github.com/vyperlang/vyper) | Python | 2 | 1 | 1 | 0 |
+| [vyper](https://github.com/vyperlang/vyper) | Python | 2 | 2 | 0 | 0 |
 | [math](https://github.com/stan-dev/math) | C++ | 1 | 0 | 1 | 0 |
 | [PythonRobotics](https://github.com/AtsushiSakai/PythonRobotics) | Python | 1 | 0 | 1 | 0 |
 | [PHPPresentation](https://github.com/PHPOffice/PHPPresentation) | PHP | 2 | 1 | 1 | 0 |
@@ -59,7 +59,7 @@ Automated watchers that surface active open-source bounties.
 | [d2](https://github.com/terrastruct/d2) | Go | 1 | 0 | 1 | 0 |
 | [burn](https://github.com/tracel-ai/burn) | Rust | 1 | 1 | 0 | 0 |
 | [zio](https://github.com/zio/zio) | Scala | 2 | 0 | 0 | 2 |
-| **Total** | | **102** | **54** | **29** | **19** |
+| **Total** | | **102** | **55** | **28** | **19** |
 
 ## Contributions by Project
 
@@ -314,7 +314,7 @@ Pythonic Smart Contract Language for the EVM
 | # | PR | Status | Description |
 |---|---|---|---|
 | 2 | [#4908](https://github.com/vyperlang/vyper/pull/4908) | Merged | fix[ux]: deduplicate default-argument expanded ABI entries in `from_json_abi` |
-| 1 | [#4904](https://github.com/vyperlang/vyper/pull/4904) | Open | fix: handle missing inputs/outputs keys in ABI JSON interface |
+| 1 | [#4904](https://github.com/vyperlang/vyper/pull/4904) | Merged | fix: handle missing inputs/outputs keys in ABI JSON interface |
 
 ### [stan-dev/math](https://github.com/stan-dev/math)
 
