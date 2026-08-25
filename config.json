@@ -151,10 +151,6 @@
       "language": "Python",
       "description": "Data validation tool for migrating data to BigQuery. Python, Ibis, SQLAlchemy. 500 stars."
     },
-    "nasa/condor": {
-      "language": "Python",
-      "description": "Orbital mechanics and trajectory analysis tool by NASA. Python, SciPy, CasADi."
-    },
     "google/adk-python": {
       "language": "Python",
       "description": "An open-source, code-first Python toolkit for building, evaluating, and deploying sophisticated AI agents with flexibility and control."
@@ -175,25 +171,9 @@
       "language": "Python",
       "description": ""
     },
-    "dfinity/eslint-config-oisy-wallet": {
-      "language": "JavaScript",
-      "description": "Shared ESLint configurations from the OISY Wallet team"
-    },
     "gyroflow/gyroflow": {
       "language": "Rust",
       "description": "Video stabilization using gyroscope data"
-    },
-    "zio/zio-schema": {
-      "language": "Scala",
-      "description": "Compositional, type-safe schema definitions, which enable auto-derivation of codecs and migrations."
-    },
-    "zio/zio": {
-      "language": "Scala",
-      "description": "ZIO — A type-safe, composable library for async and concurrent programming in Scala"
-    },
-    "tailcallhq/tailcallhq.github.io": {
-      "language": "MDX",
-      "description": "Website for Tailcall"
     },
     "terrastruct/d2": {
       "language": "Go",
@@ -242,10 +222,6 @@
     "sugarlabs/musicblocks-v4": {
       "language": "TypeScript",
       "description": "A complete overhaul of Music Blocks"
-    },
-    "nvaccess/nvda": {
-      "language": "Python",
-      "description": "NVDA, the free and open source Screen Reader for Microsoft Windows"
     },
     "daisy/MathCAT": {
       "language": "Rust",
