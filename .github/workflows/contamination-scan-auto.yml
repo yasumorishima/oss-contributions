@@ -83,7 +83,7 @@ jobs:
           jq -r '.projects | keys[]' config.json | cut -d/ -f2 | sort > /tmp/registered.txt
 
           # 実際の全フォーク一覧
-          gh repo list "$AUTHOR" --fork --no-archived --json name --jq '.[].name' | sort > /tmp/actual_forks.txt
+          gh repo list "$AUTHOR" --fork --no-archived --limit 500 --json name --jq '.[].name' | sort > /tmp/actual_forks.txt
 
           # 差分 = config.json 未登録フォーク → 自動登録を試行
           while read REPO_NAME; do
@@ -109,6 +109,10 @@ jobs:
             echo "✅ AUTO-REGISTERED: $UPSTREAM_FULL (lang=$LANG)"
             echo "- ✅ \`$UPSTREAM_FULL\` を config.json に自動登録（Other グループ）" >> "$FIXED_FILE"
             FIXED_COUNT=$((FIXED_COUNT + 1))
+
+            # gh repo list 由来＝実在が確認済みなので、そのままスキャン対象に追記する
+            # （config.json 全体からの再生成は Build fork list の除外を打ち消す）
+            echo "$AUTHOR/$REPO_NAME $UPSTREAM_FULL" >> /tmp/fork_list.txt
           done < <(comm -13 /tmp/registered.txt /tmp/actual_forks.txt)
 
           # 自動登録があればコミット
@@ -120,12 +124,6 @@ jobs:
             git push
             echo "📝 $FIXED_COUNT 件を config.json に自動登録＋コミットしました"
           fi
-
-          # fork_list.txt を再生成（新規登録分を含む）
-          jq -r '.projects | keys[]' config.json | while read upstream; do
-            REPO_NAME_RE=$(echo "$upstream" | cut -d/ -f2)
-            echo "$AUTHOR/$REPO_NAME_RE $upstream"
-          done > /tmp/fork_list.txt
 
           echo "fail=$FAIL" >> "$GITHUB_OUTPUT"
           echo "report_file=$REPORT_FILE" >> "$GITHUB_OUTPUT"
@@ -230,7 +228,7 @@ jobs:
               echo "$FORK"
             done < /tmp/fork_list.txt
             # 未登録フォーク
-            gh repo list "$AUTHOR" --fork --no-archived --json name --jq ".[].name" | while read NAME; do
+            gh repo list "$AUTHOR" --fork --no-archived --limit 500 --json name --jq ".[].name" | while read NAME; do
               echo "$AUTHOR/$NAME"
             done
           } | sort -u > /tmp/all_forks.txt
@@ -315,8 +313,9 @@ jobs:
           EXISTING=$(gh issue list \
             --repo yasumorishima/oss-contributions \
             --state open \
-            --json title \
-            | jq --arg t "$ISSUE_TITLE" '[.[] | select(.title == $t)] | length')
+            --json title 2>/dev/null \
+            | jq --arg t "$ISSUE_TITLE" '[.[] | select(.title == $t)] | length' 2>/dev/null || echo 0)
+          if [ -z "$EXISTING" ]; then EXISTING=0; fi
 
           if [ "$EXISTING" -gt 0 ]; then
             echo "ℹ️ 既にオープン Issue あり。重複作成をスキップします"
