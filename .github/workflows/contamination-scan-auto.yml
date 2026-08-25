@@ -302,25 +302,20 @@ jobs:
           echo "fail=$FAIL" >> "$GITHUB_OUTPUT"
           echo "report_file=$REPORT_FILE" >> "$GITHUB_OUTPUT"
 
-      - name: Create issue only for unfixed problems
+      - name: Create or update issue for unfixed problems
         if: steps.forks.outputs.fail == 'true' || steps.unregistered.outputs.fail == 'true' || steps.files.outputs.fail == 'true' || steps.codeql.outputs.fail == 'true' || steps.scheduled.outputs.fail == 'true' || steps.prscan.outputs.fail == 'true'
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           ISSUE_TITLE="⚠️ [自動検知] 自動修復できない問題が検出されました"
 
-          # 同タイトルのオープン Issue があればスキップ
-          EXISTING=$(gh issue list \
+          # 同タイトルのオープン Issue があれば、その番号を取得して本文を更新する
+          # （スキップすると、最初の 1 件が open の間ずっと新しい検出が Issue に出なくなる）
+          ISSUE_NUM=$(gh issue list \
             --repo yasumorishima/oss-contributions \
             --state open \
-            --json title 2>/dev/null \
-            | jq --arg t "$ISSUE_TITLE" '[.[] | select(.title == $t)] | length' 2>/dev/null || echo 0)
-          if [ -z "$EXISTING" ]; then EXISTING=0; fi
-
-          if [ "$EXISTING" -gt 0 ]; then
-            echo "ℹ️ 既にオープン Issue あり。重複作成をスキップします"
-            exit 0
-          fi
+            --json number,title 2>/dev/null \
+            | jq -r --arg t "$ISSUE_TITLE" '[.[] | select(.title == $t)] | .[0].number // empty' 2>/dev/null || echo "")
 
           BODY_FILE=$(mktemp)
           echo "## ⚠️ 自動修復できない問題" > "$BODY_FILE"
@@ -361,8 +356,26 @@ jobs:
           echo "" >> "$BODY_FILE"
           echo "> このIssueは Auto Contamination Scan ワークフローにより自動作成されました" >> "$BODY_FILE"
 
-          gh issue create \
-            --repo yasumorishima/oss-contributions \
-            --title "$ISSUE_TITLE" \
-            --body-file "$BODY_FILE" \
-            --label "bug"
+          if [ -n "$ISSUE_NUM" ]; then
+            # 既存 Issue: 本文が変わっているときだけ更新する
+            CURRENT_BODY=$(mktemp)
+            gh issue view "$ISSUE_NUM" \
+              --repo yasumorishima/oss-contributions \
+              --json body --jq '.body' 2>/dev/null | sed 's/\r$//' > "$CURRENT_BODY" || true
+            # gh は本文末尾に改行を足すので diff だと必ず差分になる
+            # -> コマンド置換で両方の末尾改行を落としてから比較する
+            if [ "$(cat "$CURRENT_BODY")" = "$(cat "$BODY_FILE")" ]; then
+              echo "ℹ️ Issue #$ISSUE_NUM は最新（検出内容に変化なし）"
+            else
+              gh issue edit "$ISSUE_NUM" \
+                --repo yasumorishima/oss-contributions \
+                --body-file "$BODY_FILE"
+              echo "📝 Issue #$ISSUE_NUM の本文を最新の検出内容に更新しました"
+            fi
+          else
+            gh issue create \
+              --repo yasumorishima/oss-contributions \
+              --title "$ISSUE_TITLE" \
+              --body-file "$BODY_FILE" \
+              --label "bug"
+          fi
