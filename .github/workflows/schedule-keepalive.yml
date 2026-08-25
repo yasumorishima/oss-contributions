@@ -9,6 +9,11 @@ name: Scheduled Workflow Keepalive
 # - 最終 push が STALE_DAYS より前のものだけ（活発なリポは push 自体が timer をリセットする）
 # - disabled_manually は意図的な停止なので絶対に触らない
 # - 既に disabled_inactivity のものは、捨てた可能性があるので自動では戻さず報告だけ
+#
+# 未実証: wbc-scouting で効いているのは「そのワークフロー自身の run からの PUT」で、
+# 別リポの run からの PUT でも timer が戻るかは 60 日待たないと確かめられない。
+# 毎回の summary で disabled_inactivity が増えていないかを見れば分かる。増えるようなら
+# 各リポに mlb-data-pipeline と同じ自己 keepalive step を入れる（そちらは実証済み）。
 
 on:
   schedule:
@@ -52,7 +57,7 @@ jobs:
           while read -r REPO; do
             gh api "repos/$REPO/actions/workflows" --paginate \
               --jq '.workflows[] | select(.path | startswith(".github/")) | "\(.state)\t\(.path)"' \
-              > "$WFS" 2>/dev/null || continue
+              > "$WFS" 2>/dev/null || { echo "::warning::WORKFLOW LIST FAILED: $REPO の一覧取得に失敗（スキップ）"; continue; }
             while IFS=$(printf '\t') read -r STATE WFPATH; do
               WF=$(basename "$WFPATH")
               if [ "$STATE" = "active" ]; then
