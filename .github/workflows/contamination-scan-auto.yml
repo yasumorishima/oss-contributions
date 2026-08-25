@@ -27,8 +27,7 @@ jobs:
         env:
           GH_TOKEN: ${{ secrets.FORK_ADMIN_PAT }}
         run: |
-          USER=$(gh api user --jq '.login' 2>&1)
-          if [ $? -ne 0 ]; then
+          if ! USER=$(gh api user --jq '.login' 2>&1); then
             echo "::error::FORK_ADMIN_PAT が無効です。secretを更新してください: gh auth token | gh secret set FORK_ADMIN_PAT --repo yasumorishima/oss-contributions"
             exit 1
           fi
@@ -36,15 +35,38 @@ jobs:
 
       - name: Build fork list from config.json
         id: forks
+        env:
+          GH_TOKEN: ${{ secrets.FORK_ADMIN_PAT }}
         run: |
           # config.json の upstream 一覧からフォーク一覧を生成
           # upstream "dfinity/icp-js-core" → fork "yasumorishima/icp-js-core"
+          # 削除済みで実在しないフォークは後続ステップが 404 で落ちるため除外する
           AUTHOR=$(jq -r '.author' config.json)
-          jq -r '.projects | keys[]' config.json | while read upstream; do
+          MISSING_FILE=$(mktemp)
+          : > /tmp/fork_list.txt
+
+          while read -r upstream; do
             REPO_NAME=$(echo "$upstream" | cut -d/ -f2)
-            echo "$AUTHOR/$REPO_NAME $upstream"
-          done > /tmp/fork_list.txt
+            FORK="$AUTHOR/$REPO_NAME"
+            if gh api "repos/$FORK" --jq '.full_name' > /dev/null 2>&1; then
+              echo "$FORK $upstream" >> /tmp/fork_list.txt
+            else
+              echo "::warning::MISSING FORK: $FORK が存在しない (upstream: $upstream) → スキャン対象から除外"
+              echo "- ⚠️ \`$FORK\` が存在しない（config.json に \`$upstream\` が残っている。フォークし直すか config.json から削除）" >> "$MISSING_FILE"
+            fi
+          done < <(jq -r '.projects | keys[]' config.json)
+
+          SCAN_COUNT=$(wc -l < /tmp/fork_list.txt)
+          MISSING_COUNT=$(wc -l < "$MISSING_FILE")
+          echo "ℹ️ スキャン対象 $SCAN_COUNT 件 / 実在しないフォーク $MISSING_COUNT 件を除外"
           cat /tmp/fork_list.txt
+
+          if [ "$MISSING_COUNT" -gt 0 ]; then
+            echo "fail=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "fail=false" >> "$GITHUB_OUTPUT"
+          fi
+          echo "report_file=$MISSING_FILE" >> "$GITHUB_OUTPUT"
 
       - name: Auto-register unregistered forks in config.json
         id: unregistered
@@ -138,7 +160,7 @@ jobs:
                 DELETE_RESULT=$(gh api "repos/$FORK/contents/$f" -X DELETE \
                   -f message="auto: remove $f from fork (CodeQL Default Setup / CodeRabbit App で代替)" \
                   -f sha="$SHA" \
-                  -f branch="$DEFAULT_BRANCH" 2>&1)
+                  -f branch="$DEFAULT_BRANCH" 2>&1) || true
                 if echo "$DELETE_RESULT" | jq -e '.commit.sha' > /dev/null 2>&1; then
                   COMMIT=$(echo "$DELETE_RESULT" | jq -r '.commit.sha[0:7]')
                   echo "✅ AUTO-DELETED: $FORK ($DEFAULT_BRANCH) から $f を削除 (commit: $COMMIT)"
@@ -173,7 +195,7 @@ jobs:
             if [ "$STATE" != "configured" ]; then
               echo "::notice::CODEQL: $FORK が未設定 (state=$STATE) → 自動有効化を試行"
               RESULT=$(gh api "repos/$FORK/code-scanning/default-setup" \
-                -X PATCH -f state=configured 2>&1)
+                -X PATCH -f state=configured 2>&1) || true
               if echo "$RESULT" | jq -e '.run_id' > /dev/null 2>&1; then
                 RUN_ID=$(echo "$RESULT" | jq -r '.run_id')
                 echo "✅ AUTO-ENABLED: $FORK (run_id=$RUN_ID)"
@@ -283,7 +305,7 @@ jobs:
           echo "report_file=$REPORT_FILE" >> "$GITHUB_OUTPUT"
 
       - name: Create issue only for unfixed problems
-        if: steps.unregistered.outputs.fail == 'true' || steps.files.outputs.fail == 'true' || steps.codeql.outputs.fail == 'true' || steps.scheduled.outputs.fail == 'true' || steps.prscan.outputs.fail == 'true'
+        if: steps.forks.outputs.fail == 'true' || steps.unregistered.outputs.fail == 'true' || steps.files.outputs.fail == 'true' || steps.codeql.outputs.fail == 'true' || steps.scheduled.outputs.fail == 'true' || steps.prscan.outputs.fail == 'true'
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
@@ -308,7 +330,7 @@ jobs:
           echo "" >> "$BODY_FILE"
 
           # 未修復の問題のみ（fail == true のステップのレポートファイル）
-          for RF in "${{ steps.unregistered.outputs.report_file }}" "${{ steps.files.outputs.report_file }}" "${{ steps.codeql.outputs.report_file }}" "${{ steps.scheduled.outputs.report_file }}" "${{ steps.prscan.outputs.report_file }}"; do
+          for RF in "${{ steps.forks.outputs.report_file }}" "${{ steps.unregistered.outputs.report_file }}" "${{ steps.files.outputs.report_file }}" "${{ steps.codeql.outputs.report_file }}" "${{ steps.scheduled.outputs.report_file }}" "${{ steps.prscan.outputs.report_file }}"; do
             if [ -s "$RF" ]; then
               cat "$RF" >> "$BODY_FILE"
             fi
