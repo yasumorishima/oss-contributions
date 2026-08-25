@@ -362,7 +362,9 @@ jobs:
             gh issue view "$ISSUE_NUM" \
               --repo yasumorishima/oss-contributions \
               --json body --jq '.body' 2>/dev/null | sed 's/\r$//' > "$CURRENT_BODY" || true
-            if diff -q "$CURRENT_BODY" "$BODY_FILE" > /dev/null 2>&1; then
+            # gh は本文末尾に改行を足すので diff だと必ず差分になる
+            # -> コマンド置換で両方の末尾改行を落としてから比較する
+            if [ "$(cat "$CURRENT_BODY")" = "$(cat "$BODY_FILE")" ]; then
               echo "ℹ️ Issue #$ISSUE_NUM は最新（検出内容に変化なし）"
             else
               gh issue edit "$ISSUE_NUM" \
