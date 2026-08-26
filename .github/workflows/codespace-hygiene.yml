@@ -52,6 +52,8 @@ jobs:
             exit 1
           fi
           COUNT=$(wc -l < "$LIST")
+          echo "codespaces: ${COUNT}"
+          sed 's/^/  /' "$LIST"
           BODY="$RUNNER_TEMP/body.md"
           ACTION="$RUNNER_TEMP/action.txt"
           : > "$ACTION"
@@ -123,6 +125,7 @@ jobs:
             fi
             printf '| `%s` | %s | `%s` | %s | %s | %s |\n' \
               "$NAME" "$REPO" "$REF" "$PRTXT" "$SAFE" "$VERDICT" >> "$BODY"
+            echo "  -> ${NAME}: PR=${PRTXT} local=${SAFE} verdict=${VERDICT}"
             case "$VERDICT" in *用済み*|*要確認*) echo "$NAME" >> "$ACTION" ;; esac
           done < "$LIST"
 
