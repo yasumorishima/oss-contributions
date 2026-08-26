@@ -1,0 +1,161 @@
+name: Codespace Hygiene
+
+# Codespace の無料枠で詰まるのは compute ではなく storage（included 15 GB-月）。
+# 1 台 32GB なので 64GB 保持なら約 7 日で尽き、使い切った月は 402 で
+# 新規作成どころか「既存 codespace の起動」まで塞がれる（2026-08-26 実測）。
+# ＝中を見て確認する手が使えなくなるので、用済みを溜めないことが唯一の対策。
+#
+# ここでは週に一度、全 codespace について
+#   1. 紐づく PR の状態（MERGED / CLOSED なら用済み）
+#   2. ローカルにしか無い commit が無いか
+# を codespace を起動せずに判定し、Issue に出す。
+#
+# 2 の判定: gitStatus.ahead は最終利用時点で凍結された古い値なので、そのまま
+# 「未 push あり」と読んではいけない（2026-07-04 / 08-18 / 08-26 の 3 回とも実損ゼロ）。
+# fork の branch が upstream の既定ブランチより何 commit 進んでいるか（remote_ahead）を
+# 数え、remote_ahead >= ahead なら「その本数はもうリモートにある」と言える。
+
+on:
+  schedule:
+    - cron: '0 5 * * 0'  # 毎週日曜 UTC 05:00 (JST 14:00)
+  workflow_dispatch:
+    inputs:
+      memo:
+        description: 'この実行の意図'
+        required: false
+        type: string
+
+permissions:
+  contents: read
+  issues: write
+
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    env:
+      GH_TOKEN: ${{ secrets.FORK_ADMIN_PAT }}
+      GB_PER_CODESPACE: '32'
+      INCLUDED_GB_MONTH: '15'
+      ISSUE_TITLE: 'Codespace hygiene: 用済み codespace と storage 枠'
+    steps:
+      - name: Audit codespaces
+        run: |
+          set -o pipefail
+          LIST="$RUNNER_TEMP/cs.tsv"
+          ERR="$RUNNER_TEMP/cs.err"
+          if ! gh api user/codespaces --paginate \
+              --jq '.codespaces[] | [.name, .repository.full_name, (.git_status.ref // ""), (.git_status.ahead // 0), .state, .last_used_at] | @tsv' \
+              > "$LIST" 2> "$ERR"; then
+            echo "::error::codespace 一覧を取得できない。FORK_ADMIN_PAT に codespace scope が要る（classic PAT なら codespace、fine-grained なら Codespaces: read）。"
+            sed 's/^/  /' "$ERR"
+            exit 1
+          fi
+          COUNT=$(wc -l < "$LIST")
+          BODY="$RUNNER_TEMP/body.md"
+          ACTION="$RUNNER_TEMP/action.txt"
+          : > "$ACTION"
+          TOTAL_GB=$((COUNT * GB_PER_CODESPACE))
+          if [ "$TOTAL_GB" -gt 0 ]; then
+            DAYS=$(( INCLUDED_GB_MONTH * 30 / TOTAL_GB ))
+          else
+            DAYS=0
+          fi
+          {
+            echo "## 保有 codespace"
+            echo
+            echo "**${COUNT} 台 / 約 ${TOTAL_GB}GB。included ${INCLUDED_GB_MONTH} GB-月 はこのペースで約 ${DAYS} 日で尽きる。**"
+            echo "使い切ると 402 になり、新規作成だけでなく **既存 codespace の起動も塞がれる**（中を見ての確認ができなくなる）。"
+            echo
+            echo "| codespace | repo | branch | PR | ローカル固有 commit | 判定 |"
+            echo "|---|---|---|---|---|---|"
+          } > "$BODY"
+          while IFS=$(printf '\t') read -r NAME REPO REF AHEAD STATE USED; do
+            [ -n "$NAME" ] || continue
+            PRTXT="—"; VERDICT="保持"; SAFE="—"
+            UPSTREAM=""
+            if ! UPSTREAM=$(gh api "repos/$REPO" --jq '.parent.full_name // empty' 2>/dev/null); then
+              UPSTREAM=""
+            fi
+            OWNER="${REPO%%/*}"
+            if [ -n "$REF" ]; then
+              # fork からの PR は upstream 側に立つので、親があればそちらを先に見る
+              PRJSON=""
+              if [ -n "$UPSTREAM" ]; then
+                PRJSON=$(gh api "repos/$UPSTREAM/pulls?head=${OWNER}:${REF}&state=all&per_page=1" \
+                  --jq '.[0] | "\(.number)\t\(.state)\t\(.merged_at // "")"' 2>/dev/null || echo "")
+              fi
+              if [ -z "$PRJSON" ]; then
+                PRJSON=$(gh api "repos/$REPO/pulls?head=${OWNER}:${REF}&state=all&per_page=1" \
+                  --jq '.[0] | "\(.number)\t\(.state)\t\(.merged_at // "")"' 2>/dev/null || echo "")
+              fi
+              if [ -n "$PRJSON" ] && [ "$PRJSON" != "null" ]; then
+                PRNUM=$(printf '%s' "$PRJSON" | cut -f1)
+                PRSTATE=$(printf '%s' "$PRJSON" | cut -f2)
+                PRMERGED=$(printf '%s' "$PRJSON" | cut -f3)
+                if [ -n "$PRMERGED" ]; then
+                  PRTXT="#${PRNUM} MERGED"; VERDICT="**用済み → 削除**"
+                elif [ "$PRSTATE" = "closed" ]; then
+                  PRTXT="#${PRNUM} CLOSED"; VERDICT="**用済み → 削除**"
+                else
+                  PRTXT="#${PRNUM} OPEN"; VERDICT="保持"
+                fi
+              else
+                PRTXT="なし"; VERDICT="**要確認**（PR が見つからない）"
+              fi
+              # ローカルにしか無い commit があるか（codespace を起動せずに判定）
+              BASEREPO="${UPSTREAM:-$REPO}"
+              BASEOWNER="${BASEREPO%%/*}"
+              if BASEBR=$(gh api "repos/$BASEREPO" --jq '.default_branch' 2>/dev/null) \
+                 && RA=$(gh api "repos/$REPO/compare/${BASEOWNER}:${BASEBR}...${REF}" --jq '.ahead_by' 2>/dev/null); then
+                if [ "${RA:-0}" -ge "${AHEAD:-0}" ]; then
+                  SAFE="無し（remote ${RA} ≥ 表示 ${AHEAD}）"
+                else
+                  SAFE="⚠️ 可能性あり（remote ${RA} < 表示 ${AHEAD}）"
+                  VERDICT="**要確認**（削除前に中身を見る）"
+                fi
+              else
+                SAFE="判定不可"
+                VERDICT="**要確認**（比較できない）"
+              fi
+            else
+              PRTXT="branch 不明"; VERDICT="**要確認**"
+            fi
+            printf '| `%s` | %s | `%s` | %s | %s | %s |\n' \
+              "$NAME" "$REPO" "$REF" "$PRTXT" "$SAFE" "$VERDICT" >> "$BODY"
+            case "$VERDICT" in *用済み*|*要確認*) echo "$NAME" >> "$ACTION" ;; esac
+          done < "$LIST"
+
+          {
+            echo
+            echo "削除は \`gh codespace delete -c <name>\`。**402 の月でも delete は通る**。"
+            echo "\"Continue using\" は押さない（レビュー待ちのまま storage を焼き続ける）。"
+            echo
+            echo "<sub>Codespace Hygiene が自動更新。判定根拠は memory の feedback_codespace-billing。</sub>"
+          } >> "$BODY"
+
+          cat "$BODY" >> "$GITHUB_STEP_SUMMARY"
+
+          NEED=$(wc -l < "$ACTION")
+          if [ "$NEED" -eq 0 ]; then
+            echo "用済み・要確認はゼロ。Issue は作らない。"
+            exit 0
+          fi
+
+          ISSUE_NUM=$(gh issue list --repo "$GITHUB_REPOSITORY" --state open \
+            --json number,title 2>/dev/null \
+            | jq -r --arg t "$ISSUE_TITLE" '[.[] | select(.title == $t)] | .[0].number // empty' 2>/dev/null || echo "")
+
+          if [ -n "$ISSUE_NUM" ]; then
+            CUR="$RUNNER_TEMP/cur.md"
+            gh issue view "$ISSUE_NUM" --repo "$GITHUB_REPOSITORY" --json body --jq '.body' 2>/dev/null \
+              | sed 's/\r$//' > "$CUR" || true
+            if [ "$(cat "$CUR")" = "$(cat "$BODY")" ]; then
+              echo "Issue #$ISSUE_NUM は最新（検出内容に変化なし）"
+            else
+              gh issue edit "$ISSUE_NUM" --repo "$GITHUB_REPOSITORY" --body-file "$BODY"
+              echo "Issue #$ISSUE_NUM の本文を更新した"
+            fi
+          else
+            gh issue create --repo "$GITHUB_REPOSITORY" --title "$ISSUE_TITLE" --body-file "$BODY"
+          fi
