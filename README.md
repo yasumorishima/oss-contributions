@@ -39,6 +39,7 @@ Automated watchers that surface active open-source bounties.
 | [vyper](https://github.com/vyperlang/vyper) | Python | 2 | 2 | 0 | 0 |
 | [math](https://github.com/stan-dev/math) | C++ | 1 | 0 | 1 | 0 |
 | [PythonRobotics](https://github.com/AtsushiSakai/PythonRobotics) | Python | 1 | 0 | 1 | 0 |
+| [gtfs-validator](https://github.com/MobilityData/gtfs-validator) | Java | 1 | 0 | 1 | 0 |
 | [PHPPresentation](https://github.com/PHPOffice/PHPPresentation) | PHP | 2 | 1 | 1 | 0 |
 | [fineract-backoffice-ui](https://github.com/apache/fineract-backoffice-ui) | TypeScript | 1 | 1 | 0 | 0 |
 | [BirdXplorer](https://github.com/codeforjapan/BirdXplorer) | Python | 2 | 1 | 1 | 0 |
@@ -59,7 +60,7 @@ Automated watchers that surface active open-source bounties.
 | [d2](https://github.com/terrastruct/d2) | Go | 1 | 0 | 1 | 0 |
 | [burn](https://github.com/tracel-ai/burn) | Rust | 1 | 1 | 0 | 0 |
 | [zio](https://github.com/zio/zio) | Scala | 2 | 0 | 0 | 2 |
-| **Total** | | **102** | **55** | **28** | **19** |
+| **Total** | | **103** | **55** | **29** | **19** |
 
 ## Contributions by Project
 
@@ -331,6 +332,14 @@ Python sample codes and textbook for robotics algorithms.
 | # | PR | Status | Description |
 |---|---|---|---|
 | 1 | [#1408](https://github.com/AtsushiSakai/PythonRobotics/pull/1408) | Open | Run CI on Python 3.14 as well as 3.13 |
+
+### [MobilityData/gtfs-validator](https://github.com/MobilityData/gtfs-validator)
+
+Canonical GTFS Validator project for schedule (static) files.
+
+| # | PR | Status | Description |
+|---|---|---|---|
+| 1 | [#2177](https://github.com/MobilityData/gtfs-validator/pull/2177) | Open | fix: require transfers stop ids when transfer_type is empty |
 
 ### [PHPOffice/PHPPresentation](https://github.com/PHPOffice/PHPPresentation)
 
