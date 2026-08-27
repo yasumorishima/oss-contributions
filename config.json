@@ -230,6 +230,14 @@
     "project-inclusive/OpenFisca-Japan": {
       "language": "TypeScript",
       "description": "日本の制度を記述したOpenFisca API、及びそのWebアプリ（フロントエンド）のリポジトリです。"
+    },
+    "medic/cht-conf": {
+      "language": "JavaScript",
+      "description": "A command-line interface for configuring Community Health Toolkit applications"
+    },
+    "MobilityData/gtfs-validator": {
+      "language": "Java",
+      "description": "Canonical GTFS Validator project for schedule (static) files."
     }
   }
 }
