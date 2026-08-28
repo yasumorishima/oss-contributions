@@ -238,6 +238,10 @@
     "MobilityData/gtfs-validator": {
       "language": "Java",
       "description": "Canonical GTFS Validator project for schedule (static) files."
+    },
+    "ingen084/KyoshinEewViewerIngen": {
+      "language": "C#",
+      "description": "Custom client for Kyoshin Monitor"
     }
   }
 }
