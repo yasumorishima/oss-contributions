@@ -127,6 +127,8 @@ jobs:
           if ! git diff --cached --quiet; then
             git commit -m "Auto-refresh PR statuses"
             git push
+            # プロフィール側が反映を待てるように、push した README の blob を渡す
+            echo "PUSHED_README_BLOB=$(git hash-object README.md)" >> "$GITHUB_ENV"
           else
             echo "No changes to commit."
           fi
@@ -138,6 +140,26 @@ jobs:
           HAS_PAT: ${{ secrets.CLAUDE_CONFIG_PAT != '' }}
           GH_TOKEN: ${{ secrets.CLAUDE_CONFIG_PAT }}
         run: |
+          # プロフィール側は contents API でこの README を読むが、push 直後は
+          # 古い内容が返ることがあり、run は success のまま数字だけ古く残る。
+          # 反映（blob の一致）を確認してから起動する。
+          if [ -n "${PUSHED_README_BLOB:-}" ]; then
+            matched=false
+            for _ in $(seq 1 20); do
+              remote=$(gh api "repos/yasumorishima/oss-contributions/contents/README.md?ref=$GITHUB_REF_NAME" --jq .sha 2>/dev/null || echo '')
+              if [ "$remote" = "$PUSHED_README_BLOB" ]; then
+                echo "README の反映を確認しました: $remote"
+                matched=true
+                break
+              fi
+              sleep 5
+            done
+            if [ "$matched" != "true" ]; then
+              # 起動自体は行う（プロフィール側は準備に時間がかかるため、その間に反映されうる）。
+              # ただし黙って古い数字が残る事故を避けるため、必ず警告として残す。
+              echo "::warning::README の反映を 100 秒待っても確認できませんでした。プロフィールの数字が古いままの可能性があります"
+            fi
+          fi
           gh workflow run "Update Profile README" \
             --repo yasumorishima/yasumorishima
 
