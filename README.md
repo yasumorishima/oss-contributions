@@ -50,7 +50,9 @@ Automated watchers that surface active open-source bounties.
 | [gyroflow](https://github.com/gyroflow/gyroflow) | Rust | 2 | 0 | 2 | 0 |
 | [notify-rust](https://github.com/hoodie/notify-rust) | Rust | 1 | 0 | 0 | 1 |
 | [openaerialmap](https://github.com/hotosm/openaerialmap) | Jupyter Notebook | 1 | 1 | 0 | 0 |
+| [KyoshinEewViewerIngen](https://github.com/ingen084/KyoshinEewViewerIngen) | C# | 1 | 0 | 1 | 0 |
 | [line-bot-mcp-server](https://github.com/line/line-bot-mcp-server) | TypeScript | 1 | 1 | 0 | 0 |
+| [cht-conf](https://github.com/medic/cht-conf) | JavaScript | 1 | 0 | 1 | 0 |
 | [nvda](https://github.com/nvaccess/nvda) | Python | 2 | 0 | 0 | 2 |
 | [openclaw](https://github.com/openclaw/openclaw) | TypeScript | 1 | 1 | 0 | 0 |
 | [graph_weather](https://github.com/openclimatefix/graph_weather) | Python | 4 | 0 | 3 | 1 |
@@ -60,7 +62,7 @@ Automated watchers that surface active open-source bounties.
 | [d2](https://github.com/terrastruct/d2) | Go | 1 | 0 | 1 | 0 |
 | [burn](https://github.com/tracel-ai/burn) | Rust | 1 | 1 | 0 | 0 |
 | [zio](https://github.com/zio/zio) | Scala | 2 | 0 | 0 | 2 |
-| **Total** | | **103** | **55** | **29** | **19** |
+| **Total** | | **105** | **55** | **31** | **19** |
 
 ## Contributions by Project
 
@@ -427,6 +429,14 @@ OpenAerialMap is an open service to provide access to a commons of openly licens
 |---|---|---|---|
 | 1 | [#289](https://github.com/hotosm/openaerialmap/pull/289) | Merged | fix(stactools-hotosm): skip metadata entries that fail STAC Item creation |
 
+### [ingen084/KyoshinEewViewerIngen](https://github.com/ingen084/KyoshinEewViewerIngen)
+
+Custom client for Kyoshin Monitor
+
+| # | PR | Status | Description |
+|---|---|---|---|
+| 1 | [#218](https://github.com/ingen084/KyoshinEewViewerIngen/pull/218) | Open | 火山の位置を地図に表示する (#143) |
+
 ### [line/line-bot-mcp-server](https://github.com/line/line-bot-mcp-server)
 
 MCP server for LINE Messaging API integration with AI agents. Built with TypeScript by LY Corporation (LINE). 500+ stars.
@@ -434,6 +444,14 @@ MCP server for LINE Messaging API integration with AI agents. Built with TypeScr
 | # | PR | Status | Description |
 |---|---|---|---|
 | 1 | [#369](https://github.com/line/line-bot-mcp-server/pull/369) | Merged | Add get_follower_ids tool to retrieve follower user IDs |
+
+### [medic/cht-conf](https://github.com/medic/cht-conf)
+
+A command-line interface for configuring Community Health Toolkit applications
+
+| # | PR | Status | Description |
+|---|---|---|---|
+| 1 | [#839](https://github.com/medic/cht-conf/pull/839) | Open | feat(#833): error when forms reference CSV external datasets |
 
 ### [nvaccess/nvda](https://github.com/nvaccess/nvda)
 
