@@ -45,12 +45,12 @@ Automated watchers that surface active open-source bounties.
 | [BirdXplorer](https://github.com/codeforjapan/BirdXplorer) | Python | 2 | 1 | 1 | 0 |
 | [mapprint](https://github.com/codeforjapan/mapprint) | SCSS | 4 | 3 | 0 | 1 |
 | [d2](https://github.com/d2lang/d2) | Go | 1 | 0 | 1 | 0 |
-| [MathCAT](https://github.com/daisy/MathCAT) | Rust | 1 | 1 | 0 | 0 |
+| [MathCAT](https://github.com/daisy/MathCAT) | Rust | 14 | 8 | 6 | 0 |
 | [abr-geocoder](https://github.com/digital-go-jp/abr-geocoder) | TypeScript | 1 | 0 | 0 | 1 |
 | [gyroflow](https://github.com/gyroflow/gyroflow) | Rust | 2 | 0 | 2 | 0 |
 | [notify-rust](https://github.com/hoodie/notify-rust) | Rust | 1 | 0 | 0 | 1 |
 | [openaerialmap](https://github.com/hotosm/openaerialmap) | Jupyter Notebook | 1 | 1 | 0 | 0 |
-| [KyoshinEewViewerIngen](https://github.com/ingen084/KyoshinEewViewerIngen) | C# | 1 | 0 | 1 | 0 |
+| [KyoshinEewViewerIngen](https://github.com/ingen084/KyoshinEewViewerIngen) | C# | 3 | 2 | 1 | 0 |
 | [line-bot-mcp-server](https://github.com/line/line-bot-mcp-server) | TypeScript | 1 | 1 | 0 | 0 |
 | [cht-conf](https://github.com/medic/cht-conf) | JavaScript | 1 | 0 | 1 | 0 |
 | [nvda](https://github.com/nvaccess/nvda) | Python | 2 | 0 | 0 | 2 |
@@ -62,7 +62,7 @@ Automated watchers that surface active open-source bounties.
 | [d2](https://github.com/terrastruct/d2) | Go | 1 | 0 | 1 | 0 |
 | [burn](https://github.com/tracel-ai/burn) | Rust | 1 | 1 | 0 | 0 |
 | [zio](https://github.com/zio/zio) | Scala | 2 | 0 | 0 | 2 |
-| **Total** | | **105** | **55** | **31** | **19** |
+| **Total** | | **120** | **64** | **37** | **19** |
 
 ## Contributions by Project
 
@@ -394,6 +394,19 @@ MathCAT: Math Capable Assistive Technology for generating speech, braille, and n
 
 | # | PR | Status | Description |
 |---|---|---|---|
+| 14 | [#720](https://github.com/daisy/MathCAT/pull/720) | Merged | ja: read fractions in Japanese word order |
+| 13 | [#721](https://github.com/daisy/MathCAT/pull/721) | Merged | ja: read exponents in Japanese |
+| 12 | [#722](https://github.com/daisy/MathCAT/pull/722) | Merged | ja: read a leading minus as マイナス |
+| 11 | [#723](https://github.com/daisy/MathCAT/pull/723) | Merged | ja: read an n-th root as n 乗根 |
+| 10 | [#724](https://github.com/daisy/MathCAT/pull/724) | Merged | ja: use the Japanese geometry terms |
+| 9 | [#725](https://github.com/daisy/MathCAT/pull/725) | Merged | ja: read brackets and absolute value in Japanese |
+| 8 | [#726](https://github.com/daisy/MathCAT/pull/726) | Merged | ja: read large operators in Japanese word order |
+| 7 | [#728](https://github.com/daisy/MathCAT/pull/728) | Open | ja: read intervals with a verb on each endpoint |
+| 6 | [#730](https://github.com/daisy/MathCAT/pull/730) | Open | ja: use the Japanese mathematical terms |
+| 5 | [#731](https://github.com/daisy/MathCAT/pull/731) | Open | ja: read the function-application of as オブ |
+| 4 | [#733](https://github.com/daisy/MathCAT/pull/733) | Open | ja: use the Japanese names for the elementary functions and the parts of a complex number |
+| 3 | [#734](https://github.com/daisy/MathCAT/pull/734) | Open | ja: name the accents and fix two symbols read as unrelated words |
+| 2 | [#735](https://github.com/daisy/MathCAT/pull/735) | Open | ja: fix the symbol readings, including the variable a being read as an eagle |
 | 1 | [#665](https://github.com/daisy/MathCAT/pull/665) | Merged | Fix assertions in chemistry.rs that could never fail (#551) |
 
 ### [digital-go-jp/abr-geocoder](https://github.com/digital-go-jp/abr-geocoder)
@@ -435,7 +448,9 @@ Custom client for Kyoshin Monitor
 
 | # | PR | Status | Description |
 |---|---|---|---|
-| 1 | [#218](https://github.com/ingen084/KyoshinEewViewerIngen/pull/218) | Open | 火山の位置を地図に表示する (#143) |
+| 3 | [#219](https://github.com/ingen084/KyoshinEewViewerIngen/pull/219) | Merged | 北西太平洋津波の予報地点を地図に表示する (#143) |
+| 2 | [#220](https://github.com/ingen084/KyoshinEewViewerIngen/pull/220) | Open | 洪水予報の対象河川を地図に表示する (#143) |
+| 1 | [#218](https://github.com/ingen084/KyoshinEewViewerIngen/pull/218) | Merged | 火山の位置を地図に表示する (#143) |
 
 ### [line/line-bot-mcp-server](https://github.com/line/line-bot-mcp-server)
 
