@@ -45,7 +45,7 @@ Automated watchers that surface active open-source bounties.
 | [BirdXplorer](https://github.com/codeforjapan/BirdXplorer) | Python | 2 | 1 | 1 | 0 |
 | [mapprint](https://github.com/codeforjapan/mapprint) | SCSS | 4 | 3 | 0 | 1 |
 | [d2](https://github.com/d2lang/d2) | Go | 1 | 0 | 1 | 0 |
-| [MathCAT](https://github.com/daisy/MathCAT) | Rust | 14 | 14 | 0 | 0 |
+| [MathCAT](https://github.com/daisy/MathCAT) | Rust | 17 | 17 | 0 | 0 |
 | [abr-geocoder](https://github.com/digital-go-jp/abr-geocoder) | TypeScript | 1 | 0 | 0 | 1 |
 | [gyroflow](https://github.com/gyroflow/gyroflow) | Rust | 2 | 0 | 2 | 0 |
 | [notify-rust](https://github.com/hoodie/notify-rust) | Rust | 1 | 0 | 0 | 1 |
@@ -62,7 +62,7 @@ Automated watchers that surface active open-source bounties.
 | [d2](https://github.com/terrastruct/d2) | Go | 1 | 0 | 1 | 0 |
 | [burn](https://github.com/tracel-ai/burn) | Rust | 1 | 1 | 0 | 0 |
 | [zio](https://github.com/zio/zio) | Scala | 2 | 0 | 0 | 2 |
-| **Total** | | **120** | **70** | **30** | **20** |
+| **Total** | | **123** | **73** | **30** | **20** |
 
 ## Contributions by Project
 
@@ -394,6 +394,9 @@ MathCAT: Math Capable Assistive Technology for generating speech, braille, and n
 
 | # | PR | Status | Description |
 |---|---|---|---|
+| 17 | [#746](https://github.com/daisy/MathCAT/pull/746) | Merged | ja: fix the navigation announcements, four of which said the opposite |
+| 16 | [#747](https://github.com/daisy/MathCAT/pull/747) | Merged | ja: read nPk permutations with the school phrase, in display order |
+| 15 | [#748](https://github.com/daisy/MathCAT/pull/748) | Merged | ja: fix the rule vocabulary outside navigate.yaml |
 | 14 | [#720](https://github.com/daisy/MathCAT/pull/720) | Merged | ja: read fractions in Japanese word order |
 | 13 | [#721](https://github.com/daisy/MathCAT/pull/721) | Merged | ja: read exponents in Japanese |
 | 12 | [#722](https://github.com/daisy/MathCAT/pull/722) | Merged | ja: read a leading minus as マイナス |
