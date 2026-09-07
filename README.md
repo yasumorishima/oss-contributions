@@ -45,7 +45,7 @@ Automated watchers that surface active open-source bounties.
 | [BirdXplorer](https://github.com/codeforjapan/BirdXplorer) | Python | 2 | 1 | 1 | 0 |
 | [mapprint](https://github.com/codeforjapan/mapprint) | SCSS | 4 | 3 | 0 | 1 |
 | [d2](https://github.com/d2lang/d2) | Go | 1 | 0 | 1 | 0 |
-| [MathCAT](https://github.com/daisy/MathCAT) | Rust | 17 | 17 | 0 | 0 |
+| [MathCAT](https://github.com/daisy/MathCAT) | Rust | 21 | 20 | 1 | 0 |
 | [abr-geocoder](https://github.com/digital-go-jp/abr-geocoder) | TypeScript | 1 | 0 | 0 | 1 |
 | [gyroflow](https://github.com/gyroflow/gyroflow) | Rust | 2 | 0 | 2 | 0 |
 | [notify-rust](https://github.com/hoodie/notify-rust) | Rust | 1 | 0 | 0 | 1 |
@@ -58,11 +58,11 @@ Automated watchers that surface active open-source bounties.
 | [graph_weather](https://github.com/openclimatefix/graph_weather) | Python | 4 | 0 | 3 | 1 |
 | [OpenFisca-Japan](https://github.com/project-inclusive/OpenFisca-Japan) | TypeScript | 6 | 6 | 0 | 0 |
 | [musicblocks-v4](https://github.com/sugarlabs/musicblocks-v4) | TypeScript | 1 | 0 | 1 | 0 |
-| [tailcallhq.github.io](https://github.com/tailcallhq/tailcallhq.github.io) | MDX | 1 | 0 | 0 | 1 |
+| [tailcallhq.github.io](https://github.com/tailcallhq/tailcallhq.github.io) | Unknown | 1 | 0 | 0 | 1 |
 | [d2](https://github.com/terrastruct/d2) | Go | 1 | 0 | 1 | 0 |
 | [burn](https://github.com/tracel-ai/burn) | Rust | 1 | 1 | 0 | 0 |
 | [zio](https://github.com/zio/zio) | Scala | 2 | 0 | 0 | 2 |
-| **Total** | | **123** | **73** | **30** | **20** |
+| **Total** | | **127** | **76** | **31** | **20** |
 
 ## Contributions by Project
 
@@ -394,6 +394,10 @@ MathCAT: Math Capable Assistive Technology for generating speech, braille, and n
 
 | # | PR | Status | Description |
 |---|---|---|---|
+| 21 | [#751](https://github.com/daisy/MathCAT/pull/751) | Merged | Fix Japanese vocabulary in SharedRules (general.yaml, default.yaml) |
+| 20 | [#752](https://github.com/daisy/MathCAT/pull/752) | Merged | Translate the Japanese navigation command prefixes |
+| 19 | [#756](https://github.com/daisy/MathCAT/pull/756) | Merged | ja: read the remaining fractions denominator-first, and name the menclose marks |
+| 18 | [#757](https://github.com/daisy/MathCAT/pull/757) | Open | ja: use readings for the relations that work between the operands |
 | 17 | [#746](https://github.com/daisy/MathCAT/pull/746) | Merged | ja: fix the navigation announcements, four of which said the opposite |
 | 16 | [#747](https://github.com/daisy/MathCAT/pull/747) | Merged | ja: read nPk permutations with the school phrase, in display order |
 | 15 | [#748](https://github.com/daisy/MathCAT/pull/748) | Merged | ja: fix the rule vocabulary outside navigate.yaml |
