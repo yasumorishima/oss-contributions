@@ -30,7 +30,7 @@ Automated watchers that surface active open-source bounties.
 | [pybaseball](https://github.com/jldbc/pybaseball) | Python | 7 | 0 | 7 | 0 |
 | [pandas](https://github.com/pandas-dev/pandas) | Python | 1 | 1 | 0 | 0 |
 | [ezc3d](https://github.com/pyomeca/ezc3d) | C++ / Python | 1 | 1 | 0 | 0 |
-| [kouchou-ai](https://github.com/digitaldemocracy2030/kouchou-ai) | Python | 2 | 1 | 1 | 0 |
+| [kouchou-ai](https://github.com/digitaldemocracy2030/kouchou-ai) | Python | 4 | 4 | 0 | 0 |
 | [action-board](https://github.com/team-mirai-volunteer/action-board) | TypeScript / Next.js | 15 | 12 | 1 | 2 |
 | [fact-checker](https://github.com/team-mirai-volunteer/fact-checker) | TypeScript | 6 | 0 | 0 | 6 |
 | [post-checker](https://github.com/team-mirai-volunteer/post-checker) | TypeScript | 1 | 0 | 1 | 0 |
@@ -45,7 +45,7 @@ Automated watchers that surface active open-source bounties.
 | [BirdXplorer](https://github.com/codeforjapan/BirdXplorer) | Python | 2 | 1 | 1 | 0 |
 | [mapprint](https://github.com/codeforjapan/mapprint) | SCSS | 4 | 3 | 0 | 1 |
 | [d2](https://github.com/d2lang/d2) | Go | 1 | 0 | 1 | 0 |
-| [MathCAT](https://github.com/daisy/MathCAT) | Rust | 21 | 20 | 1 | 0 |
+| [MathCAT](https://github.com/daisy/MathCAT) | Rust | 21 | 21 | 0 | 0 |
 | [abr-geocoder](https://github.com/digital-go-jp/abr-geocoder) | TypeScript | 1 | 0 | 0 | 1 |
 | [gyroflow](https://github.com/gyroflow/gyroflow) | Rust | 2 | 0 | 2 | 0 |
 | [notify-rust](https://github.com/hoodie/notify-rust) | Rust | 1 | 0 | 0 | 1 |
@@ -61,8 +61,8 @@ Automated watchers that surface active open-source bounties.
 | [tailcallhq.github.io](https://github.com/tailcallhq/tailcallhq.github.io) | Unknown | 1 | 0 | 0 | 1 |
 | [d2](https://github.com/terrastruct/d2) | Go | 1 | 0 | 1 | 0 |
 | [burn](https://github.com/tracel-ai/burn) | Rust | 1 | 1 | 0 | 0 |
-| [zio](https://github.com/zio/zio) | Scala | 2 | 0 | 0 | 2 |
-| **Total** | | **127** | **76** | **31** | **20** |
+| [zio](https://github.com/zio/zio) | Unknown | 2 | 0 | 0 | 2 |
+| **Total** | | **129** | **80** | **29** | **20** |
 
 ## Contributions by Project
 
@@ -240,7 +240,9 @@ Easy to use C3D reader/writer for C++, Python and MATLAB. Used in biomechanics r
 
 | # | PR | Status | Description |
 |---|---|---|---|
-| 2 | [#903](https://github.com/digitaldemocracy2030/kouchou-ai/pull/903) | Open | docs: Web UI の Node runtime 依存インベントリを追加 (#885) |
+| 4 | [#935](https://github.com/digitaldemocracy2030/kouchou-ai/pull/935) | Merged | feat(public-viewer): データ非依存な静的出力 (shell ビルド) を追加 (#885) |
+| 3 | [#936](https://github.com/digitaldemocracy2030/kouchou-ai/pull/936) | Merged | docs: export ビルドで OGP 画像が生成されない点を訂正 (#885) |
+| 2 | [#903](https://github.com/digitaldemocracy2030/kouchou-ai/pull/903) | Merged | docs: Web UI の Node runtime 依存インベントリを追加 (#885) |
 | 1 | [#796](https://github.com/digitaldemocracy2030/kouchou-ai/pull/796) | Merged | fix: filter out empty/whitespace-only comments before LLM processing (#583) |
 
 #### Issue Comments
@@ -397,7 +399,7 @@ MathCAT: Math Capable Assistive Technology for generating speech, braille, and n
 | 21 | [#751](https://github.com/daisy/MathCAT/pull/751) | Merged | Fix Japanese vocabulary in SharedRules (general.yaml, default.yaml) |
 | 20 | [#752](https://github.com/daisy/MathCAT/pull/752) | Merged | Translate the Japanese navigation command prefixes |
 | 19 | [#756](https://github.com/daisy/MathCAT/pull/756) | Merged | ja: read the remaining fractions denominator-first, and name the menclose marks |
-| 18 | [#757](https://github.com/daisy/MathCAT/pull/757) | Open | ja: use readings for the relations that work between the operands |
+| 18 | [#757](https://github.com/daisy/MathCAT/pull/757) | Merged | ja: use readings for the relations that work between the operands |
 | 17 | [#746](https://github.com/daisy/MathCAT/pull/746) | Merged | ja: fix the navigation announcements, four of which said the opposite |
 | 16 | [#747](https://github.com/daisy/MathCAT/pull/747) | Merged | ja: read nPk permutations with the school phrase, in display order |
 | 15 | [#748](https://github.com/daisy/MathCAT/pull/748) | Merged | ja: fix the rule vocabulary outside navigate.yaml |
