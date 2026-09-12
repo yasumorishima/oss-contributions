@@ -57,12 +57,12 @@ Automated watchers that surface active open-source bounties.
 | [openclaw](https://github.com/openclaw/openclaw) | TypeScript | 1 | 1 | 0 | 0 |
 | [graph_weather](https://github.com/openclimatefix/graph_weather) | Python | 4 | 0 | 3 | 1 |
 | [OpenFisca-Japan](https://github.com/project-inclusive/OpenFisca-Japan) | TypeScript | 6 | 6 | 0 | 0 |
-| [musicblocks-v4](https://github.com/sugarlabs/musicblocks-v4) | TypeScript | 1 | 0 | 1 | 0 |
+| [musicblocks-v4](https://github.com/sugarlabs/musicblocks-v4) | TypeScript | 1 | 1 | 0 | 0 |
 | [tailcallhq.github.io](https://github.com/tailcallhq/tailcallhq.github.io) | Unknown | 1 | 0 | 0 | 1 |
 | [d2](https://github.com/terrastruct/d2) | Go | 1 | 0 | 1 | 0 |
 | [burn](https://github.com/tracel-ai/burn) | Rust | 1 | 1 | 0 | 0 |
 | [zio](https://github.com/zio/zio) | Unknown | 2 | 0 | 0 | 2 |
-| **Total** | | **129** | **80** | **29** | **20** |
+| **Total** | | **129** | **81** | **28** | **20** |
 
 ## Contributions by Project
 
@@ -524,7 +524,7 @@ A complete overhaul of Music Blocks
 
 | # | PR | Status | Description |
 |---|---|---|---|
-| 1 | [#774](https://github.com/sugarlabs/musicblocks-v4/pull/774) | Open | #680 | feat(masonry): improve Palette interactions |
+| 1 | [#774](https://github.com/sugarlabs/musicblocks-v4/pull/774) | Merged | #680 | feat(masonry): improve Palette interactions |
 
 ### [tailcallhq/tailcallhq.github.io](https://github.com/tailcallhq/tailcallhq.github.io)
 
