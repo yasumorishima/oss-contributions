@@ -50,7 +50,7 @@ Automated watchers that surface active open-source bounties.
 | [gyroflow](https://github.com/gyroflow/gyroflow) | Rust | 2 | 0 | 2 | 0 |
 | [notify-rust](https://github.com/hoodie/notify-rust) | Rust | 1 | 0 | 0 | 1 |
 | [openaerialmap](https://github.com/hotosm/openaerialmap) | Jupyter Notebook | 1 | 1 | 0 | 0 |
-| [KyoshinEewViewerIngen](https://github.com/ingen084/KyoshinEewViewerIngen) | C# | 3 | 2 | 1 | 0 |
+| [KyoshinEewViewerIngen](https://github.com/ingen084/KyoshinEewViewerIngen) | C# | 3 | 3 | 0 | 0 |
 | [line-bot-mcp-server](https://github.com/line/line-bot-mcp-server) | TypeScript | 1 | 1 | 0 | 0 |
 | [cht-conf](https://github.com/medic/cht-conf) | JavaScript | 1 | 0 | 1 | 0 |
 | [nvda](https://github.com/nvaccess/nvda) | Python | 2 | 0 | 0 | 2 |
@@ -62,7 +62,7 @@ Automated watchers that surface active open-source bounties.
 | [d2](https://github.com/terrastruct/d2) | Go | 1 | 0 | 1 | 0 |
 | [burn](https://github.com/tracel-ai/burn) | Rust | 1 | 1 | 0 | 0 |
 | [zio](https://github.com/zio/zio) | Unknown | 2 | 0 | 0 | 2 |
-| **Total** | | **129** | **81** | **28** | **20** |
+| **Total** | | **129** | **82** | **27** | **20** |
 
 ## Contributions by Project
 
@@ -458,7 +458,7 @@ Custom client for Kyoshin Monitor
 | # | PR | Status | Description |
 |---|---|---|---|
 | 3 | [#219](https://github.com/ingen084/KyoshinEewViewerIngen/pull/219) | Merged | 北西太平洋津波の予報地点を地図に表示する (#143) |
-| 2 | [#220](https://github.com/ingen084/KyoshinEewViewerIngen/pull/220) | Open | 洪水予報の対象河川を地図に表示する (#143) |
+| 2 | [#220](https://github.com/ingen084/KyoshinEewViewerIngen/pull/220) | Merged | 洪水予報の対象河川を地図に表示する (#143) |
 | 1 | [#218](https://github.com/ingen084/KyoshinEewViewerIngen/pull/218) | Merged | 火山の位置を地図に表示する (#143) |
 
 ### [line/line-bot-mcp-server](https://github.com/line/line-bot-mcp-server)
