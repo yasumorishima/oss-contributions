@@ -39,13 +39,13 @@ Automated watchers that surface active open-source bounties.
 | [vyper](https://github.com/vyperlang/vyper) | Python | 2 | 2 | 0 | 0 |
 | [math](https://github.com/stan-dev/math) | C++ | 1 | 0 | 1 | 0 |
 | [PythonRobotics](https://github.com/AtsushiSakai/PythonRobotics) | Python | 1 | 0 | 1 | 0 |
-| [gtfs-validator](https://github.com/MobilityData/gtfs-validator) | Java | 1 | 0 | 1 | 0 |
+| [gtfs-validator](https://github.com/MobilityData/gtfs-validator) | Java | 1 | 1 | 0 | 0 |
 | [PHPPresentation](https://github.com/PHPOffice/PHPPresentation) | PHP | 2 | 1 | 0 | 1 |
 | [fineract-backoffice-ui](https://github.com/apache/fineract-backoffice-ui) | TypeScript | 1 | 1 | 0 | 0 |
 | [BirdXplorer](https://github.com/codeforjapan/BirdXplorer) | Python | 2 | 1 | 1 | 0 |
 | [mapprint](https://github.com/codeforjapan/mapprint) | SCSS | 4 | 3 | 0 | 1 |
 | [d2](https://github.com/d2lang/d2) | Go | 1 | 0 | 1 | 0 |
-| [MathCAT](https://github.com/daisy/MathCAT) | Rust | 21 | 21 | 0 | 0 |
+| [MathCAT](https://github.com/daisy/MathCAT) | Rust | 25 | 24 | 1 | 0 |
 | [abr-geocoder](https://github.com/digital-go-jp/abr-geocoder) | TypeScript | 1 | 0 | 0 | 1 |
 | [gyroflow](https://github.com/gyroflow/gyroflow) | Rust | 2 | 0 | 2 | 0 |
 | [notify-rust](https://github.com/hoodie/notify-rust) | Rust | 1 | 0 | 0 | 1 |
@@ -62,7 +62,7 @@ Automated watchers that surface active open-source bounties.
 | [d2](https://github.com/terrastruct/d2) | Go | 1 | 0 | 1 | 0 |
 | [burn](https://github.com/tracel-ai/burn) | Rust | 1 | 1 | 0 | 0 |
 | [zio](https://github.com/zio/zio) | Unknown | 2 | 0 | 0 | 2 |
-| **Total** | | **129** | **82** | **27** | **20** |
+| **Total** | | **133** | **86** | **27** | **20** |
 
 ## Contributions by Project
 
@@ -343,7 +343,7 @@ Canonical GTFS Validator project for schedule (static) files.
 
 | # | PR | Status | Description |
 |---|---|---|---|
-| 1 | [#2177](https://github.com/MobilityData/gtfs-validator/pull/2177) | Open | fix: require transfers stop ids when transfer_type is empty |
+| 1 | [#2177](https://github.com/MobilityData/gtfs-validator/pull/2177) | Merged | fix: require transfers stop ids when transfer_type is empty |
 
 ### [PHPOffice/PHPPresentation](https://github.com/PHPOffice/PHPPresentation)
 
@@ -396,6 +396,10 @@ MathCAT: Math Capable Assistive Technology for generating speech, braille, and n
 
 | # | PR | Status | Description |
 |---|---|---|---|
+| 25 | [#772](https://github.com/daisy/MathCAT/pull/772) | Merged | ja: make the rest of the set relations work between the operands |
+| 24 | [#773](https://github.com/daisy/MathCAT/pull/773) | Merged | ja: navigate.yaml stopped speaking English, and now uses Japanese word order |
+| 23 | [#778](https://github.com/daisy/MathCAT/pull/778) | Merged | ja: mark the reviewed navigation strings as verified |
+| 22 | [#779](https://github.com/daisy/MathCAT/pull/779) | Open | ja: the phrases that were carried over word for word |
 | 21 | [#751](https://github.com/daisy/MathCAT/pull/751) | Merged | Fix Japanese vocabulary in SharedRules (general.yaml, default.yaml) |
 | 20 | [#752](https://github.com/daisy/MathCAT/pull/752) | Merged | Translate the Japanese navigation command prefixes |
 | 19 | [#756](https://github.com/daisy/MathCAT/pull/756) | Merged | ja: read the remaining fractions denominator-first, and name the menclose marks |
