@@ -25,7 +25,7 @@ Automated watchers that surface active open-source bounties.
 | [icp-js-bindgen](https://github.com/dfinity/icp-js-bindgen) | Rust | 1 | 1 | 0 | 0 |
 | [icp-js-canisters](https://github.com/dfinity/icp-js-canisters) | TypeScript | 1 | 1 | 0 | 0 |
 | [icp-js-core](https://github.com/dfinity/icp-js-core) | TypeScript | 3 | 2 | 0 | 1 |
-| [pic-js](https://github.com/dfinity/pic-js) | TypeScript | 1 | 0 | 1 | 0 |
+| [pic-js](https://github.com/dfinity/pic-js) | TypeScript | 1 | 1 | 0 | 0 |
 | [open-chat-bots](https://github.com/open-chat-labs/open-chat-bots) | TypeScript | 1 | 0 | 1 | 0 |
 | [pybaseball](https://github.com/jldbc/pybaseball) | Python | 7 | 0 | 7 | 0 |
 | [pandas](https://github.com/pandas-dev/pandas) | Python | 1 | 1 | 0 | 0 |
@@ -45,7 +45,7 @@ Automated watchers that surface active open-source bounties.
 | [BirdXplorer](https://github.com/codeforjapan/BirdXplorer) | Python | 2 | 1 | 1 | 0 |
 | [mapprint](https://github.com/codeforjapan/mapprint) | SCSS | 4 | 3 | 0 | 1 |
 | [d2](https://github.com/d2lang/d2) | Go | 1 | 0 | 1 | 0 |
-| [MathCAT](https://github.com/daisy/MathCAT) | Rust | 25 | 24 | 1 | 0 |
+| [MathCAT](https://github.com/daisy/MathCAT) | Rust | 25 | 25 | 0 | 0 |
 | [abr-geocoder](https://github.com/digital-go-jp/abr-geocoder) | TypeScript | 1 | 0 | 0 | 1 |
 | [gyroflow](https://github.com/gyroflow/gyroflow) | Rust | 2 | 0 | 2 | 0 |
 | [notify-rust](https://github.com/hoodie/notify-rust) | Rust | 1 | 0 | 0 | 1 |
@@ -53,7 +53,7 @@ Automated watchers that surface active open-source bounties.
 | [KyoshinEewViewerIngen](https://github.com/ingen084/KyoshinEewViewerIngen) | C# | 3 | 3 | 0 | 0 |
 | [line-bot-mcp-server](https://github.com/line/line-bot-mcp-server) | TypeScript | 1 | 1 | 0 | 0 |
 | [cht-conf](https://github.com/medic/cht-conf) | JavaScript | 1 | 0 | 1 | 0 |
-| [nvda](https://github.com/nvaccess/nvda) | Python | 2 | 0 | 0 | 2 |
+| [nvda](https://github.com/nvaccess/nvda) | Unknown | 2 | 0 | 0 | 2 |
 | [openclaw](https://github.com/openclaw/openclaw) | TypeScript | 1 | 1 | 0 | 0 |
 | [graph_weather](https://github.com/openclimatefix/graph_weather) | Python | 4 | 0 | 3 | 1 |
 | [OpenFisca-Japan](https://github.com/project-inclusive/OpenFisca-Japan) | TypeScript | 6 | 6 | 0 | 0 |
@@ -62,7 +62,7 @@ Automated watchers that surface active open-source bounties.
 | [d2](https://github.com/terrastruct/d2) | Go | 1 | 0 | 1 | 0 |
 | [burn](https://github.com/tracel-ai/burn) | Rust | 1 | 1 | 0 | 0 |
 | [zio](https://github.com/zio/zio) | Unknown | 2 | 0 | 0 | 2 |
-| **Total** | | **133** | **86** | **27** | **20** |
+| **Total** | | **133** | **88** | **25** | **20** |
 
 ## Contributions by Project
 
@@ -180,7 +180,7 @@ PocketIC JavaScript/TypeScript client for testing Internet Computer canisters. 8
 
 | # | PR | Status | Description |
 |---|---|---|---|
-| 1 | [#235](https://github.com/dfinity/pic-js/pull/235) | Open | feat: add fetchCanisterLogs method to PocketIc (Issue #68) |
+| 1 | [#235](https://github.com/dfinity/pic-js/pull/235) | Merged | feat: add fetchCanisterLogs method to PocketIc (Issue #68) |
 
 ### [open-chat-labs/open-chat-bots](https://github.com/open-chat-labs/open-chat-bots)
 
@@ -399,7 +399,7 @@ MathCAT: Math Capable Assistive Technology for generating speech, braille, and n
 | 25 | [#772](https://github.com/daisy/MathCAT/pull/772) | Merged | ja: make the rest of the set relations work between the operands |
 | 24 | [#773](https://github.com/daisy/MathCAT/pull/773) | Merged | ja: navigate.yaml stopped speaking English, and now uses Japanese word order |
 | 23 | [#778](https://github.com/daisy/MathCAT/pull/778) | Merged | ja: mark the reviewed navigation strings as verified |
-| 22 | [#779](https://github.com/daisy/MathCAT/pull/779) | Open | ja: the phrases that were carried over word for word |
+| 22 | [#779](https://github.com/daisy/MathCAT/pull/779) | Merged | ja: the phrases that were carried over word for word |
 | 21 | [#751](https://github.com/daisy/MathCAT/pull/751) | Merged | Fix Japanese vocabulary in SharedRules (general.yaml, default.yaml) |
 | 20 | [#752](https://github.com/daisy/MathCAT/pull/752) | Merged | Translate the Japanese navigation command prefixes |
 | 19 | [#756](https://github.com/daisy/MathCAT/pull/756) | Merged | ja: read the remaining fractions denominator-first, and name the menclose marks |
