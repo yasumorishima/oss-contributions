@@ -38,7 +38,7 @@ Automated watchers that surface active open-source bounties.
 | [mirai-gikai](https://github.com/team-mirai/mirai-gikai) | TypeScript | 3 | 2 | 1 | 0 |
 | [vyper](https://github.com/vyperlang/vyper) | Python | 2 | 2 | 0 | 0 |
 | [math](https://github.com/stan-dev/math) | C++ | 1 | 0 | 1 | 0 |
-| [PythonRobotics](https://github.com/AtsushiSakai/PythonRobotics) | Python | 1 | 0 | 1 | 0 |
+| [PythonRobotics](https://github.com/AtsushiSakai/PythonRobotics) | Python | 1 | 1 | 0 | 0 |
 | [gtfs-validator](https://github.com/MobilityData/gtfs-validator) | Java | 1 | 1 | 0 | 0 |
 | [PHPPresentation](https://github.com/PHPOffice/PHPPresentation) | PHP | 2 | 1 | 0 | 1 |
 | [fineract-backoffice-ui](https://github.com/apache/fineract-backoffice-ui) | TypeScript | 1 | 1 | 0 | 0 |
@@ -62,7 +62,7 @@ Automated watchers that surface active open-source bounties.
 | [d2](https://github.com/terrastruct/d2) | Go | 1 | 0 | 1 | 0 |
 | [burn](https://github.com/tracel-ai/burn) | Rust | 1 | 1 | 0 | 0 |
 | [zio](https://github.com/zio/zio) | Unknown | 2 | 0 | 0 | 2 |
-| **Total** | | **133** | **88** | **25** | **20** |
+| **Total** | | **133** | **89** | **24** | **20** |
 
 ## Contributions by Project
 
@@ -335,7 +335,7 @@ Python sample codes and textbook for robotics algorithms.
 
 | # | PR | Status | Description |
 |---|---|---|---|
-| 1 | [#1408](https://github.com/AtsushiSakai/PythonRobotics/pull/1408) | Open | Run CI on Python 3.14 as well as 3.13 |
+| 1 | [#1408](https://github.com/AtsushiSakai/PythonRobotics/pull/1408) | Merged | Run CI on Python 3.14 as well as 3.13 |
 
 ### [MobilityData/gtfs-validator](https://github.com/MobilityData/gtfs-validator)
 
