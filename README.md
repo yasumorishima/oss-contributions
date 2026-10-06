@@ -27,7 +27,7 @@ Automated watchers that surface active open-source bounties.
 | [icp-js-core](https://github.com/dfinity/icp-js-core) | TypeScript | 3 | 2 | 0 | 1 |
 | [pic-js](https://github.com/dfinity/pic-js) | TypeScript | 1 | 1 | 0 | 0 |
 | [open-chat-bots](https://github.com/open-chat-labs/open-chat-bots) | TypeScript | 1 | 0 | 1 | 0 |
-| [pybaseball](https://github.com/jldbc/pybaseball) | Python | 7 | 0 | 7 | 0 |
+| [pybaseball](https://github.com/jldbc/pybaseball) | Python | 8 | 0 | 1 | 7 |
 | [pandas](https://github.com/pandas-dev/pandas) | Python | 1 | 1 | 0 | 0 |
 | [ezc3d](https://github.com/pyomeca/ezc3d) | C++ / Python | 1 | 1 | 0 | 0 |
 | [kouchou-ai](https://github.com/digitaldemocracy2030/kouchou-ai) | Python | 4 | 4 | 0 | 0 |
@@ -62,7 +62,7 @@ Automated watchers that surface active open-source bounties.
 | [d2](https://github.com/terrastruct/d2) | Go | 1 | 0 | 1 | 0 |
 | [burn](https://github.com/tracel-ai/burn) | Rust | 1 | 1 | 0 | 0 |
 | [zio](https://github.com/zio/zio) | Unknown | 2 | 0 | 0 | 2 |
-| **Total** | | **133** | **89** | **24** | **20** |
+| **Total** | | **134** | **89** | **18** | **27** |
 
 ## Contributions by Project
 
@@ -196,13 +196,14 @@ Python library for pulling baseball statistics (Statcast, Baseball Reference, Fa
 
 | # | PR | Status | Description |
 |---|---|---|---|
-| 7 | [#504](https://github.com/jldbc/pybaseball/pull/504) | Open | Fix team_ids returning empty data for seasons after 2021 |
-| 6 | [#503](https://github.com/jldbc/pybaseball/pull/503) | Open | Fix team_batting_bref/team_pitching_bref for updated Baseball Reference HTML |
-| 5 | [#502](https://github.com/jldbc/pybaseball/pull/502) | Open | Add input validation to team_fielding_bref |
-| 4 | [#501](https://github.com/jldbc/pybaseball/pull/501) | Open | Fix deprecated GitHub authentication in retrosheet.py |
-| 3 | [#500](https://github.com/jldbc/pybaseball/pull/500) | Open | Fix FutureWarning in team_results.py |
-| 2 | [#499](https://github.com/jldbc/pybaseball/pull/499) | Open | Replace deprecated `errors='ignore'` with explicit try/except |
-| 1 | [#498](https://github.com/jldbc/pybaseball/pull/498) | Open | Fix function name typo in statcast_pitcher_spin.md |
+| 8 | [#514](https://github.com/jldbc/pybaseball/pull/514) | Open | Bundle maintenance fixes (#499-#504) and fix team_game_logs / date parsing on pandas 3 |
+| 7 | [#504](https://github.com/jldbc/pybaseball/pull/504) | Closed | Fix team_ids returning empty data for seasons after 2021 |
+| 6 | [#503](https://github.com/jldbc/pybaseball/pull/503) | Closed | Fix team_batting_bref/team_pitching_bref for updated Baseball Reference HTML |
+| 5 | [#502](https://github.com/jldbc/pybaseball/pull/502) | Closed | Add input validation to team_fielding_bref |
+| 4 | [#501](https://github.com/jldbc/pybaseball/pull/501) | Closed | Fix deprecated GitHub authentication in retrosheet.py |
+| 3 | [#500](https://github.com/jldbc/pybaseball/pull/500) | Closed | Fix FutureWarning in team_results.py |
+| 2 | [#499](https://github.com/jldbc/pybaseball/pull/499) | Closed | Replace deprecated `errors='ignore'` with explicit try/except |
+| 1 | [#498](https://github.com/jldbc/pybaseball/pull/498) | Closed | Fix function name typo in statcast_pitcher_spin.md |
 
 #### Issue Comments
 
