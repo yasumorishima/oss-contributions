@@ -176,6 +176,8 @@ def added_blocks(f: str, base: list[str], ours: list[str]) -> list[tuple[int, li
 
 def reapply(f: str, mode: str, base: str, ours: str, theirs: str) -> str:
     """Upstream's file with this PR's added lines put back, the way the hand merges did it."""
+    if any("\r" in x for x in (base, ours, theirs)):
+        raise Stop(f"{f}: CRLF line endings; not re-applied")
     o, t = split(ours), split(theirs)
     blocks = added_blocks(f, split(base), o)
     if not blocks:
@@ -187,13 +189,20 @@ def reapply(f: str, mode: str, base: str, ours: str, theirs: str) -> str:
             heading = next((o[k] for k in range(j - 1, -1, -1) if o[k].startswith("#")), None)
             if heading is None or heading not in t:
                 raise Stop(f"{f}: section {heading!r} of {block[0]!r} is not in upstream's file")
+            if o.count(heading) != 1 or t.count(heading) != 1:
+                raise Stop(f"{f}: heading {heading!r} is not unique")
             h = t.index(heading)
             n = next((k for k in range(h + 1, len(t)) if t[k].startswith("#") or t[k].strip() == "---"), len(t))
             last = max((k for k in range(h + 1, n) if t[k].strip()), default=h)
             if last == h:  # empty section: heading, blank, items, blank, next heading
                 t = t[:h + 1] + [""] + block + [""] + t[n:]
+                at = h + 2
             else:
                 t = t[:last + 1] + block + t[last + 1:]
+                at = last + 1
+            # the block sits right after the section's last item, still inside the section
+            if t[at:at + len(block)] != block or any(x.startswith("#") for x in t[h + 1:at]):
+                raise Stop(f"{f}: {block[0]!r} did not land at the end of {heading!r}")
         elif mode == "end":
             names_ = [x for x in block if re.match(r"^-- .+ --$", x)]
             clash = [x for x in names_ if x in t]
@@ -361,8 +370,8 @@ def resolve(key: str, a) -> str:
     head = sh(["git", "rev-parse", "HEAD"], cwd=work).stdout.strip()
     if p.get("sign"):
         status = sh(["git", "log", "-1", "--format=%G?", head], cwd=work).stdout.strip()
-        if status != "G":
-            raise Stop(f"the merge commit is not signed with the registered key (%G? = {status!r})")
+        if status != "G":  # only says the commit is signed with SIGNING_KEY_FILE; GitHub checks the account
+            raise Stop(f"the merge commit is not signed (%G? = {status!r})")
     files_after = names(sh(["git", "diff", "-z", "--name-only", f"{upstream_sha}...{head}"], cwd=work).stdout)
     if files_after != files_before:
         raise Stop(f"the PR's file set changed: added {sorted(files_after - files_before)}, "
@@ -377,6 +386,11 @@ def resolve(key: str, a) -> str:
     candidate = f"auto-merge/{p['branch'].split('/')[-1]}"
     sh(["git", "push", "-q", "-f", "origin", f"HEAD:refs/heads/{candidate}"], cwd=work)
     try:
+        if p.get("sign"):
+            v = gh_json(f"repos/{p['fork']}/commits/{head}")["commit"]["verification"]
+            if not v.get("verified"):
+                raise Stop(f"GitHub does not verify the merge signature ({v.get('reason')}); "
+                           "is the signing key still registered on the account?")
         ci = wait_ci(p, head, candidate)
     finally:
         sh(["git", "push", "-q", "origin", "--delete", candidate], cwd=work, check=False)

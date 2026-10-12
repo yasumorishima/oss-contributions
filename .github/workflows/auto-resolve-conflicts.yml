@@ -76,7 +76,7 @@ jobs:
   d2:
     if: github.event_name == 'schedule' || inputs.project != 'gyroflow'
     runs-on: ubuntu-latest
-    timeout-minutes: 120
+    timeout-minutes: 170
     # D2_SIGNING_KEY is an environment secret: only jobs on main that name this environment see it.
     # It is an SSH key used for nothing but signing these merge commits (d2 requires signed commits).
     environment: d2-signing

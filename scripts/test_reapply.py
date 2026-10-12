@@ -55,6 +55,10 @@ T = "-- one --\na\n\n"
 stops("case name taken", "txtar.txt", "end", T, T + "-- two --\nb\n", T + "-- two --\nzzz\n")
 stops("nothing added", "next.md", "section", B, B, B + "- x\n")
 
+D = "#### Features 🚀\n\n- a\n\n#### Features 🚀\n\n- z\n"
+stops("heading twice upstream", "next.md", "section", B, B.replace("- a\n", "- a\n- mine\n"), D)
+stops("CRLF", "next.md", "section", B, B.replace("- a\n", "- a\n- mine\n"), B.replace("\n", "\r\n"))
+
 # empty section after a release resets next.md (the 2026-09-08 shape)
 got = ar.reapply("next.md", "section", B.replace("- a\n", "- a\n- old\n"),
                  B.replace("- a\n", "- a\n- old\n- mine\n"), "#### Features 🚀\n\n#### Bugfixes ⛑️\n\n")
