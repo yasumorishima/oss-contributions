@@ -1,6 +1,6 @@
 name: Sync Forks
 
-# Requires secret: GH_PAT (classic token with repo scope)
+# Requires secret: FORK_ADMIN_PAT (the fork owner token, also used by contamination-scan-auto)
 # Manual trigger only — never runs automatically
 # Fork list is read from config.json (SSOT)
 
@@ -53,7 +53,7 @@ jobs:
           echo "❌ Failed:    $FAILED"
           [ "$FAILED" -eq 0 ] || exit 1
         env:
-          GH_TOKEN: ${{ secrets.GH_PAT }}
+          GH_TOKEN: ${{ secrets.FORK_ADMIN_PAT }}
 
       - name: Ensure CodeQL Default Setup on all forks
         run: |
@@ -89,4 +89,4 @@ jobs:
           echo "✅ Newly enabled: $ENABLED"
           echo "⏩ Already configured: $ALREADY"
         env:
-          GH_TOKEN: ${{ secrets.GH_PAT }}
+          GH_TOKEN: ${{ secrets.FORK_ADMIN_PAT }}
