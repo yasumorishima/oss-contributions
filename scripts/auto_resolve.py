@@ -125,17 +125,19 @@ def repair(p: dict, work: Path, missing: dict[str, list]) -> None:
                     sh(["cargo", "update", "-p", f"{n}@{v}", "--precise", want], cwd=d, check=False)
 
 
-def wait_run(p: dict, sha: str, run_id: int | None, deadline: float) -> dict:
+def wait_run(p: dict, sha: str, run_id: int | None, deadline: float, min_attempt: int = 1) -> dict:
+    """Wait for the run to complete; after a re-run, only an attempt >= min_attempt counts, so the
+    previous attempt's `completed` cannot be read as the result."""
     while time.time() < deadline:
         if run_id is None:
             runs = gh_json(f"repos/{p['fork']}/actions/workflows/{p['workflow']}/runs?head_sha={sha}&event=push")
             run = runs["workflow_runs"][0] if runs["workflow_runs"] else None
         else:
             run = gh_json(f"repos/{p['fork']}/actions/runs/{run_id}")
-        if run and run["status"] == "completed":
+        if run and run["status"] == "completed" and run.get("run_attempt", 1) >= min_attempt:
             return run
         time.sleep(60)
-    raise Stop(f"fork CI for {sha[:9]} did not finish within {p['ci_timeout_min']} min")
+    raise Stop(f"fork CI for {sha[:9]} (attempt {min_attempt}) did not finish in time")
 
 
 def wait_ci(p: dict, sha: str) -> str:
@@ -155,7 +157,7 @@ def wait_ci(p: dict, sha: str) -> str:
             break
         sh(["gh", "api", "-X", "POST", f"repos/{p['fork']}/actions/runs/{run['id']}/rerun-failed-jobs"])
         time.sleep(30)
-        run = wait_run(p, sha, run["id"], deadline + 60 * 60)
+        run = wait_run(p, sha, run["id"], deadline + 60 * 60, run.get("run_attempt", 1) + 1)
     raise Stop(f"fork CI {run['html_url']} did not build the merge (after one re-run): {bad}")
 
 
