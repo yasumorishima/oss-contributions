@@ -1,0 +1,65 @@
+name: Auto-resolve PR conflicts
+
+# Brings long-lived fork PRs back to MERGEABLE when upstream moves under them (scripts/auto_resolve.py).
+# Only conflict shapes already resolved by hand the same way several times are handled; the merge is
+# built by the fork's CI on a candidate branch before it reaches the PR branch. Anything else opens
+# a tracker issue and pushes nothing.
+
+on:
+  schedule:
+    - cron: '17 1 * * *'  # daily JST 10:17
+  workflow_dispatch:
+    inputs:
+      memo:
+        description: 'この実行の意図'
+        required: false
+        type: string
+      dry_run:
+        description: 'Never push to the PR branch (test a past merge)'
+        required: false
+        type: boolean
+        default: false
+      start_sha:
+        description: 'dry run: PR head to start from'
+        required: false
+        type: string
+      upstream_sha:
+        description: 'dry run: upstream commit to merge'
+        required: false
+        type: string
+      expect_tree_of:
+        description: 'dry run: fail unless the result has this commit tree'
+        required: false
+        type: string
+
+concurrency:
+  group: auto-resolve-conflicts
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+
+jobs:
+  gyroflow:
+    runs-on: ubuntu-latest
+    timeout-minutes: 150
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Resolve gyroflow#1143
+        env:
+          GH_TOKEN: ${{ secrets.FORK_ADMIN_PAT }}
+          DRY_RUN: ${{ inputs.dry_run }}
+          START_SHA: ${{ inputs.start_sha }}
+          UPSTREAM_SHA: ${{ inputs.upstream_sha }}
+          EXPECT_TREE_OF: ${{ inputs.expect_tree_of }}
+        run: |
+          gh auth setup-git
+          args=(gyroflow)
+          if [ "$DRY_RUN" = "true" ]; then
+            args+=(--dry-run --start-sha "$START_SHA")
+            [ -n "$UPSTREAM_SHA" ] && args+=(--upstream-sha "$UPSTREAM_SHA")
+            [ -n "$EXPECT_TREE_OF" ] && args+=(--expect-tree-of "$EXPECT_TREE_OF")
+          fi
+          cargo --version
+          python3 scripts/auto_resolve.py "${args[@]}"
