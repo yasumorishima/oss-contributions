@@ -5,7 +5,7 @@ anything else is reported in a tracker issue and nothing is pushed. The merge go
 branch first and reaches the PR branch only after the fork's own CI has built it.
 
     python scripts/auto_resolve.py gyroflow                 # scheduled run
-    python scripts/auto_resolve.py gyroflow --dry-run --start-sha a998fc6 --upstream-sha bf340d7
+    python scripts/auto_resolve.py gyroflow --dry-run --start-sha <full sha> --upstream-sha <full sha>
 """
 from __future__ import annotations
 
@@ -40,7 +40,7 @@ PROJECTS = {
         # macOS/iOS jobs stop at "Install Mac certificates" in the fork (no Apple signing secrets).
         "required_jobs": ["Gyroflow for linux", "Gyroflow for windows", "Gyroflow for windows-arm",
                           "Gyroflow for android"],
-        "ci_timeout_min": 110,
+        "ci_timeout_min": 70,  # runs take 20-35 min; a re-run gets one more hour
     },
 }
 
@@ -57,8 +57,15 @@ def sh(cmd: list[str], cwd: str | Path | None = None, check: bool = True) -> sub
     return r
 
 
-def gh_json(path: str) -> dict | list:
-    return json.loads(sh(["gh", "api", path]).stdout)
+def gh_json(path: str, tries: int = 6) -> dict | list:
+    """GitHub's API answers 502/504 now and then (a 502 ended the first dry run); retry those."""
+    for i in range(tries):
+        r = sh(["gh", "api", path], check=False)
+        if r.returncode == 0:
+            return json.loads(r.stdout)
+        if i == tries - 1 or not re.search(r"HTTP 5\d\d|timeout|connection", r.stderr, re.I):
+            raise Stop(f"`gh api {path}` failed: {r.stderr.strip()[-300:]}")
+        time.sleep(30 * (i + 1))
 
 
 class Stop(Exception):
@@ -79,7 +86,16 @@ def lock_set(text: str) -> set[tuple[str, str]]:
 
 
 def vkey(v: str) -> tuple:
-    return tuple(int(x) if x.isdigit() else -1 for x in re.split(r"[.+-]", v))
+    """SemVer order: build metadata ignored, a prerelease sorts below its release."""
+    core, _, pre = v.split("+")[0].partition("-")
+    rel = tuple(int(x) for x in core.split("."))
+    if not pre:
+        return rel, 1, ()
+    return rel, 0, tuple((0, int(x), "") if x.isdigit() else (1, 0, x) for x in pre.split("."))
+
+
+def names(out: str) -> set[str]:
+    return {x for x in out.split("\0") if x}
 
 
 def lost(p: dict, work: Path, upstream_sha: str) -> dict[str, list]:
@@ -94,6 +110,8 @@ def lost(p: dict, work: Path, upstream_sha: str) -> dict[str, list]:
 
 def repair(p: dict, work: Path, missing: dict[str, list]) -> None:
     for f, pairs in missing.items():
+        if not pairs:
+            continue
         d = work / p["lockfiles"][f]
         ours = lock_set((work / f).read_text())
         for name, want in p["pins"]:
@@ -107,31 +125,45 @@ def repair(p: dict, work: Path, missing: dict[str, list]) -> None:
                     sh(["cargo", "update", "-p", f"{n}@{v}", "--precise", want], cwd=d, check=False)
 
 
-def wait_ci(p: dict, sha: str) -> str:
-    deadline = time.time() + p["ci_timeout_min"] * 60
-    run = None
+def wait_run(p: dict, sha: str, run_id: int | None, deadline: float) -> dict:
     while time.time() < deadline:
-        runs = gh_json(f"repos/{p['fork']}/actions/workflows/{p['workflow']}/runs?head_sha={sha}&event=push")
-        if runs["workflow_runs"]:
-            run = runs["workflow_runs"][0]
-            if run["status"] == "completed":
-                break
+        if run_id is None:
+            runs = gh_json(f"repos/{p['fork']}/actions/workflows/{p['workflow']}/runs?head_sha={sha}&event=push")
+            run = runs["workflow_runs"][0] if runs["workflow_runs"] else None
+        else:
+            run = gh_json(f"repos/{p['fork']}/actions/runs/{run_id}")
+        if run and run["status"] == "completed":
+            return run
         time.sleep(60)
-    else:
-        raise Stop(f"fork CI for {sha[:9]} did not finish within {p['ci_timeout_min']} min")
-    jobs = gh_json(f"repos/{p['fork']}/actions/runs/{run['id']}/jobs?per_page=100")["jobs"]
-    got = {j["name"]: j["conclusion"] for j in jobs}
-    bad = {n: got.get(n) for n in p["required_jobs"] if got.get(n) != "success"}
-    print(f"fork CI {run['html_url']}: " + ", ".join(f"{n}={got.get(n)}" for n in p["required_jobs"]), flush=True)
-    if bad:
-        raise Stop(f"fork CI {run['html_url']} did not build the merge: {bad}")
-    return run["html_url"]
+    raise Stop(f"fork CI for {sha[:9]} did not finish within {p['ci_timeout_min']} min")
+
+
+def wait_ci(p: dict, sha: str) -> str:
+    """The required jobs must succeed. Failed jobs are re-run once: on 2026-10-12 the linux job of
+    an identical tree failed only because the AppImage runtime download answered 504."""
+    deadline = time.time() + p["ci_timeout_min"] * 60
+    run = wait_run(p, sha, None, deadline)
+    for attempt in (1, 2):
+        jobs = gh_json(f"repos/{p['fork']}/actions/runs/{run['id']}/jobs?per_page=100")["jobs"]
+        got = {j["name"]: j["conclusion"] for j in jobs}
+        bad = {n: got.get(n) for n in p["required_jobs"] if got.get(n) != "success"}
+        print(f"fork CI {run['html_url']} attempt {attempt}: "
+              + ", ".join(f"{n}={got.get(n)}" for n in p["required_jobs"]), flush=True)
+        if not bad:
+            return run["html_url"]
+        if attempt == 2:
+            break
+        sh(["gh", "api", "-X", "POST", f"repos/{p['fork']}/actions/runs/{run['id']}/rerun-failed-jobs"])
+        time.sleep(30)
+        run = wait_run(p, sha, run["id"], deadline + 60 * 60)
+    raise Stop(f"fork CI {run['html_url']} did not build the merge (after one re-run): {bad}")
 
 
 def report(p: dict, key: str, ok: bool, text: str) -> None:
     title = f"🔀 [自動解消] {p['upstream']}#{p['pr']} の衝突"
-    found = gh_json(f"repos/{TRACKER}/issues?state=open&per_page=100")
-    issue = next((i for i in found if i["title"] == title and "pull_request" not in i), None)
+    found = json.loads(sh(["gh", "issue", "list", "--repo", TRACKER, "--state", "open", "--limit", "1000",
+                           "--json", "number,title"]).stdout)
+    issue = next((i for i in found if i["title"] == title), None)
     run_url = f"{os.environ.get('GITHUB_SERVER_URL', 'https://github.com')}/{TRACKER}/actions/runs/" \
               f"{os.environ.get('GITHUB_RUN_ID', '?')}"
     if ok:
@@ -156,6 +188,8 @@ def resolve(key: str, a) -> str:
             return f"PR is {pr['state']}; nothing to do"
         if pr["mergeable"] is not False:
             return f"PR mergeable={pr['mergeable']} ({pr['mergeable_state']}); nothing to do"
+        if (pr["head"]["repo"] or {}).get("full_name") != p["fork"] or pr["head"]["ref"] != p["branch"]:
+            raise Stop(f"PR head is {pr['head']['label']}, not {p['fork']}:{p['branch']}")
         start = pr["head"]["sha"]
     else:
         start = a.start_sha
@@ -170,10 +204,10 @@ def resolve(key: str, a) -> str:
     sh(["git", "checkout", "-q", "-B", "auto-merge", start], cwd=work)
     for k, v in (("user.name", AUTHOR[0]), ("user.email", AUTHOR[1])):
         sh(["git", "config", k, v], cwd=work)
-    files_before = set(sh(["git", "diff", "--name-only", f"{upstream_sha}...{start}"], cwd=work).stdout.split())
+    files_before = names(sh(["git", "diff", "-z", "--name-only", f"{upstream_sha}...{start}"], cwd=work).stdout)
 
     merged = sh(["git", "merge", "--no-ff", "--no-commit", upstream_sha], cwd=work, check=False)
-    conflicted = set(sh(["git", "diff", "--name-only", "--diff-filter=U"], cwd=work).stdout.split())
+    conflicted = names(sh(["git", "diff", "-z", "--name-only", "--diff-filter=U"], cwd=work).stdout)
     if merged.returncode != 0 and not conflicted:
         raise Stop("git merge failed without listing conflicted files")
     other = conflicted - set(p["lockfiles"])
@@ -194,7 +228,7 @@ def resolve(key: str, a) -> str:
     for f, d in p["lockfiles"].items():
         sh(["cargo", "metadata", "--format-version", "1", "--locked", "-q"], cwd=work / d)
         sh(["git", "add", "--", f], cwd=work)
-    for f in sh(["git", "diff", "--cached", "--name-only"], cwd=work).stdout.split():
+    for f in names(sh(["git", "diff", "-z", "--cached", "--name-only"], cwd=work).stdout):
         path = work / f
         if path.is_file() and re.search(r"^(<<<<<<<|>>>>>>>) ", path.read_text(errors="replace"), re.M):
             raise Stop(f"conflict marker left in {f}")
@@ -206,7 +240,7 @@ def resolve(key: str, a) -> str:
     sh(["git", "commit", "-q", "-m",
         f"Merge remote-tracking branch 'upstream/{p['upstream_branch']}' into {p['branch']}"], cwd=work)
     head = sh(["git", "rev-parse", "HEAD"], cwd=work).stdout.strip()
-    files_after = set(sh(["git", "diff", "--name-only", f"{upstream_sha}...{head}"], cwd=work).stdout.split())
+    files_after = names(sh(["git", "diff", "-z", "--name-only", f"{upstream_sha}...{head}"], cwd=work).stdout)
     if files_after != files_before:
         raise Stop(f"the PR's file set changed: added {sorted(files_after - files_before)}, "
                    f"dropped {sorted(files_before - files_after)}")
@@ -225,8 +259,9 @@ def resolve(key: str, a) -> str:
         sh(["git", "push", "-q", "origin", "--delete", candidate], cwd=work, check=False)
     if a.dry_run:
         return f"dry run: {head[:9]} built ({ci}); PR branch untouched"
-    # a plain push only fast-forwards: if the branch moved since `start`, it is rejected
-    sh(["git", "push", "-q", "origin", f"HEAD:refs/heads/{p['branch']}"], cwd=work)
+    # compare-and-swap: rejected unless the branch still points at `start` (HEAD descends from it)
+    sh(["git", "push", "-q", f"--force-with-lease=refs/heads/{p['branch']}:{start}", "origin",
+        f"HEAD:refs/heads/{p['branch']}"], cwd=work)
     return f"{start[:9]} -> {head[:9]} (upstream {upstream_sha[:9]}), fork CI {ci}"
 
 
@@ -243,10 +278,11 @@ def main() -> int:
     p = PROJECTS[a.project]
     try:
         msg = resolve(a.project, a)
-    except Stop as e:
-        print(f"::error::{e}", flush=True)
+    except Exception as e:  # noqa: BLE001  any failure: nothing reached the PR branch; say so
+        msg = str(e) if isinstance(e, Stop) else f"unexpected {type(e).__name__}: {e}"
+        print(f"::error::{msg}", flush=True)
         if not a.dry_run:
-            report(p, a.project, False, str(e))
+            report(p, a.project, False, msg)
         return 1
     print(msg, flush=True)
     if not a.dry_run and ("->" in msg or "mergeable=True" in msg):  # also closes an issue fixed by hand
