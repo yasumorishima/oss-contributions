@@ -55,7 +55,7 @@ PROJECTS = {
         # Code conflicts (08-07 d2layouts.go, 09-06 d2svg.go) stop here.
         "append_files": {"ci/release/changelogs/next.md": "section", "e2etests/txtar.txt": "end"},
         "must_contain": [("d2layouts/d2cycle/layout.go", "func clipToShapeBorder"),
-                         ("e2etests/txtar.txt", "-- cycle-self-loop --")],
+                         ("e2etests/txtar.txt", "-- cycle-diagram --")],
         # CONTRIBUTING: "Please sign your commits"; the `signed` job fails on any unsigned commit.
         "sign": True,
         "workflow": "ci.yml",
