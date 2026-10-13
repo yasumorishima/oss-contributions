@@ -14,6 +14,12 @@ on:
         description: 'この実行の意図'
         required: false
         type: string
+      project:
+        description: 'Which PR (a dry run needs one project)'
+        required: false
+        type: choice
+        options: [all, gyroflow, d2]
+        default: all
       dry_run:
         description: 'Never push to the PR branch (test a past merge)'
         required: false
@@ -41,6 +47,7 @@ permissions:
 
 jobs:
   gyroflow:
+    if: github.event_name == 'schedule' || inputs.project != 'd2'
     runs-on: ubuntu-latest
     timeout-minutes: 170
     steps:
@@ -50,6 +57,7 @@ jobs:
         env:
           GH_TOKEN: ${{ secrets.FORK_ADMIN_PAT }}
           DRY_RUN: ${{ inputs.dry_run }}
+          PROJECT: ${{ inputs.project }}
           START_SHA: ${{ inputs.start_sha }}
           UPSTREAM_SHA: ${{ inputs.upstream_sha }}
           EXPECT_TREE_OF: ${{ inputs.expect_tree_of }}
@@ -57,9 +65,43 @@ jobs:
           gh auth setup-git
           args=(gyroflow)
           if [ "$DRY_RUN" = "true" ]; then
+            [ "$PROJECT" = "gyroflow" ] || { echo "::error::a dry run needs project=gyroflow or d2"; exit 1; }
             args+=(--dry-run --start-sha "$START_SHA")
             [ -n "$UPSTREAM_SHA" ] && args+=(--upstream-sha "$UPSTREAM_SHA")
             [ -n "$EXPECT_TREE_OF" ] && args+=(--expect-tree-of "$EXPECT_TREE_OF")
           fi
           cargo --version
+          python3 scripts/auto_resolve.py "${args[@]}"
+
+  d2:
+    if: github.event_name == 'schedule' || inputs.project != 'gyroflow'
+    runs-on: ubuntu-latest
+    timeout-minutes: 170
+    # D2_SIGNING_KEY is an environment secret: only jobs on main that name this environment see it.
+    # It is an SSH key used for nothing but signing these merge commits (d2 requires signed commits).
+    environment: d2-signing
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Resolve d2#2742
+        env:
+          GH_TOKEN: ${{ secrets.FORK_ADMIN_PAT }}
+          D2_SIGNING_KEY: ${{ secrets.D2_SIGNING_KEY }}
+          DRY_RUN: ${{ inputs.dry_run }}
+          PROJECT: ${{ inputs.project }}
+          START_SHA: ${{ inputs.start_sha }}
+          UPSTREAM_SHA: ${{ inputs.upstream_sha }}
+          EXPECT_TREE_OF: ${{ inputs.expect_tree_of }}
+        run: |
+          gh auth setup-git
+          args=(d2)
+          if [ "$DRY_RUN" = "true" ]; then
+            [ "$PROJECT" = "d2" ] || { echo "::error::a dry run needs project=gyroflow or d2"; exit 1; }
+            args+=(--dry-run --start-sha "$START_SHA")
+            [ -n "$UPSTREAM_SHA" ] && args+=(--upstream-sha "$UPSTREAM_SHA")
+            [ -n "$EXPECT_TREE_OF" ] && args+=(--expect-tree-of "$EXPECT_TREE_OF")
+          fi
+          export SIGNING_KEY_FILE="$RUNNER_TEMP/d2-signing-key"
+          (umask 077 && printf '%s\n' "$D2_SIGNING_KEY" > "$SIGNING_KEY_FILE")
+          trap 'rm -f "$SIGNING_KEY_FILE"' EXIT
           python3 scripts/auto_resolve.py "${args[@]}"
