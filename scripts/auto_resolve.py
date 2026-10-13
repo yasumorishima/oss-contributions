@@ -200,8 +200,11 @@ def reapply(f: str, mode: str, base: str, ours: str, theirs: str) -> str:
             else:
                 t = t[:last + 1] + block + t[last + 1:]
                 at = last + 1
-            # the block sits right after the section's last item, still inside the section
-            if t[at:at + len(block)] != block or any(x.startswith("#") for x in t[h + 1:at]):
+            # the block is the section's last item: no heading before it, only blank lines after it
+            end = at + len(block)
+            nxt = next((k for k in range(end, len(t)) if t[k].startswith("#") or t[k].strip() == "---"), len(t))
+            if (t[at:end] != block or any(x.startswith("#") or x.strip() == "---" for x in t[h + 1:at])
+                    or any(x.strip() for x in t[end:nxt])):
                 raise Stop(f"{f}: {block[0]!r} did not land at the end of {heading!r}")
         elif mode == "end":
             names_ = [x for x in block if re.match(r"^-- .+ --$", x)]
@@ -237,6 +240,25 @@ def setup_signing(work: Path) -> None:
     for k, v in (("gpg.format", "ssh"), ("user.signingkey", key), ("commit.gpgsign", "true"),
                  ("gpg.ssh.allowedSignersFile", str(allowed))):
         sh(["git", "config", k, v], cwd=work)
+
+
+def verify_signature(p: dict, sha: str) -> None:
+    """GitHub must verify the signature against the account's keys (%G? only shows it is signed).
+    Re-read a few times when the commit is not visible yet or the verification service failed."""
+    for i in range(4):
+        r = sh(["gh", "api", f"repos/{p['fork']}/commits/{sha}"], check=False)
+        if r.returncode == 0:
+            v = json.loads(r.stdout)["commit"]["verification"]
+            if v.get("verified"):
+                return
+            reason = v.get("reason")
+            if reason not in ("gpgverify_unavailable", "gpgverify_error"):
+                raise Stop(f"GitHub does not verify the merge signature ({reason}); "
+                           "is the signing key still registered on the account?")
+        elif not re.search(r"HTTP (404|422|5\d\d)|timeout|connection", r.stderr, re.I):
+            raise Stop(f"reading commit {sha[:9]} failed: {r.stderr.strip()[-300:]}")
+        time.sleep(20 * (i + 1))
+    raise Stop(f"GitHub could not verify the signature of {sha[:9]} after 4 reads")
 
 
 def wait_run(p: dict, sha: str, run_id: int | None, deadline: float, min_attempt: int = 1) -> dict:
@@ -387,10 +409,7 @@ def resolve(key: str, a) -> str:
     sh(["git", "push", "-q", "-f", "origin", f"HEAD:refs/heads/{candidate}"], cwd=work)
     try:
         if p.get("sign"):
-            v = gh_json(f"repos/{p['fork']}/commits/{head}")["commit"]["verification"]
-            if not v.get("verified"):
-                raise Stop(f"GitHub does not verify the merge signature ({v.get('reason')}); "
-                           "is the signing key still registered on the account?")
+            verify_signature(p, head)
         ci = wait_ci(p, head, candidate)
     finally:
         sh(["git", "push", "-q", "origin", "--delete", candidate], cwd=work, check=False)
