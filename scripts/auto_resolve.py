@@ -18,6 +18,8 @@ import subprocess
 import sys
 import time
 import tomllib
+import urllib.parse
+import urllib.request
 from pathlib import Path
 
 TRACKER = "yasumorishima/oss-contributions"
@@ -38,9 +40,19 @@ PROJECTS = {
         "pins": [("crypto-common", "0.1.6")],
         "must_contain": [("src/core/Cargo.toml", "use-burn"), ("src/controller.rs", "has_ai_optical_flow")],
         "workflow": "release.yml",
-        # macOS/iOS jobs stop at "Install Mac certificates" in the fork (no Apple signing secrets).
-        "required_jobs": ["Gyroflow for linux", "Gyroflow for windows", "Gyroflow for windows-arm",
-                          "Gyroflow for android"],
+        # GitHub switched the fork's workflows off on 2026-10-15 "due to the scale of GitHub Actions
+        # usage": a Release run is ~110 runner-min (linux 27, windows 27, windows-arm 34, android 23;
+        # the macOS/iOS jobs stop at once at "Install Mac certificates"), and every conflict cost two
+        # runs (candidate + PR branch). The candidate now gets one extra commit that keeps only these
+        # matrix entries, the PR branch gets the merge without it, and the PR branch's own run is
+        # cancelled. For a lockfile-only merge windows-arm/android build the same crate graph on the
+        # same runner image as windows.
+        "candidate_matrix": ["linux", "windows"],
+        # `github_release` needs only `build` and runs on macOS; it was skipped only because the macOS
+        # builds failed, so with a linux+windows matrix it would start. The CI-only commit switches it off.
+        "candidate_disable_jobs": ["github_release"],
+        "cancel_pr_branch_run": True,
+        "required_jobs": ["Gyroflow for linux", "Gyroflow for windows"],
         "ci_timeout_min": 70,  # runs take 20-35 min; a re-run gets one more hour
         "memo": "oss-gyroflow.md",
     },
@@ -67,9 +79,11 @@ PROJECTS = {
 }
 
 
-def sh(cmd: list[str], cwd: str | Path | None = None, check: bool = True) -> subprocess.CompletedProcess:
+def sh(cmd: list[str], cwd: str | Path | None = None, check: bool = True,
+       env: dict | None = None) -> subprocess.CompletedProcess:
     print("+ " + " ".join(cmd), flush=True)
-    r = subprocess.run(cmd, cwd=cwd, capture_output=True, text=True)
+    r = subprocess.run(cmd, cwd=cwd, capture_output=True, text=True,
+                       env=dict(os.environ, **env) if env else None)
     if r.stdout.strip():
         print(r.stdout.rstrip()[-3000:], flush=True)
     if r.stderr.strip():
@@ -79,10 +93,10 @@ def sh(cmd: list[str], cwd: str | Path | None = None, check: bool = True) -> sub
     return r
 
 
-def gh_json(path: str, tries: int = 6) -> dict | list:
+def gh_json(path: str, tries: int = 6, env: dict | None = None) -> dict | list:
     """GitHub's API answers 502/504 now and then (a 502 ended the first dry run); retry those."""
     for i in range(tries):
-        r = sh(["gh", "api", path], check=False)
+        r = sh(["gh", "api", path], check=False, env=env)
         if r.returncode == 0:
             return json.loads(r.stdout)
         if i == tries - 1 or not re.search(r"HTTP 5\d\d|timeout|connection", r.stderr, re.I):
@@ -92,6 +106,139 @@ def gh_json(path: str, tries: int = 6) -> dict | list:
 
 class Stop(Exception):
     """Stop without pushing to the PR branch; the message goes to the tracker issue."""
+
+
+class Transient(Stop):
+    """Worth retrying on the next scheduled run (a crates.io yank, the network): the tracker issue is
+    opened only when the same kind of stop repeats TRANSIENT_LIMIT runs in a row. On 2026-10-16
+    zip 7.2.0-7.4.0 were yanked and un-yanked within a day."""
+
+
+TRANSIENT_TAG = "TRANSIENT:"
+NO_RUN_MIN = 15  # a push starts the fork's run within a minute or two
+TRANSIENT_LIMIT = 3
+TRANSIENT = re.compile(r"version \S+ is yanked|spurious network error|failed to download|"
+                       r"failed to get successful HTTP response|got (?:5\d\d|429)\b|download of \S+ failed|"
+                       r"Couldn't resolve host|operation timed out", re.I)
+WORKFLOW_PUSH_REFUSED = re.compile(r"refusing to allow .{0,80}workflow", re.I)
+# The banner GitHub shows on a fork whose workflows it switched off; the API still says `active`.
+FORK_OFF = re.compile(r"(?:are not|aren['\u2019]t)(?: currently)? being run on this fork", re.I)
+MATRIX_ENTRY = re.compile(r"^(\s*)(\{\s*os:\s*[^,{}]+,\s*type:\s*([\w-]+)\s*\})\s*,?\s*$")
+
+
+def fork_actions_off(fork: str) -> bool:
+    """True when the fork's Actions page carries the banner. An unreadable page counts as on: the
+    wait for the fork's run then times out, and the page is read again at that point."""
+    try:
+        with urllib.request.urlopen(f"https://github.com/{fork}/actions", timeout=30) as r:
+            return bool(FORK_OFF.search(r.read().decode("utf-8", "replace")))
+    except OSError as e:
+        print(f"::warning::could not read the Actions page of {fork}: {e}", flush=True)
+        return False
+
+
+def fork_off_stop(fork: str) -> Stop:
+    return Stop(f"GitHub has switched off the workflows of {fork} (the Actions page says they are not "
+                f"being run on this fork due to the scale of Actions usage). The owner re-enables them "
+                f"with the button on https://github.com/{fork}/actions")
+
+
+def narrow_matrix(text: str, keep: list[str]) -> str:
+    """Keep only the matrix entries `{ os: ..., type: <keep> }` (one per line, as in gyroflow's
+    release.yml), with a comma after every kept entry but the last; line endings are kept."""
+    lines = text.splitlines(keepends=True)
+    entries = [(i, MATRIX_ENTRY.match(ln.rstrip("\r\n"))) for i, ln in enumerate(lines)]
+    entries = [(i, m) for i, m in entries if m]
+    seen = [m.group(3) for _, m in entries]
+    kept = [(i, m) for i, m in entries if m.group(3) in keep]
+    if sorted(m.group(3) for _, m in kept) != sorted(keep) or len(seen) <= len(kept):
+        raise Stop(f"the CI matrix is not the one expected: has {seen}, wanted to keep {keep}")
+    if entries[-1][0] - entries[0][0] != len(entries) - 1:
+        raise Stop("the CI matrix entries are not on consecutive lines")
+    drop = {i for i, m in entries if m.group(3) not in keep}
+    last = kept[-1][0]
+    for i, m in kept:
+        eol = lines[i][len(lines[i].rstrip("\r\n")):]
+        lines[i] = m.group(1) + m.group(2) + ("" if i == last else ",") + eol
+    return "".join(ln for i, ln in enumerate(lines) if i not in drop)
+
+
+def disable_jobs(text: str, jobs: list[str]) -> str:
+    """Add `if: false` under each named top-level job (two-space indent, as in gyroflow's release.yml)."""
+    lines = text.splitlines(keepends=True)
+    for job in jobs:
+        at = [i for i, ln in enumerate(lines) if ln.rstrip("\r\n") == f"  {job}:"]
+        if len(at) != 1:
+            raise Stop(f"job {job!r} found {len(at)} times in the workflow")
+        i = at[0]
+        end = next((k for k in range(i + 1, len(lines)) if re.match(r"^ {0,2}\S", lines[k])), len(lines))
+        if any(re.match(r"^    if:", ln) for ln in lines[i + 1:end]):
+            raise Stop(f"job {job!r} already has an `if:`")
+        eol = lines[i][len(lines[i].rstrip("\r\n")):] or "\n"
+        lines.insert(i + 1, "    if: false" + eol)
+    return "".join(lines)
+
+
+def cargo_metadata(d: Path, locked: bool = False) -> None:
+    cmd = ["cargo", "metadata", "--format-version", "1"] + (["--locked"] if locked else []) + ["-q"]
+    r = sh(cmd, cwd=d, check=False)
+    if r.returncode != 0:
+        m = TRANSIENT.search(r.stderr)
+        if m:
+            raise Transient(f"`{' '.join(cmd)}` in {d} failed on crates.io or the network ({m.group(0)})")
+        raise Stop(f"`{' '.join(cmd)}` in {d} exited {r.returncode}")
+
+
+def cancel_runs(p: dict, query: str) -> int:
+    n = 0
+    for status in ("queued", "in_progress", "waiting", "pending", "requested"):
+        runs = gh_json(f"repos/{p['fork']}/actions/workflows/{p['workflow']}/runs?{query}&status={status}")
+        for r in runs["workflow_runs"]:
+            r = sh(["gh", "api", "-X", "POST", f"repos/{p['fork']}/actions/runs/{r['id']}/cancel"], check=False)
+            n += r.returncode == 0
+    return n
+
+
+def cancel_pr_branch_run(p: dict, sha: str) -> None:
+    """The push to the PR branch starts a full Release run of a tree the candidate already built;
+    cancel it (it appears within a minute or two). Not finding it is not an error."""
+    for _ in range(10):
+        time.sleep(30)
+        try:
+            if cancel_runs(p, f"head_sha={sha}&event=push"):
+                print(f"cancelled the fork's run on the PR branch ({sha[:9]})", flush=True)
+                return
+        except Stop as e:
+            print(f"::warning::could not cancel the PR branch run: {e}", flush=True)
+            return
+    print("::warning::no fork run appeared for the PR branch push within 5 min", flush=True)
+
+
+def prior_transient_runs(project: str) -> int:
+    """How many of this workflow's previous runs, newest first, ended this project's job with a
+    TRANSIENT warning, up to the first one that did not. Read with the workflow's own token."""
+    me, tok = os.environ.get("GITHUB_RUN_ID"), os.environ.get("TRACKER_TOKEN")
+    if not me or not tok:
+        return 0
+    env = {"GH_TOKEN": tok}
+    n = 0
+    try:
+        runs = gh_json(f"repos/{TRACKER}/actions/workflows/auto-resolve-conflicts.yml/runs"
+                       f"?status=completed&per_page=20", env=env)["workflow_runs"]
+        for r in runs:
+            if str(r["id"]) == me or r["event"] != "schedule":  # dry runs are dispatched
+                continue
+            jobs = gh_json(f"repos/{TRACKER}/actions/runs/{r['id']}/jobs", env=env)["jobs"]
+            job = next((j for j in jobs if j["name"] == project), None)
+            if job is None or job["conclusion"] in ("skipped", "cancelled"):
+                continue  # a run for the other project only, or one that never got to say anything
+            anns = gh_json(f"repos/{TRACKER}/check-runs/{job['id']}/annotations", env=env)
+            if not any(x.get("message", "").startswith(TRANSIENT_TAG) for x in anns):
+                break
+            n += 1
+    except Exception as e:  # noqa: BLE001  counting must not hide the stop itself
+        print(f"::warning::could not count earlier transient stops: {e}", flush=True)
+    return n
 
 
 def pr_state(p: dict) -> dict:
@@ -264,7 +411,14 @@ def verify_signature(p: dict, sha: str) -> None:
 def wait_run(p: dict, sha: str, run_id: int | None, deadline: float, min_attempt: int = 1) -> dict:
     """Wait for the run to complete; after a re-run, only an attempt >= min_attempt counts, so the
     previous attempt's `completed` cannot be read as the result."""
+    t0 = time.time()
     while time.time() < deadline:
+        if run_id is None and time.time() - t0 > NO_RUN_MIN * 60:
+            if fork_actions_off(p["fork"]):
+                raise fork_off_stop(p["fork"])
+            raise Stop(f"no fork run appeared for {sha[:9]} within {NO_RUN_MIN} min; if "
+                       f"https://github.com/{p['fork']}/actions says workflows are not being run on this "
+                       f"fork, the owner re-enables them there")
         if run_id is None:
             event = "workflow_dispatch" if p.get("dispatch") else "push"
             runs = gh_json(f"repos/{p['fork']}/actions/workflows/{p['workflow']}/runs?head_sha={sha}&event={event}")
@@ -274,6 +428,8 @@ def wait_run(p: dict, sha: str, run_id: int | None, deadline: float, min_attempt
         if run and run["status"] == "completed" and run.get("run_attempt", 1) >= min_attempt:
             return run
         time.sleep(60)
+    if fork_actions_off(p["fork"]):
+        raise fork_off_stop(p["fork"])
     raise Stop(f"fork CI for {sha[:9]} (attempt {min_attempt}) did not finish in time")
 
 
@@ -317,6 +473,11 @@ def report(p: dict, key: str, ok: bool, text: str) -> None:
             f"PR のブランチには何も push していません。\n\n**理由**: {text}\n\n{run_url}\n\n"
             f"手順は memory の `{p['memo']}`。")
     if issue:
+        old = json.loads(sh(["gh", "issue", "view", str(issue["number"]), "--repo", TRACKER,
+                             "--json", "body"]).stdout)["body"]
+        if f"**理由**: {text}\n" in old:
+            print("the tracker issue already gives this reason; not edited", flush=True)
+            return
         sh(["gh", "issue", "edit", str(issue["number"]), "--repo", TRACKER, "--body", body])
     else:
         sh(["gh", "issue", "create", "--repo", TRACKER, "--title", title, "--body", body])
@@ -335,6 +496,8 @@ def resolve(key: str, a) -> str:
         start = pr["head"]["sha"]
     else:
         start = a.start_sha
+    if fork_actions_off(p["fork"]):  # before any work: nothing would build the candidate
+        raise fork_off_stop(p["fork"])
     work = Path("work") / key
     sh(["git", "clone", "-q", "--filter=blob:none", f"https://github.com/{p['fork']}.git", str(work)])
     sh(["git", "remote", "add", "upstream", f"https://github.com/{p['upstream']}.git"], cwd=work)
@@ -367,7 +530,7 @@ def resolve(key: str, a) -> str:
     for f in sorted(conflicted & set(lockfiles)):
         sh(["git", "checkout", "--theirs", "--", f], cwd=work)
     for f, d in lockfiles.items():
-        sh(["cargo", "metadata", "--format-version", "1", "-q"], cwd=work / d)
+        cargo_metadata(work / d)
     missing = lost(p, work, upstream_sha)
     if any(missing.values()):
         print(f"upstream versions missing before repair: {missing}", flush=True)
@@ -376,7 +539,7 @@ def resolve(key: str, a) -> str:
     if any(missing.values()):
         raise Stop(f"our lock drops upstream versions even after the known pins: {missing}")
     for f, d in lockfiles.items():
-        sh(["cargo", "metadata", "--format-version", "1", "--locked", "-q"], cwd=work / d)
+        cargo_metadata(work / d, locked=True)
         sh(["git", "add", "--", f], cwd=work)
     for f in names(sh(["git", "diff", "-z", "--cached", "--name-only"], cwd=work).stdout):
         path = work / f
@@ -405,19 +568,41 @@ def resolve(key: str, a) -> str:
         if d:
             raise Stop(f"result differs from {a.expect_tree_of}")
 
+    ci_sha = head
+    if p.get("candidate_matrix"):
+        wf = work / ".github" / "workflows" / p["workflow"]
+        text = narrow_matrix(wf.read_bytes().decode(), p["candidate_matrix"])
+        wf.write_bytes(disable_jobs(text, p.get("candidate_disable_jobs", [])).encode())
+        sh(["git", "commit", "-q", "-am", "CI only: build " + " and ".join(p["candidate_matrix"])
+            + " (this commit never reaches the PR branch)"], cwd=work)
+        ci_sha = sh(["git", "rev-parse", "HEAD"], cwd=work).stdout.strip()
+        if sh(["git", "rev-parse", f"{ci_sha}^"], cwd=work).stdout.strip() != head:
+            raise Stop("the CI-only commit is not a child of the merge")
+        touched = names(sh(["git", "diff", "-z", "--name-only", head, ci_sha], cwd=work).stdout)
+        if touched != {f".github/workflows/{p['workflow']}"}:
+            raise Stop(f"the CI-only commit touches {sorted(touched)}")
     candidate = f"auto-merge/{p['branch'].split('/')[-1]}"
-    sh(["git", "push", "-q", "-f", "origin", f"HEAD:refs/heads/{candidate}"], cwd=work)
+    cancel_runs(p, "branch=" + urllib.parse.quote(candidate, safe=""))  # an older candidate's run
+    r = sh(["git", "push", "-q", "-f", "origin", f"{ci_sha}:refs/heads/{candidate}"], cwd=work, check=False)
+    if r.returncode != 0:
+        if WORKFLOW_PUSH_REFUSED.search(r.stderr):
+            raise Stop("GitHub refused the CI-only commit because FORK_ADMIN_PAT may not change workflow "
+                       "files: give the token the `workflow` scope (classic) or Workflows: Read and write "
+                       "(fine-grained) for yasumorishima/gyroflow, then re-run")
+        raise Stop(f"pushing the candidate exited {r.returncode}")
     try:
         if p.get("sign"):
             verify_signature(p, head)
-        ci = wait_ci(p, head, candidate)
+        ci = wait_ci(p, ci_sha, candidate)
     finally:
         sh(["git", "push", "-q", "origin", "--delete", candidate], cwd=work, check=False)
     if a.dry_run:
         return f"dry run: {head[:9]} built ({ci}); PR branch untouched"
     # compare-and-swap: rejected unless the branch still points at `start` (HEAD descends from it)
     sh(["git", "push", "-q", f"--force-with-lease=refs/heads/{p['branch']}:{start}", "origin",
-        f"HEAD:refs/heads/{p['branch']}"], cwd=work)
+        f"{head}:refs/heads/{p['branch']}"], cwd=work)
+    if p.get("cancel_pr_branch_run"):
+        cancel_pr_branch_run(p, head)
     return f"{start[:9]} -> {head[:9]} (upstream {upstream_sha[:9]}), fork CI {ci}"
 
 
@@ -434,6 +619,17 @@ def main() -> int:
     p = PROJECTS[a.project]
     try:
         msg = resolve(a.project, a)
+    except Transient as e:
+        n = 1 + (0 if a.dry_run else prior_transient_runs(a.project))
+        if n < TRANSIENT_LIMIT:
+            print(f"::warning::{TRANSIENT_TAG} {e} ({n} run(s) in a row; the tracker issue is opened "
+                  f"at {TRANSIENT_LIMIT})", flush=True)
+            return 0
+        msg = f"{TRANSIENT_TAG} {e} (the same kind of stop {TRANSIENT_LIMIT} or more scheduled runs in a row)"
+        print(f"::error::{msg}", flush=True)
+        if not a.dry_run:
+            report(p, a.project, False, msg)
+        return 1
     except Exception as e:  # noqa: BLE001  any failure: nothing reached the PR branch; say so
         msg = str(e) if isinstance(e, Stop) else f"unexpected {type(e).__name__}: {e}"
         print(f"::error::{msg}", flush=True)
