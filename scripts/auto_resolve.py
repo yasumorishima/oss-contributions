@@ -413,12 +413,6 @@ def wait_run(p: dict, sha: str, run_id: int | None, deadline: float, min_attempt
     previous attempt's `completed` cannot be read as the result."""
     t0 = time.time()
     while time.time() < deadline:
-        if run_id is None and time.time() - t0 > NO_RUN_MIN * 60:
-            if fork_actions_off(p["fork"]):
-                raise fork_off_stop(p["fork"])
-            raise Stop(f"no fork run appeared for {sha[:9]} within {NO_RUN_MIN} min; if "
-                       f"https://github.com/{p['fork']}/actions says workflows are not being run on this "
-                       f"fork, the owner re-enables them there")
         if run_id is None:
             event = "workflow_dispatch" if p.get("dispatch") else "push"
             runs = gh_json(f"repos/{p['fork']}/actions/workflows/{p['workflow']}/runs?head_sha={sha}&event={event}")
@@ -427,11 +421,21 @@ def wait_run(p: dict, sha: str, run_id: int | None, deadline: float, min_attempt
                 # Keep the id: without it, a run still going at NO_RUN_MIN read as "never appeared"
                 # (10-17 and 10-18, when the two-job candidate run took 15-16 min).
                 run_id = run["id"]
+            elif time.time() - t0 > NO_RUN_MIN * 60:
+                if fork_actions_off(p["fork"]):
+                    raise fork_off_stop(p["fork"])
+                raise Stop(f"no fork run appeared for {sha[:9]} within {NO_RUN_MIN} min; if "
+                           f"https://github.com/{p['fork']}/actions says workflows are not being run on this "
+                           f"fork, the owner re-enables them there")
         else:
             run = gh_json(f"repos/{p['fork']}/actions/runs/{run_id}")
         if run and run["status"] == "completed" and run.get("run_attempt", 1) >= min_attempt:
             return run
         time.sleep(60)
+    if run_id is not None:
+        # Deleting the candidate branch does not stop its run; an abandoned run still spends the
+        # fork's Actions minutes (GitHub switched the fork off for usage on 10-15).
+        sh(["gh", "api", "-X", "POST", f"repos/{p['fork']}/actions/runs/{run_id}/cancel"], check=False)
     if fork_actions_off(p["fork"]):
         raise fork_off_stop(p["fork"])
     raise Stop(f"fork CI for {sha[:9]} (attempt {min_attempt}) did not finish in time")
