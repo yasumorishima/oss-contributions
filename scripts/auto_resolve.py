@@ -423,6 +423,10 @@ def wait_run(p: dict, sha: str, run_id: int | None, deadline: float, min_attempt
             event = "workflow_dispatch" if p.get("dispatch") else "push"
             runs = gh_json(f"repos/{p['fork']}/actions/workflows/{p['workflow']}/runs?head_sha={sha}&event={event}")
             run = runs["workflow_runs"][0] if runs["workflow_runs"] else None
+            if run:
+                # Keep the id: without it, a run still going at NO_RUN_MIN read as "never appeared"
+                # (10-17 and 10-18, when the two-job candidate run took 15-16 min).
+                run_id = run["id"]
         else:
             run = gh_json(f"repos/{p['fork']}/actions/runs/{run_id}")
         if run and run["status"] == "completed" and run.get("run_attempt", 1) >= min_attempt:
