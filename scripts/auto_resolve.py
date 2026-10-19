@@ -267,6 +267,75 @@ def names(out: str) -> set[str]:
     return {x for x in out.split("\0") if x}
 
 
+
+PKG = "\n[[package]]\n"
+BARE_DEP = re.compile(r'^ "([A-Za-z0-9_-]+)",$', re.M)
+
+
+def semver_range(v: str) -> tuple[int, int]:
+    """Cargo lets two versions of a crate coexist only if they are in different semver ranges."""
+    maj, mnr, pat = (int(x) for x in v.split("+")[0].split("-")[0].split("."))
+    return (0, maj) if maj else (1, mnr) if mnr else (2, pat)
+
+
+def lock_blocks(text: str, what: str) -> tuple[str, list[tuple[str, str, str]]]:
+    head, *blocks = text.split(PKG)
+    out = []
+    for b in blocks:
+        b = b.rstrip("\n") + "\n"
+        if re.search(r"^\[", b, re.M):
+            raise Stop(f"{what} has a table other than [[package]]; carry_pr_only does not handle it")
+        x = tomllib.loads("[[package]]\n" + b)["package"][0]
+        out.append((x["name"], x["version"], b))
+    return head, out
+
+
+def carry_pr_only(path: Path, ours_text: str) -> list[str]:
+    """Keep this PR's own crates at the versions it already builds with.
+
+    Taking upstream's lock and letting cargo add the PR's crates back re-resolved them from
+    crates.io on every conflict. On 10-16 that failed: candle-core needs zip ^7.2, upstream locks
+    zip 8.6, and every zip 7.x was yanked (a version already in a lock stays usable). Carried are
+    the PR lock's entries whose name upstream's lock lacks, or whose version is in no semver range
+    upstream locks for that name; same-range versions stay upstream's, and `lost()` still checks
+    that none of upstream's versions is dropped. A bare dependency name that now has two versions
+    is written as "name version", as cargo itself writes it. Entries nothing uses are pruned by the
+    unlocked `cargo metadata` that follows. Cargo ignores a reference it cannot match, so a stale
+    one costs a re-resolve of that edge, not an error (src/resolver/encode.rs, lookup_id)."""
+    head, theirs = lock_blocks(path.read_text(), f"upstream {path.name}")
+    _, ours = lock_blocks(ours_text, f"our {path.name}")
+    t_ver: dict[str, set[str]] = {}
+    for n, v, _ in theirs:
+        t_ver.setdefault(n, set()).add(v)
+    o_ver: dict[str, set[str]] = {}
+    for n, v, _ in ours:
+        o_ver.setdefault(n, set()).add(v)
+    carried = [(n, v, b) for n, v, b in ours
+               if v not in t_ver.get(n, ())
+               and semver_range(v) not in {semver_range(x) for x in t_ver.get(n, ())}]
+    if not carried:
+        return []
+    merged = {n: set(vs) for n, vs in t_ver.items()}
+    for n, v, _ in carried:
+        merged.setdefault(n, set()).add(v)
+
+    def pin(b: str, own: dict[str, set[str]]) -> str:
+        def one(m: re.Match) -> str:
+            n = m.group(1)
+            if len(merged.get(n, ())) > 1 and len(own.get(n, ())) == 1:
+                return f' "{n} {next(iter(own[n]))}",'
+            return m.group(0)
+        return BARE_DEP.sub(one, b)
+
+    blocks = [pin(b, t_ver) for _, _, b in theirs] + [pin(b, o_ver) for _, _, b in carried]
+    path.write_text(head + PKG + "\n[[package]]\n".join(blocks))
+    written = path.read_text()
+    if written.count(PKG) != len(theirs) + len(carried) or \
+            lock_set(written) != {(n, v) for n, v, _ in theirs + carried}:
+        raise Stop(f"carrying the PR's entries into {path.name} lost or duplicated a package")
+    return [f"{n} {v}" for n, v, _ in carried]
+
+
 def lost(p: dict, work: Path, upstream_sha: str) -> dict[str, list]:
     """Upstream (name, version) pairs missing from our lock, per lockfile."""
     out = {}
@@ -535,17 +604,39 @@ def resolve(key: str, a) -> str:
         show = lambda rev: sh(["git", "show", f"{rev}:{f}"], cwd=work).stdout  # noqa: E731
         (work / f).write_text(reapply(f, appends[f], show(base), show(start), show(upstream_sha)))
         sh(["git", "add", "--", f], cwd=work)
-    for f in sorted(conflicted & set(lockfiles)):
-        sh(["git", "checkout", "--theirs", "--", f], cwd=work)
-    for f, d in lockfiles.items():
-        cargo_metadata(work / d)
-    missing = lost(p, work, upstream_sha)
-    if any(missing.values()):
-        print(f"upstream versions missing before repair: {missing}", flush=True)
-        repair(p, work, missing)
+    carry_tried = [False]
+
+    def lock_pass(carry: bool) -> None:
+        for f in sorted(lockfiles):
+            if f in conflicted:
+                sh(["git", "checkout", "--theirs", "--", f], cwd=work)
+                if carry:
+                    carry_tried[0] = True  # set first: carry_pr_only itself may stop
+                    kept = carry_pr_only(work / f, sh(["git", "show", f"{start}:{f}"], cwd=work).stdout)
+                    print(f"{f}: carried {len(kept)} entries from the PR's lock", flush=True)
+            else:
+                sh(["git", "checkout", "--", f], cwd=work)  # undo an earlier pass's cargo run
+        for f, d in lockfiles.items():
+            cargo_metadata(work / d)
         missing = lost(p, work, upstream_sha)
-    if any(missing.values()):
-        raise Stop(f"our lock drops upstream versions even after the known pins: {missing}")
+        if any(missing.values()):
+            print(f"upstream versions missing before repair: {missing}", flush=True)
+            repair(p, work, missing)
+            missing = lost(p, work, upstream_sha)
+        if any(missing.values()):
+            raise Stop(f"our lock drops upstream versions even after the known pins: {missing}")
+
+    # A carried PR crate can pin a shared crate below where upstream moved it; the old flow, which
+    # lets cargo pick newer PR crates, may still resolve. Network failures are not retried here.
+    try:
+        lock_pass(carry=True)
+    except Transient:
+        raise
+    except Stop as e:
+        if not carry_tried[0]:
+            raise
+        print(f"::warning::with the PR's lock entries carried: {e}; retrying without carrying", flush=True)
+        lock_pass(carry=False)
     for f, d in lockfiles.items():
         cargo_metadata(work / d, locked=True)
         sh(["git", "add", "--", f], cwd=work)
