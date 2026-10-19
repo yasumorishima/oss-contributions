@@ -329,7 +329,9 @@ def carry_pr_only(path: Path, ours_text: str) -> list[str]:
 
     blocks = [pin(b, t_ver) for _, _, b in theirs] + [pin(b, o_ver) for _, _, b in carried]
     path.write_text(head + PKG + "\n[[package]]\n".join(blocks))
-    if len(lock_set(path.read_text())) != len({(n, v) for n, v, _ in theirs + carried}):
+    written = path.read_text()
+    if written.count(PKG) != len(theirs) + len(carried) or \
+            lock_set(written) != {(n, v) for n, v, _ in theirs + carried}:
         raise Stop(f"carrying the PR's entries into {path.name} lost or duplicated a package")
     return [f"{n} {v}" for n, v, _ in carried]
 
@@ -602,16 +604,16 @@ def resolve(key: str, a) -> str:
         show = lambda rev: sh(["git", "show", f"{rev}:{f}"], cwd=work).stdout  # noqa: E731
         (work / f).write_text(reapply(f, appends[f], show(base), show(start), show(upstream_sha)))
         sh(["git", "add", "--", f], cwd=work)
-    carried_n = [0]
+    carry_tried = [False]
 
     def lock_pass(carry: bool) -> None:
         for f in sorted(lockfiles):
             if f in conflicted:
                 sh(["git", "checkout", "--theirs", "--", f], cwd=work)
                 if carry:
+                    carry_tried[0] = True  # set first: carry_pr_only itself may stop
                     kept = carry_pr_only(work / f, sh(["git", "show", f"{start}:{f}"], cwd=work).stdout)
                     print(f"{f}: carried {len(kept)} entries from the PR's lock", flush=True)
-                    carried_n[0] += len(kept)
             else:
                 sh(["git", "checkout", "--", f], cwd=work)  # undo an earlier pass's cargo run
         for f, d in lockfiles.items():
@@ -631,7 +633,7 @@ def resolve(key: str, a) -> str:
     except Transient:
         raise
     except Stop as e:
-        if not carried_n[0]:
+        if not carry_tried[0]:
             raise
         print(f"::warning::with the PR's lock entries carried: {e}; retrying without carrying", flush=True)
         lock_pass(carry=False)
