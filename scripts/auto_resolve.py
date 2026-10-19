@@ -329,7 +329,7 @@ def carry_pr_only(path: Path, ours_text: str) -> list[str]:
 
     blocks = [pin(b, t_ver) for _, _, b in theirs] + [pin(b, o_ver) for _, _, b in carried]
     path.write_text(head + PKG + "\n[[package]]\n".join(blocks))
-    if len(lock_set(path.read_text())) != len(theirs) + len(carried):
+    if len(lock_set(path.read_text())) != len({(n, v) for n, v, _ in theirs + carried}):
         raise Stop(f"carrying the PR's entries into {path.name} lost or duplicated a package")
     return [f"{n} {v}" for n, v, _ in carried]
 
@@ -602,19 +602,39 @@ def resolve(key: str, a) -> str:
         show = lambda rev: sh(["git", "show", f"{rev}:{f}"], cwd=work).stdout  # noqa: E731
         (work / f).write_text(reapply(f, appends[f], show(base), show(start), show(upstream_sha)))
         sh(["git", "add", "--", f], cwd=work)
-    for f in sorted(conflicted & set(lockfiles)):
-        sh(["git", "checkout", "--theirs", "--", f], cwd=work)
-        kept = carry_pr_only(work / f, sh(["git", "show", f"{start}:{f}"], cwd=work).stdout)
-        print(f"{f}: carried {len(kept)} entries from the PR's lock", flush=True)
-    for f, d in lockfiles.items():
-        cargo_metadata(work / d)
-    missing = lost(p, work, upstream_sha)
-    if any(missing.values()):
-        print(f"upstream versions missing before repair: {missing}", flush=True)
-        repair(p, work, missing)
+    carried_n = [0]
+
+    def lock_pass(carry: bool) -> None:
+        for f in sorted(lockfiles):
+            if f in conflicted:
+                sh(["git", "checkout", "--theirs", "--", f], cwd=work)
+                if carry:
+                    kept = carry_pr_only(work / f, sh(["git", "show", f"{start}:{f}"], cwd=work).stdout)
+                    print(f"{f}: carried {len(kept)} entries from the PR's lock", flush=True)
+                    carried_n[0] += len(kept)
+            else:
+                sh(["git", "checkout", "--", f], cwd=work)  # undo an earlier pass's cargo run
+        for f, d in lockfiles.items():
+            cargo_metadata(work / d)
         missing = lost(p, work, upstream_sha)
-    if any(missing.values()):
-        raise Stop(f"our lock drops upstream versions even after the known pins: {missing}")
+        if any(missing.values()):
+            print(f"upstream versions missing before repair: {missing}", flush=True)
+            repair(p, work, missing)
+            missing = lost(p, work, upstream_sha)
+        if any(missing.values()):
+            raise Stop(f"our lock drops upstream versions even after the known pins: {missing}")
+
+    # A carried PR crate can pin a shared crate below where upstream moved it; the old flow, which
+    # lets cargo pick newer PR crates, may still resolve. Network failures are not retried here.
+    try:
+        lock_pass(carry=True)
+    except Transient:
+        raise
+    except Stop as e:
+        if not carried_n[0]:
+            raise
+        print(f"::warning::with the PR's lock entries carried: {e}; retrying without carrying", flush=True)
+        lock_pass(carry=False)
     for f, d in lockfiles.items():
         cargo_metadata(work / d, locked=True)
         sh(["git", "add", "--", f], cwd=work)
