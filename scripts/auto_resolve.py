@@ -44,6 +44,14 @@ PROJECTS = {
         "must_contain": [("src/core/Cargo.toml", "lensfun-import"),
                          ("src/core/lensfun_import.rs", "pub fn profiles_for_query"),
                          ("src/controller.rs", "needs_lensfun_import")],
+        # The fork's Release builds only the default features, and `lensfun-import` is off by default,
+        # so it never compiles this PR's code. Build and test it here before the candidate is pushed
+        # (about 3 min on ubuntu-latest; run 40970966718 on the fork, 2026-10-30).
+        "cargo_checks": [
+            ("src/core", ["check", "--locked", "--no-default-features", "--features", "lensfun-import"]),
+            ("src/core", ["test", "--locked", "--no-default-features", "--features", "lensfun-import",
+                          "lensfun_import"]),
+        ],
         "workflow": "release.yml",
         # GitHub switched the fork's workflows off on 2026-10-15 "due to the scale of GitHub Actions
         # usage": a Release run is ~110 runner-min (linux 27, windows 27, windows-arm 34, android 23;
@@ -185,7 +193,11 @@ def disable_jobs(text: str, jobs: list[str]) -> str:
 
 
 def cargo_metadata(d: Path, locked: bool = False) -> None:
-    cmd = ["cargo", "metadata", "--format-version", "1"] + (["--locked"] if locked else []) + ["-q"]
+    cargo(d, ["metadata", "--format-version", "1"] + (["--locked"] if locked else []) + ["-q"])
+
+
+def cargo(d: Path, args: list[str]) -> None:
+    cmd = ["cargo"] + args
     r = sh(cmd, cwd=d, check=False)
     if r.returncode != 0:
         m = TRANSIENT.search(r.stderr)
@@ -652,6 +664,8 @@ def resolve(key: str, a) -> str:
     for f, needle in p["must_contain"]:
         if needle not in (work / f).read_text():
             raise Stop(f"{f} no longer contains {needle!r}")
+    for d, args in p.get("cargo_checks", []):
+        cargo(work / d, args)
     if sh(["git", "diff", "--name-only", "--diff-filter=U"], cwd=work).stdout.strip():
         raise Stop("unmerged paths remain")
     sh(["git", "commit", "-q", "-m",
@@ -746,7 +760,10 @@ def main() -> int:
         # leave a visible note that this project entry can be pointed at another PR or removed.
         print(f"::warning::{p['upstream']}#{p['pr']} is {msg.removeprefix(IDLE).strip()} "
               f"-- PROJECTS[{a.project!r}] does nothing until it points at an open PR", flush=True)
-        report(p, a.project, True, msg, closing="対象の PR が閉じたので、この issue も閉じます")
+        try:
+            report(p, a.project, True, msg, closing="対象の PR が閉じたので、この issue も閉じます")
+        except Exception as e:  # noqa: BLE001  the next run tries again
+            print(f"::warning::could not close the tracker issue: {e}", flush=True)
     elif not a.dry_run and ("->" in msg or "mergeable=True" in msg):  # also closes an issue fixed by hand
         report(p, a.project, True, msg)
     return 0
