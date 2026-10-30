@@ -23,22 +23,35 @@ import urllib.request
 from pathlib import Path
 
 TRACKER = "yasumorishima/oss-contributions"
+IDLE = "PR is"  # resolve() result once the PR is no longer open: the project stops by itself
 AUTHOR = ("yasumorishima", "fw_yasu11@hotmail.com")
 
 PROJECTS = {
     "gyroflow": {
         "upstream": "gyroflow/gyroflow",
-        "pr": 1143,
+        # #1143 (gmflow, issue #45) was merged on 2026-10-29; the lensfun PR (issue #150) took its place.
+        "pr": 1141,
         "fork": "yasumorishima/gyroflow",
-        "branch": "feature/ai-optical-flow",
+        "branch": "feature/lensfun-import",
         "upstream_branch": "master",
-        # Cargo.lock conflicts were resolved by hand on 2026-06-23, 07-29, 08-28, 09-02, 09-05 and
-        # 10-12 the same way: take upstream's lock and let cargo add back this PR's optional deps.
+        # Cargo.lock conflicts of #1143 were resolved by hand on 2026-06-23, 07-29, 08-28, 09-02, 09-05
+        # and 10-12 the same way: take upstream's lock and let cargo add back this PR's optional deps.
+        # #1141's optional `lensfun` dep comes back the same way (rebased by hand on 2026-10-30).
         "lockfiles": {"Cargo.lock": ".", "src/core/Cargo.lock": "src/core"},
         # crypto-common 0.1.7 pins generic-array =0.14.7 and pulls upstream's 0.14.9 down; 0.1.6 does
         # not (09-05, 10-12). Applied only when upstream's lock would otherwise lose a version.
         "pins": [("crypto-common", "0.1.6")],
-        "must_contain": [("src/core/Cargo.toml", "use-burn"), ("src/controller.rs", "has_ai_optical_flow")],
+        "must_contain": [("src/core/Cargo.toml", "lensfun-import"),
+                         ("src/core/lensfun_import.rs", "pub fn profiles_for_query"),
+                         ("src/controller.rs", "needs_lensfun_import")],
+        # The fork's Release builds only the default features, and `lensfun-import` is off by default,
+        # so it never compiles this PR's code. Build and test it here before the candidate is pushed
+        # (about 3 min on ubuntu-latest; run 40970966718 on the fork, 2026-10-30).
+        "cargo_checks": [
+            ("src/core", ["check", "--locked", "--no-default-features", "--features", "lensfun-import"]),
+            ("src/core", ["test", "--locked", "--no-default-features", "--features", "lensfun-import",
+                          "lensfun_import"]),
+        ],
         "workflow": "release.yml",
         # GitHub switched the fork's workflows off on 2026-10-15 "due to the scale of GitHub Actions
         # usage": a Release run is ~110 runner-min (linux 27, windows 27, windows-arm 34, android 23;
@@ -180,7 +193,11 @@ def disable_jobs(text: str, jobs: list[str]) -> str:
 
 
 def cargo_metadata(d: Path, locked: bool = False) -> None:
-    cmd = ["cargo", "metadata", "--format-version", "1"] + (["--locked"] if locked else []) + ["-q"]
+    cargo(d, ["metadata", "--format-version", "1"] + (["--locked"] if locked else []) + ["-q"])
+
+
+def cargo(d: Path, args: list[str]) -> None:
+    cmd = ["cargo"] + args
     r = sh(cmd, cwd=d, check=False)
     if r.returncode != 0:
         m = TRANSIENT.search(r.stderr)
@@ -534,7 +551,7 @@ def wait_ci(p: dict, sha: str, candidate: str) -> str:
     raise Stop(f"fork CI {run['html_url']} did not build the merge (after one re-run): {bad}")
 
 
-def report(p: dict, key: str, ok: bool, text: str) -> None:
+def report(p: dict, key: str, ok: bool, text: str, closing: str = "自動で解消しました") -> None:
     title = f"🔀 [自動解消] {p['upstream']}#{p['pr']} の衝突"
     found = json.loads(sh(["gh", "issue", "list", "--repo", TRACKER, "--state", "open", "--limit", "1000",
                            "--json", "number,title"]).stdout)
@@ -544,7 +561,7 @@ def report(p: dict, key: str, ok: bool, text: str) -> None:
     if ok:
         if issue:
             sh(["gh", "issue", "close", str(issue["number"]), "--repo", TRACKER,
-                "--comment", f"自動で解消しました: {text}\n\n{run_url}"])
+                "--comment", f"{closing}: {text}\n\n{run_url}"])
         return
     body = (f"https://github.com/{p['upstream']}/pull/{p['pr']} の衝突を自動では解消できませんでした。"
             f"PR のブランチには何も push していません。\n\n**理由**: {text}\n\n{run_url}\n\n"
@@ -565,7 +582,7 @@ def resolve(key: str, a) -> str:
     if not a.dry_run:
         pr = pr_state(p)
         if pr["state"] != "open":
-            return f"PR is {pr['state']}; nothing to do"
+            return f"{IDLE} {'merged' if pr.get('merged') else pr['state']}; nothing to do"
         if pr["mergeable"] is not False:
             return f"PR mergeable={pr['mergeable']} ({pr['mergeable_state']}); nothing to do"
         if (pr["head"]["repo"] or {}).get("full_name") != p["fork"] or pr["head"]["ref"] != p["branch"]:
@@ -647,6 +664,8 @@ def resolve(key: str, a) -> str:
     for f, needle in p["must_contain"]:
         if needle not in (work / f).read_text():
             raise Stop(f"{f} no longer contains {needle!r}")
+    for d, args in p.get("cargo_checks", []):
+        cargo(work / d, args)
     if sh(["git", "diff", "--name-only", "--diff-filter=U"], cwd=work).stdout.strip():
         raise Stop("unmerged paths remain")
     sh(["git", "commit", "-q", "-m",
@@ -736,7 +755,16 @@ def main() -> int:
             report(p, a.project, False, msg)
         return 1
     print(msg, flush=True)
-    if not a.dry_run and ("->" in msg or "mergeable=True" in msg):  # also closes an issue fixed by hand
+    if not a.dry_run and msg.startswith(IDLE):
+        # The PR is merged or closed, so nothing is done from now on. Close a leftover tracker issue and
+        # leave a visible note that this project entry can be pointed at another PR or removed.
+        print(f"::warning::{p['upstream']}#{p['pr']} is {msg.removeprefix(IDLE).strip()} "
+              f"-- PROJECTS[{a.project!r}] does nothing until it points at an open PR", flush=True)
+        try:
+            report(p, a.project, True, msg, closing="対象の PR が閉じたので、この issue も閉じます")
+        except Exception as e:  # noqa: BLE001  the next run tries again
+            print(f"::warning::could not close the tracker issue: {e}", flush=True)
+    elif not a.dry_run and ("->" in msg or "mergeable=True" in msg):  # also closes an issue fixed by hand
         report(p, a.project, True, msg)
     return 0
 

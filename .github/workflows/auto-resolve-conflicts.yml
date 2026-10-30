@@ -55,7 +55,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Resolve gyroflow#1143
+      - name: Resolve gyroflow#1141
         env:
           GH_TOKEN: ${{ secrets.FORK_ADMIN_PAT }}
           TRACKER_TOKEN: ${{ github.token }}
