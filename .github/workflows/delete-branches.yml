@@ -2,7 +2,12 @@ name: Delete Claude Branches
 
 # Deletes claude/* branches listed by hand, with FORK_ADMIN_PAT.
 # Cloud sessions can only push their own branch, so they run this instead.
+# Cloud cannot dispatch workflows either, so a change to
+# requests/delete-branches.txt merged into main also starts it.
 on:
+  push:
+    branches: [main]
+    paths: ['requests/delete-branches.txt']
   workflow_dispatch:
     inputs:
       memo:
@@ -21,12 +26,19 @@ jobs:
   delete:
     runs-on: ubuntu-latest
     steps:
+      - uses: actions/checkout@v4
+        if: github.event_name == 'push'
+
       - name: Delete listed branches
         env:
           GH_TOKEN: ${{ secrets.FORK_ADMIN_PAT }}
           OWNER: yasumorishima
           BRANCHES: ${{ inputs.branches }}
         run: |
+          if [ "${{ github.event_name }}" = "push" ]; then
+            # Lines starting with # are notes, not branches.
+            BRANCHES=$(grep -v '^[[:space:]]*#' requests/delete-branches.txt)
+          fi
           fail=0
           while read -r repo branch extra; do
             [ -z "$repo" ] && continue

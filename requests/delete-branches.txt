@@ -1,0 +1,8 @@
+# issue #10 の削除推奨のうち 7 本（2026-11-01）。1 行に「repo branch」。
+mirai-gikai claude/fix-admin-session-timeout-RR14Z
+mirai-gikai claude/review-issue-1578-zDxzB
+mirai-gikai claude/ai-interview-prompt-editing-7boRg
+gas-gmail-auto-delete claude/deploy-recovery
+gas-gmail-auto-delete claude/email-deletion-rules-yg26nb
+gas-gmail-auto-label claude/daimaru-matsuzakaya-id-labels-UJvU2
+npb-foreign-statcast claude/continue-q8y2n5
