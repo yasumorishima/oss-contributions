@@ -17,4 +17,4 @@ OSS への PR の記録（README）と、全リポジトリを見張る GitHub A
 
 ## main への変更
 
-main へは PR を作って merge する（直接 push しない）。
+cloud からは main に直接 push できないので、PR を作って merge する。
