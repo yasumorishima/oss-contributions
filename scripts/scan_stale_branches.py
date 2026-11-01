@@ -19,7 +19,7 @@ CONFIG = ROOT / "config.json"
 ISSUE_LABEL = "auto-detect:stale-branches"
 ISSUE_TITLE = "🧹 [自動検知] Stale claude/* branches 棚卸し"
 TRACKER_REPO = "yasumorishima/oss-contributions"
-STALE_DAYS_THRESHOLD = 60  # PR未作成かつN日以上経過なら削除推奨
+STALE_DAYS_THRESHOLD = 60  # 最終更新からN日以上経過（かつオープンPRなし）なら削除推奨
 
 
 def run(cmd: list[str]) -> str | None:
@@ -102,29 +102,43 @@ def get_upstream_full(author: str, repo: str) -> str | None:
     return raw if raw else None
 
 
+def age_in_days(branch_date: str) -> int | None:
+    """Days since the branch's last commit, or None if the date is unknown."""
+    if not branch_date:
+        return None
+    try:
+        bdate = datetime.strptime(branch_date, "%Y-%m-%d").replace(tzinfo=timezone.utc)
+    except ValueError:
+        return None
+    return (datetime.now(timezone.utc) - bdate).days
+
+
 def classify(branch_date: str, pr: dict | None) -> tuple[str, str]:
-    """Return (action, reason)."""
+    """Return (action, reason).
+
+    A merged or closed PR alone is not enough: cloud sessions reuse one branch
+    for many PRs, so a branch whose last PR merged today may already carry the
+    next round of work. Every branch must also be idle for STALE_DAYS_THRESHOLD.
+    """
+    age = age_in_days(branch_date)
     if pr:
         state = pr.get("state", "").upper()
         url = pr.get("url", "")
         pr_num = url.rsplit("/", 1)[-1] if url else "?"
         if state == "OPEN":
             return ("残置", f"オープンPR #{pr_num}")
-        if state == "MERGED":
-            return ("削除推奨", f"マージ済PR #{pr_num}")
-        if state == "CLOSED":
-            return ("削除推奨", f"クローズPR #{pr_num}")
+        label = {"MERGED": "マージ済PR", "CLOSED": "クローズPR"}.get(state, "PR")
+        if age is None:
+            return ("要確認", f"{label} #{pr_num}・日付不明")
+        if age >= STALE_DAYS_THRESHOLD:
+            return ("削除推奨", f"{label} #{pr_num}・{age}日経過")
+        return ("残置", f"{label} #{pr_num}・{age}日経過（使用中の可能性）")
     # No PR
-    if not branch_date:
+    if age is None:
         return ("要確認", "PR未作成・日付不明")
-    try:
-        bdate = datetime.strptime(branch_date, "%Y-%m-%d").replace(tzinfo=timezone.utc)
-        age_days = (datetime.now(timezone.utc) - bdate).days
-    except ValueError:
-        return ("要確認", "PR未作成・日付パース失敗")
-    if age_days >= STALE_DAYS_THRESHOLD:
-        return ("削除推奨", f"PR未作成・{age_days}日経過")
-    return ("残置", f"PR未作成・{age_days}日経過")
+    if age >= STALE_DAYS_THRESHOLD:
+        return ("削除推奨", f"PR未作成・{age}日経過")
+    return ("残置", f"PR未作成・{age}日経過")
 
 
 def build_report(rows: list[dict]) -> str:
@@ -155,7 +169,7 @@ def build_report(rows: list[dict]) -> str:
     return (
         f"# Stale claude/* Branches Tracker\n\n"
         f"最終スキャン: {now_jst}\n"
-        f"閾値: PR未作成かつ {STALE_DAYS_THRESHOLD} 日以上経過 → 削除推奨\n\n"
+        f"閾値: オープンPRなしかつ最終更新から {STALE_DAYS_THRESHOLD} 日以上経過 → 削除推奨（マージ済PRがあっても同じ）\n\n"
         f"**集計**: {summary}（合計 {len(rows)} ブランチ）\n\n"
         f"## ⚠️ フォーク内 (上流誤PRリスクあり、優先削除候補)\n\n"
         f"{render_table(fork_rows)}\n"
