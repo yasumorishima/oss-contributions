@@ -180,7 +180,7 @@ def build_report(rows: list[dict]) -> str:
         f"_候補に同意したら該当行の「削除コマンド」をコピペ実行、または一括削除を依頼してください_\n\n"
         f"_cloud から消すとき: git push も Actions の手動起動も 403 になるので、"
         f"`requests/delete-branches.txt` に「repo branch」を 1 行ずつ書いて PR を作り merge する。"
-        f"main に入ると `delete-branches.yml` が消す（`claude/*` 以外とオープン PR ありは消さない）。"
+        f"main に入ると `delete-branches.yml` が消す（default ブランチと、オープン PR（fork なら fork 元の PR も）があるブランチは消さない）。"
         f"消す前に、merge 済みでもブランチに新しいコミットが無いか確かめる_\n"
     )
 
