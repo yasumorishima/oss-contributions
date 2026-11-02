@@ -18,3 +18,8 @@ OSS への PR の記録（README）と、全リポジトリを見張る GitHub A
 ## main への変更
 
 cloud からは main に直接 push できないので、PR を作って merge する。
+
+## バウンティ
+
+- Algora の受け取り設定（Stripe・本人確認）はユーザーが済ませている。ユーザーに確認を求めない。
+- Algora は merge だけでは支払われず、出資者が Algora で支払いを押すまで届かない。
