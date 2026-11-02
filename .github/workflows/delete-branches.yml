@@ -1,6 +1,7 @@
-name: Delete Claude Branches
+name: Delete Branches
 
-# Deletes claude/* branches listed by hand, with FORK_ADMIN_PAT.
+# Deletes branches listed by hand, with FORK_ADMIN_PAT. Never the default
+# branch, and never a branch with an open PR here or in the fork's parent.
 # Cloud sessions can only push their own branch, so they run this instead.
 # Cloud cannot dispatch workflows either, so a change to
 # requests/delete-branches.txt merged into main also starts it.
@@ -45,16 +46,25 @@ jobs:
             if [ -z "$branch" ] || [ -n "$extra" ]; then
               echo "::error::書式が違います: $repo $branch $extra"; fail=1; continue
             fi
-            case "$branch" in
-              claude/*) ;;
-              *) echo "::error::claude/* 以外は消しません: $repo $branch"; fail=1; continue ;;
-            esac
+            default=$(gh api "repos/$OWNER/$repo" --jq .default_branch) || {
+              echo "::error::repo を読めません: $repo"; fail=1; continue; }
+            if [ "$branch" = "$default" ]; then
+              echo "::error::default ブランチは消しません: $repo $branch"; fail=1; continue
+            fi
             sha=$(gh api "repos/$OWNER/$repo/git/ref/heads/$branch" --jq .object.sha 2>/dev/null) || {
               echo "SKIP (もう無い): $repo $branch"; continue; }
-            open=$(gh pr list --repo "$OWNER/$repo" --head "$branch" --state open --json number --jq length) || {
-              echo "::error::PR を確認できません: $repo $branch"; fail=1; continue; }
+            # A fork's PRs live in its parent, so look there too.
+            parent=$(gh api "repos/$OWNER/$repo" --jq '.parent.full_name // empty') || {
+              echo "::error::fork 元を読めません: $repo"; fail=1; continue; }
+            open=0
+            for target in "$OWNER/$repo" $parent; do
+              n=$(gh api "repos/$target/pulls?state=open&head=$OWNER:$branch" --jq length) || {
+                echo "::error::PR を確認できません: $target $branch"; open=x; break; }
+              [ "$n" != "0" ] && { open="$target"; break; }
+            done
+            if [ "$open" = "x" ]; then fail=1; continue; fi
             if [ "$open" != "0" ]; then
-              echo "::error::オープン PR があるので残します: $repo $branch"; fail=1; continue
+              echo "::error::オープン PR があるので残します: $repo $branch ($open)"; fail=1; continue
             fi
             if gh api -X DELETE "repos/$OWNER/$repo/git/refs/heads/$branch"; then
               echo "DELETED: $repo $branch (was $sha)"

@@ -1,8 +1,28 @@
-# issue #10 の削除推奨のうち 7 本（2026-11-01）。1 行に「repo branch」。
-mirai-gikai claude/fix-admin-session-timeout-RR14Z
-mirai-gikai claude/review-issue-1578-zDxzB
-mirai-gikai claude/ai-interview-prompt-editing-7boRg
-gas-gmail-auto-delete claude/deploy-recovery
-gas-gmail-auto-delete claude/email-deletion-rules-yg26nb
-gas-gmail-auto-label claude/daimaru-matsuzakaya-id-labels-UJvU2
-npb-foreign-statcast claude/continue-q8y2n5
+# gyroflow #1143（2026-10-29 merge）の作業ブランチ 13 本（2026-11-02）。1 行に「repo branch」。
+# 消す前の SHA（戻すときはこの SHA でブランチを作り直す）:
+#   backup/feature-ai-optical-flow-pre-cla-fix 281d53be5712c5bbc81c685ecdf434b3744355db
+#   cand/gmflow-merge-1     90ecc2b476207370baf3b94d51a2665a39750510
+#   cand/gmflow-merge-2     9a188456f6cb145294f4a3cff6352e9d10c423ec
+#   cand/gmflow-pr-1        bf6f5fd10b3377722a66b79f5c56434bdfd2d738
+#   cand/gmflow-pr-2        3933d37d2eddc2d55bcc00d7bb898da3d92c428c
+#   cand/gmflow-rebase-1    da13f058a7fec94a5bf5dbc815c1c38a59e2cc10
+#   cand/gmflow-rebase-3    9f4a939212d5d5b7204c1880aed6b4769bb1650e
+#   cand/gmflow-rebase-4    9f5dc79e8aa4ec6157d30fe9948fad7b8324c845
+#   cand/gmflow-rebase-pr   e977a789009de49165fe4da3731aa83b981c394c
+#   cand/gmflow-rebase-pr2  b634043095ecd52e1b40345fb127fa2135c4d8c5
+#   cand/gmflow-rebase-pr3  68415cc9bda71c54820613a11441e3ce81eb8ded
+#   cand/gmflow-rebase-pr4  bc8eba12ab1d1e8b0f94baf3102653bd3e8ed985
+#   feature/ai-optical-flow bc8eba12ab1d1e8b0f94baf3102653bd3e8ed985
+gyroflow backup/feature-ai-optical-flow-pre-cla-fix
+gyroflow cand/gmflow-merge-1
+gyroflow cand/gmflow-merge-2
+gyroflow cand/gmflow-pr-1
+gyroflow cand/gmflow-pr-2
+gyroflow cand/gmflow-rebase-1
+gyroflow cand/gmflow-rebase-3
+gyroflow cand/gmflow-rebase-4
+gyroflow cand/gmflow-rebase-pr
+gyroflow cand/gmflow-rebase-pr2
+gyroflow cand/gmflow-rebase-pr3
+gyroflow cand/gmflow-rebase-pr4
+gyroflow feature/ai-optical-flow
