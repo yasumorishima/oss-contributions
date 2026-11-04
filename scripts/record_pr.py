@@ -605,6 +605,10 @@ def refresh_all() -> None:
                     if f"| {s} |" in line:
                         current_status = s
                         break
+                # Merged never goes back. Copybara-merged PRs (google/*) show
+                # as CLOSED on GitHub, so a hand-set Merged must stay.
+                if current_status == "Merged":
+                    break
                 if current_status and current_status != new_status:
                     lines[i] = line.replace(f"| {current_status} |", f"| {new_status} |")
                     print(f"  Updated {repo}#{pr_number}: {current_status} -> {new_status}")
