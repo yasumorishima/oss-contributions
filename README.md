@@ -21,7 +21,7 @@ Automated watchers that surface active open-source bounties.
 | [professional-services-data-validator](https://github.com/GoogleCloudPlatform/professional-services-data-validator) | Python | 1 | 1 | 0 | 0 |
 | [optax](https://github.com/google-deepmind/optax) | Python | 1 | 1 | 0 | 0 |
 | [timesfm](https://github.com/google-research/timesfm) | Python | 2 | 1 | 1 | 0 |
-| [adk-python](https://github.com/google/adk-python) | Python | 2 | 0 | 1 | 1 |
+| [adk-python](https://github.com/google/adk-python) | Python | 2 | 1 | 0 | 1 |
 | [icp-js-bindgen](https://github.com/dfinity/icp-js-bindgen) | Rust | 1 | 1 | 0 | 0 |
 | [icp-js-canisters](https://github.com/dfinity/icp-js-canisters) | TypeScript | 1 | 1 | 0 | 0 |
 | [icp-js-core](https://github.com/dfinity/icp-js-core) | TypeScript | 3 | 2 | 0 | 1 |
@@ -62,7 +62,7 @@ Automated watchers that surface active open-source bounties.
 | [d2](https://github.com/terrastruct/d2) | Go | 1 | 0 | 1 | 0 |
 | [burn](https://github.com/tracel-ai/burn) | Rust | 1 | 1 | 0 | 0 |
 | [zio](https://github.com/zio/zio) | Unknown | 2 | 0 | 0 | 2 |
-| **Total** | | **137** | **92** | **16** | **29** |
+| **Total** | | **137** | **93** | **15** | **29** |
 
 ## Contributions by Project
 
@@ -145,7 +145,7 @@ An open-source, code-first Python toolkit for building, evaluating, and deployin
 
 | # | PR | Status | Description |
 |---|---|---|---|
-| 2 | [#7803](https://github.com/google/adk-python/pull/7803) | Open | fix(litellm): report unusable tool call arguments instead of raising |
+| 2 | [#7803](https://github.com/google/adk-python/pull/7803) | Merged | fix(litellm): report unusable tool call arguments instead of raising |
 | 1 | [#5010](https://github.com/google/adk-python/pull/5010) | Closed | fix: handle malformed JSON in LiteLLM tool call arguments gracefully |
 
 ### [dfinity/icp-js-bindgen](https://github.com/dfinity/icp-js-bindgen)
