@@ -397,6 +397,8 @@ D2 is a modern diagram scripting language that turns text to diagrams.
 
 MathCAT: Math Capable Assistive Technology for generating speech, braille, and navigation.
 
+Work log and to-do for the Japanese translation: [mathcat-ja-notes](https://github.com/yasumorishima/mathcat-ja-notes) 🔒
+
 | # | PR | Status | Description |
 |---|---|---|---|
 | 26 | [#929](https://github.com/daisy/MathCAT/pull/929) | Merged | ja: rebuild unicode-full.yaml readings and take the good terms from MathPlayer |
