@@ -45,7 +45,7 @@ Automated watchers that surface active open-source bounties.
 | [BirdXplorer](https://github.com/codeforjapan/BirdXplorer) | Python | 2 | 1 | 1 | 0 |
 | [mapprint](https://github.com/codeforjapan/mapprint) | SCSS | 4 | 3 | 0 | 1 |
 | [d2](https://github.com/d2lang/d2) | Go | 1 | 0 | 1 | 0 |
-| [MathCAT](https://github.com/daisy/MathCAT) | Rust | 26 | 26 | 0 | 0 |
+| [MathCAT](https://github.com/daisy/MathCAT) | Rust | 29 | 26 | 3 | 0 |
 | [abr-geocoder](https://github.com/digital-go-jp/abr-geocoder) | TypeScript | 1 | 0 | 0 | 1 |
 | [gyroflow](https://github.com/gyroflow/gyroflow) | Rust | 2 | 1 | 1 | 0 |
 | [notify-rust](https://github.com/hoodie/notify-rust) | Rust | 1 | 0 | 0 | 1 |
@@ -62,7 +62,7 @@ Automated watchers that surface active open-source bounties.
 | [d2](https://github.com/terrastruct/d2) | Go | 1 | 0 | 1 | 0 |
 | [burn](https://github.com/tracel-ai/burn) | Rust | 1 | 1 | 0 | 0 |
 | [zio](https://github.com/zio/zio) | Unknown | 2 | 0 | 0 | 2 |
-| **Total** | | **137** | **93** | **15** | **29** |
+| **Total** | | **140** | **93** | **18** | **29** |
 
 ## Contributions by Project
 
@@ -401,6 +401,9 @@ Work log and to-do for the Japanese translation: [mathcat-ja-notes](https://gith
 
 | # | PR | Status | Description |
 |---|---|---|---|
+| 29 | [#952](https://github.com/daisy/MathCAT/pull/952) | Open | docs: add Japanese translator to acknowledgements |
+| 28 | [#950](https://github.com/daisy/MathCAT/pull/950) | Open | ja: mark the checked SimpleSpeak strings as verified |
+| 27 | [#949](https://github.com/daisy/MathCAT/pull/949) | Open | ja: mark the checked ClearSpeak strings as verified |
 | 26 | [#929](https://github.com/daisy/MathCAT/pull/929) | Merged | ja: rebuild unicode-full.yaml readings and take the good terms from MathPlayer |
 | 25 | [#772](https://github.com/daisy/MathCAT/pull/772) | Merged | ja: make the rest of the set relations work between the operands |
 | 24 | [#773](https://github.com/daisy/MathCAT/pull/773) | Merged | ja: navigate.yaml stopped speaking English, and now uses Japanese word order |
