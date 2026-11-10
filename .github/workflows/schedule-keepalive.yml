@@ -60,6 +60,14 @@ jobs:
               > "$WFS" 2>/dev/null || { echo "::warning::WORKFLOW LIST FAILED: $REPO の一覧取得に失敗（スキップ）"; continue; }
             while IFS=$(printf '\t') read -r STATE WFPATH; do
               WF=$(basename "$WFPATH")
+              # cron 行を App（bot）が書いた workflow は、人の PAT で enable を打ち直さない。
+              # 有効化し直した人に定期実行の失敗通知が移る恐れがあるため（GitHub Docs）。
+              # これらは自分の定期実行の回で GITHUB_TOKEN（bot）が有効化し直している（2026-11-10）。
+              case "$REPO/$WFPATH" in
+                yasumorishima/yokohama-funnies-public-cron/.github/workflows/sync-roles.yml|yasumorishima/minami-public-cron/.github/workflows/sync-roles.yml)
+                  echo "skip (bot-owned schedule): $REPO の $WF"
+                  continue ;;
+              esac
               if [ "$STATE" = "active" ]; then
                 # 有効なままでも enable を打ち直すと 60 日の timer がリセットされる
                 if gh api -X PUT "repos/$REPO/actions/workflows/$WF/enable" > /dev/null 2>&1; then
