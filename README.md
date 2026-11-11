@@ -45,7 +45,7 @@ Automated watchers that surface active open-source bounties.
 | [BirdXplorer](https://github.com/codeforjapan/BirdXplorer) | Python | 2 | 1 | 1 | 0 |
 | [mapprint](https://github.com/codeforjapan/mapprint) | SCSS | 4 | 3 | 0 | 1 |
 | [d2](https://github.com/d2lang/d2) | Go | 1 | 0 | 1 | 0 |
-| [MathCAT](https://github.com/daisy/MathCAT) | Rust | 39 | 36 | 2 | 1 |
+| [MathCAT](https://github.com/daisy/MathCAT) | Rust | 45 | 44 | 0 | 1 |
 | [abr-geocoder](https://github.com/digital-go-jp/abr-geocoder) | TypeScript | 1 | 0 | 0 | 1 |
 | [gyroflow](https://github.com/gyroflow/gyroflow) | Rust | 2 | 1 | 1 | 0 |
 | [notify-rust](https://github.com/hoodie/notify-rust) | Rust | 1 | 0 | 0 | 1 |
@@ -56,13 +56,13 @@ Automated watchers that surface active open-source bounties.
 | [nvda](https://github.com/nvaccess/nvda) | Unknown | 2 | 0 | 0 | 2 |
 | [openclaw](https://github.com/openclaw/openclaw) | TypeScript | 1 | 1 | 0 | 0 |
 | [graph_weather](https://github.com/openclimatefix/graph_weather) | Python | 4 | 0 | 2 | 2 |
-| [OpenFisca-Japan](https://github.com/project-inclusive/OpenFisca-Japan) | TypeScript | 6 | 6 | 0 | 0 |
+| [OpenFisca-Japan](https://github.com/project-inclusive/OpenFisca-Japan) | TypeScript | 7 | 6 | 1 | 0 |
 | [musicblocks-v4](https://github.com/sugarlabs/musicblocks-v4) | TypeScript | 1 | 1 | 0 | 0 |
 | [tailcallhq.github.io](https://github.com/tailcallhq/tailcallhq.github.io) | Unknown | 1 | 0 | 0 | 1 |
 | [d2](https://github.com/terrastruct/d2) | Go | 1 | 0 | 1 | 0 |
 | [burn](https://github.com/tracel-ai/burn) | Rust | 1 | 1 | 0 | 0 |
 | [zio](https://github.com/zio/zio) | Unknown | 2 | 0 | 0 | 2 |
-| **Total** | | **150** | **103** | **17** | **30** |
+| **Total** | | **157** | **111** | **16** | **30** |
 
 ## Contributions by Project
 
@@ -401,6 +401,12 @@ Work log and to-do for the Japanese translation: [mathcat-ja-notes](https://gith
 
 | # | PR | Status | Description |
 |---|---|---|---|
+| 45 | [#980](https://github.com/daisy/MathCAT/pull/980) | Merged | ja: verify the Greek letters and combining marks; say イプシロン, イータ, グザイ and 語末シグマ; say 上の/下の for marks above/below |
+| 44 | [#981](https://github.com/daisy/MathCAT/pull/981) | Merged | ja: drop the は said before relation symbols; read … as テンテンテン and the ratio ∶ as 対 |
+| 43 | [#982](https://github.com/daisy/MathCAT/pull/982) | Merged | ja: read ⅆⅇⅈⅉ as the letter, a mixed number with と, ℃ as 摂氏度 and ± as プラスマイナス |
+| 42 | [#987](https://github.com/daisy/MathCAT/pull/987) | Merged | ja: reword the 上 and 下 that Open JTalk misreads; write the harpoon barbs as したかえし and うえかえし |
+| 41 | [#988](https://github.com/daisy/MathCAT/pull/988) | Merged | ja: say the relation symbols and intents in an order Japanese can follow |
+| 40 | [#989](https://github.com/daisy/MathCAT/pull/989) | Merged | ja: end intents with 〇〇終了 or 閉じ; read indexed-by as 下付き |
 | 39 | [#953](https://github.com/daisy/MathCAT/pull/953) | Merged | ja: fix and verify the last ClearSpeak and SimpleSpeak strings |
 | 38 | [#954](https://github.com/daisy/MathCAT/pull/954) | Merged | ja: mark the checked default.yaml strings as verified |
 | 37 | [#962](https://github.com/daisy/MathCAT/pull/962) | Merged | ja: mark the checked general.yaml strings as verified |
@@ -409,8 +415,8 @@ Work log and to-do for the Japanese translation: [mathcat-ja-notes](https://gith
 | 34 | [#966](https://github.com/daisy/MathCAT/pull/966) | Merged | ja: say the chemical arrow words in an order Japanese can use |
 | 33 | [#967](https://github.com/daisy/MathCAT/pull/967) | Merged | ja: write 乗根 in kana so it is read ジョウコン |
 | 32 | [#968](https://github.com/daisy/MathCAT/pull/968) | Merged | ja: read the array intent as a table |
-| 31 | [#969](https://github.com/daisy/MathCAT/pull/969) | Open | ja: verify geometry, overview and calculus strings; say the angle name before 大きさ; read Log as 対数のしゅち |
-| 30 | [#970](https://github.com/daisy/MathCAT/pull/970) | Open | ja: verify the ASCII and Latin-1 strings in unicode.yaml; say シャープ, スター and 空欄 |
+| 31 | [#969](https://github.com/daisy/MathCAT/pull/969) | Merged | ja: verify geometry, overview and calculus strings; say the angle name before 大きさ; read Log as 対数のしゅち |
+| 30 | [#970](https://github.com/daisy/MathCAT/pull/970) | Merged | ja: verify the ASCII and Latin-1 strings in unicode.yaml; say シャープ, スター and 空欄 |
 | 29 | [#952](https://github.com/daisy/MathCAT/pull/952) | Closed | docs: add Japanese translator to acknowledgements |
 | 28 | [#950](https://github.com/daisy/MathCAT/pull/950) | Merged | ja: mark the checked SimpleSpeak strings as verified |
 | 27 | [#949](https://github.com/daisy/MathCAT/pull/949) | Merged | ja: mark the checked ClearSpeak strings as verified |
@@ -534,6 +540,7 @@ Graph-based weather forecasting models. Originally, PyTorch implementation of Ry
 
 | # | PR | Status | Description |
 |---|---|---|---|
+| 7 | [#508](https://github.com/project-inclusive/OpenFisca-Japan/pull/508) | Open | 高等教育の修学支援新制度の給付型奨学金（学資支給金）を実装 |
 | 6 | [#484](https://github.com/project-inclusive/OpenFisca-Japan/pull/484) | Merged | 職業訓練受講給付金を実装 |
 | 5 | [#483](https://github.com/project-inclusive/OpenFisca-Japan/pull/483) | Merged | 高等教育の修学支援新制度（授業料等減免）を実装 |
 | 4 | [#481](https://github.com/project-inclusive/OpenFisca-Japan/pull/481) | Merged | 母子父子寡婦福祉資金貸付金を実装 |
