@@ -12,7 +12,7 @@ from __future__ import annotations
 import json
 import subprocess
 import sys
-from datetime import datetime, timezone
+from datetime import datetime, timedelta, timezone
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
@@ -266,7 +266,8 @@ def build_report(rows: list[dict]) -> str:
             )
         return "\n".join(lines) + "\n"
 
-    now_jst = datetime.now(timezone.utc).astimezone().strftime("%Y-%m-%d %H:%M JST")
+    # the runner clock is UTC, so convert explicitly instead of astimezone()
+    now_jst = datetime.now(timezone(timedelta(hours=9))).strftime("%Y-%m-%d %H:%M JST")
     summary_counts = {}
     for r in rows:
         summary_counts[r["action"]] = summary_counts.get(r["action"], 0) + 1
