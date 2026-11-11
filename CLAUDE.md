@@ -6,7 +6,7 @@ OSS への PR の記録（README）と、全リポジトリを見張る GitHub A
 
 `[自動検知]` で始まる issue は Actions が毎日書き換えます。本文を手で直さず、スクリプト（`scripts/`）を直します。
 
-- `🧹 消し忘れブランチ棚卸し（claude/* と fork の作業ブランチ）`：`scripts/scan_stale_branches.py`（`scan-stale-branches.yml`）が作る。claude/* はオープン PR が無く最終更新から 60 日以上で「削除推奨」。fork の作業ブランチ（upstream に同名が無く、最後のコミットが自分のもの）は、マージ済 PR の head がブランチの先と同じで merge から 7 日以上（開いた PR が無いとき）なら「削除推奨」、PR なし・クローズ・PR の後に新しいコミットがあって 60 日以上なら「要確認」（消す前に SHA を記録）。
+- `🧹 消し忘れブランチ棚卸し（claude/* と fork の作業ブランチ）`：`scripts/scan_stale_branches.py`（`scan-stale-branches.yml`）が作る。claude/* はオープン PR が無く最終更新から 60 日以上で「削除推奨」。fork の作業ブランチ（upstream に同名が無く、最後のコミットが自分のもの）は、マージ済 PR の head がブランチの先と同じで merge から 7 日以上（開いた PR が無いとき）なら「削除推奨」、PR なし・クローズ・PR の後に新しいコミットがあって 60 日以上なら「要確認」（消す前に SHA を記録）。名前に screenshot を含むブランチは PR の説明の画像の置き場なので、いつも「残置」。
 
 ## ブランチを消す
 

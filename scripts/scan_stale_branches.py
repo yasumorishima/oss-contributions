@@ -213,11 +213,15 @@ def pr_ref(pr: dict) -> str:
     return f"{parts[3]}/{parts[4]}#{parts[6]}" if len(parts) >= 7 else "?"
 
 
-def classify_fork_work(branch_sha: str, branch_date: str, prs: list[dict]) -> tuple[str, str, dict | None]:
+def classify_fork_work(branch_sha: str, branch_date: str, prs: list[dict],
+                       name: str = "") -> tuple[str, str, dict | None]:
     """Return (action, reason, chosen PR) for a fork work branch (not claude/*).
 
     `prs` are all PRs (upstream and fork) whose head is this branch.
     """
+    if "screenshot" in name.lower():
+        # PR descriptions load their images from these branches; deleting one breaks them
+        return ("残置", "画像の置き場（PR の説明が参照）", None)
     age = age_in_days(branch_date)
     age_s = f"{age}日経過" if age is not None else "日付不明"
     open_prs = [x for x in prs if x.get("state", "").upper() == "OPEN"]
@@ -373,7 +377,7 @@ def main() -> None:
         for b in branches:
             if b["kind"] == "fork-work":
                 matches = [x for x in prs_upstream + prs_own if x.get("headRefName") == b["name"]]
-                action, reason, pr = classify_fork_work(b["sha"], b["date"], matches)
+                action, reason, pr = classify_fork_work(b["sha"], b["date"], matches, b["name"])
             else:
                 pr = find_pr_for_branch(prs_own, b["name"]) or find_pr_for_branch(prs_upstream, b["name"])
                 action, reason = classify(b["date"], pr)
