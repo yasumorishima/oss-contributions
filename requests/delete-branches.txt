@@ -1,28 +1,102 @@
-# gyroflow #1143（2026-10-29 merge）の作業ブランチ 13 本（2026-11-02）。1 行に「repo branch」。
-# 消す前の SHA（戻すときはこの SHA でブランチを作り直す）:
-#   backup/feature-ai-optical-flow-pre-cla-fix 281d53be5712c5bbc81c685ecdf434b3744355db
-#   cand/gmflow-merge-1     90ecc2b476207370baf3b94d51a2665a39750510
-#   cand/gmflow-merge-2     9a188456f6cb145294f4a3cff6352e9d10c423ec
-#   cand/gmflow-pr-1        bf6f5fd10b3377722a66b79f5c56434bdfd2d738
-#   cand/gmflow-pr-2        3933d37d2eddc2d55bcc00d7bb898da3d92c428c
-#   cand/gmflow-rebase-1    da13f058a7fec94a5bf5dbc815c1c38a59e2cc10
-#   cand/gmflow-rebase-3    9f4a939212d5d5b7204c1880aed6b4769bb1650e
-#   cand/gmflow-rebase-4    9f5dc79e8aa4ec6157d30fe9948fad7b8324c845
-#   cand/gmflow-rebase-pr   e977a789009de49165fe4da3731aa83b981c394c
-#   cand/gmflow-rebase-pr2  b634043095ecd52e1b40345fb127fa2135c4d8c5
-#   cand/gmflow-rebase-pr3  68415cc9bda71c54820613a11441e3ce81eb8ded
-#   cand/gmflow-rebase-pr4  bc8eba12ab1d1e8b0f94baf3102653bd3e8ed985
-#   feature/ai-optical-flow bc8eba12ab1d1e8b0f94baf3102653bd3e8ed985
-gyroflow backup/feature-ai-optical-flow-pre-cla-fix
-gyroflow cand/gmflow-merge-1
-gyroflow cand/gmflow-merge-2
-gyroflow cand/gmflow-pr-1
-gyroflow cand/gmflow-pr-2
-gyroflow cand/gmflow-rebase-1
-gyroflow cand/gmflow-rebase-3
-gyroflow cand/gmflow-rebase-4
-gyroflow cand/gmflow-rebase-pr
-gyroflow cand/gmflow-rebase-pr2
-gyroflow cand/gmflow-rebase-pr3
-gyroflow cand/gmflow-rebase-pr4
-gyroflow feature/ai-optical-flow
+# fork の作業ブランチ 50 本（2026-11-11）。upstream で merge 済みの PR の head がブランチの先と同じで、開いた PR が無いもの（消し忘れブランチ棚卸し #10 の「削除推奨」・REST の pulls API で別に確認済み）。1 行に「repo branch」。
+# 消す前の SHA と merge した PR（戻すときはこの SHA でブランチを作り直す）:
+#   BirdXplorer fix/278-statement-timeout 62ea85f0346ee9e33e3d0a3efb7f90b0f7bdbd5e codeforjapan/BirdXplorer#281 2026-08-05
+#   Kamodo fix/numpy2-compat e7518107e2e0a9c2d53452b6df4f13aa3cc73cb6 nasa/Kamodo#156 2026-07-01
+#   Kamodo-core fix/numpy2-compat e5448aad1b6d878daac4c49a2f1efcbfe4b630da nasa/Kamodo-core#3 2026-07-01
+#   KyoshinEewViewerIngen feature/volcano-map-layer ebd00514a7a9f9b0238953a4fb049cb3c20cb90d ingen084/KyoshinEewViewerIngen#218 2026-08-30
+#   OpenFisca-Japan feat/boshi-fushi-kafu-fukushi-shikin 58cf15663e517a00f6e570d65d71f46ca3552827 project-inclusive/OpenFisca-Japan#481 2026-08-12
+#   OpenFisca-Japan feat/kotoshokukun-kyufukin d15796d5fcba6bfdf9bea586d23ea3fe65790b9f project-inclusive/OpenFisca-Japan#479 2026-08-12
+#   OpenFisca-Japan feat/shugaku-enjo b24bbf056cc74a49381b28d44326fc70270e7da9 project-inclusive/OpenFisca-Japan#482 2026-08-12
+#   OpenFisca-Japan feat/jukyo-kakuho-kyufukin f09551656a48997b77c42bc24f19c1d2b489adf6 project-inclusive/OpenFisca-Japan#480 2026-08-12
+#   OpenFisca-Japan feat/kyushokusha-shien e74b0ed445fd36d7d533cf372740de664ce1f71e project-inclusive/OpenFisca-Japan#484 2026-08-13
+#   OpenFisca-Japan feat/shugaku-shien-shinseido 9f98878b66342c8bc2774fb03669f86565ca5b4d project-inclusive/OpenFisca-Japan#483 2026-08-12
+#   PHPPresentation ci/phpstan-2-php84 97eed2155add647d6f73a891bededae6cafcc170 PHPOffice/PHPPresentation#897 2026-08-11
+#   PythonRobotics support-python-3.14 ae3ece3fd9664c59600a574b38cc8e8bec2990b1 AtsushiSakai/PythonRobotics#1408 2026-10-04
+#   action-board fix/issue-1770-prefecture-cache 0e1c32c8a0e142c5a58c5b60fbb7a870e2d62df3 team-mirai-volunteer/action-board#1845 2026-01-29
+#   action-board feat/issue-1818-breadcrumb 33ecd1adb8588b1bb51235f0bafb04352b6f0e10 team-mirai-volunteer/action-board#1849 2026-01-29
+#   action-board feat/issue-1850-youtube-clip-description ceadbea450dea768749a9f75fe2bbb7fcd1db7f3 team-mirai-volunteer/action-board#1856 2026-01-29
+#   action-board feat/issue-1817-rpc-tests b954b05b17c3883623280875385a15a31f6c3176 team-mirai-volunteer/action-board#1859 2026-01-30
+#   action-board fix/issue-1163-poster-mission-error-toast 1490bde98b0eb07fff8ce423746e700ec7f27604 team-mirai-volunteer/action-board#1867 2026-01-30
+#   action-board feat/issue-1817-rpc-tests-develop d789e8cdcf8535389202e32e08290e92d65a0977 team-mirai-volunteer/action-board#1869 2026-01-31
+#   action-board fix/issue-631-posting-count-display 6c48d566b32b3fb868365664f9f3cf12211dca68 team-mirai-volunteer/action-board#1868 2026-01-31
+#   action-board refactor/issue-1838-achieve-mission-action 4712cc3b2ea9d7e7f875eb642cb487283dbd40c7 team-mirai-volunteer/action-board#1906 2026-02-01
+#   action-board fix/issue-1555-remove-image-transformation b3525b9774e6f2516032d92f34421d20aeb73141 team-mirai-volunteer/action-board#1918 2026-02-03
+#   action-board fix/issue-1718-block-shape-deletion-with-xp 7ebe22d14a53417a4ccb7b23983966d2e53774aa team-mirai-volunteer/action-board#1914 2026-02-03
+#   action-board test/issue-1965-unit-tests-utils d5b4a8b43f063189ec4812999311b27c23db48d8 team-mirai-volunteer/action-board#1969 2026-02-06
+#   action-board feat/poster-map-board-search 22a57d4a633c95c76d4c69a18ebfa943ea7fcebb team-mirai-volunteer/action-board#2245 2026-06-29
+#   burn fix/cubecl-native-bool-from-data 80b22536e374cabe80356d1cddb7a0fe9b4fa494 tracel-ai/burn#5094 2026-06-22
+#   fineract-backoffice-ui i18n/accounting-list-screen-strings 91d2f8439d5fd25a154c1e33b51aa50b3f0b8cf8 apache/fineract-backoffice-ui#321 2026-08-10
+#   icp-js-core fix/deduplicate-fetchSubnetKeys 6c175f7f45cd54acba129fa6998e929b53085ed2 dfinity/icp-js-core#1278 2026-03-10
+#   kouchou-ai fix/issue-583-filter-empty-comments c02f1719111ab3ce4c19c08bd16ab9e3f69cd039 digitaldemocracy2030/kouchou-ai#796 2026-03-09
+#   kouchou-ai docs/web-ui-node-runtime-inventory dded644bf3cab85dfd47a026a69f100841e2e6f6 digitaldemocracy2030/kouchou-ai#903 2026-09-08
+#   kouchou-ai docs/885-og-export-correction 2c42c3008b76399bc8a0077eeeb7dcafabc492ec digitaldemocracy2030/kouchou-ai#936 2026-09-09
+#   kouchou-ai docs/885-server-actions-inventory df0089c530001bd4b4295e7b03561c840f476ff5 digitaldemocracy2030/kouchou-ai#1061 2026-10-24
+#   mapprint feat/share-buttons-on-map-page 0607e90914fae3eece6e7d848521c629d372aef5 codeforjapan/mapprint#556 2026-07-29
+#   mapprint feat/2026-kumamoto-earthquake dff2552d7f31039e858bfc915b226f06af8e59bd codeforjapan/mapprint#563 2026-08-01
+#   mapprint fix/561-layer-order 13930168cb8cd40f019fee8fc45d8fd1913bc70d codeforjapan/mapprint#564 2026-07-31
+#   mirai-gikai fix/878-grant-service-role-privileges 2fab543d369edc4fc5f22882d8d18a5edd92fe33 team-mirai/mirai-gikai#930 2026-07-21
+#   mirai-gikai fix/187-safari-ruby-gap 8bd9ddf68d9a900ae13c21f9a1b63a82037be1b0 team-mirai/mirai-gikai#932 2026-07-29
+#   musicblocks-v4 680-improve-palette-component-interactions cd983b41b99073b87dee0f1bc2094bce2f83e7d1 sugarlabs/musicblocks-v4#774 2026-09-12
+#   openaerialmap fix/sync-handler-skip-failed-item 3e0a45214868b3ada22f9dcf53c0e5ff2b6ca554 hotosm/openaerialmap#289 2026-08-09
+#   openclaw fix/issue-17554-stale-runningAtMs 3cad89c2c40b3b38744063c4d101b358d66927a4 openclaw/openclaw#17949 2026-03-02
+#   optax feat/adabelief-weight-decay ee421b9cd83b8dc26620a9ab7d91181e7f49a713 google-deepmind/optax#1634 2026-05-28
+#   optuna fix/issue-6305-fstring-parallel-coordinate 9e808f219edbb7e957da198650d6de6cd97e676f optuna/optuna#6431 2026-02-11
+#   optuna fix/tch-pruners-patient-py 864bc3eea7aa38578627e28e2b548419671e2350 optuna/optuna#6501 2026-03-10
+#   optuna fix/crossover-type-checking 395785f5183ee7687afcfb19ea1d0183db9863ae optuna/optuna#6546 2026-03-23
+#   optuna fix/tpe-sampler-type-checking 0c5ab229f800974821cea2c5344e70b00d8e426c optuna/optuna#6545 2026-03-23
+#   optunahub-registry feat/plot-beeswarm fb87d44cd85c72b061f2c546a85c28f5846bac72 optuna/optunahub-registry#357 2026-03-13
+#   optunahub-registry add-meta-learn-tpe d897b25a0adec02175d3c1588097d4b8faef00f1 optuna/optunahub-registry#360 2026-03-30
+#   optunahub-registry gp-acqf-samplers b429355e09fdf21ea100fd96ceb929bc99fe322f optuna/optunahub-registry#366 2026-04-21
+#   pandas fix/issue-63191-index-to-frame-name-default fc321c7faf1b8a75170b87b48825daefea41a3fc pandas-dev/pandas#64105 2026-02-18
+#   professional-services-data-validator fix/mock-gcs-in-unit-tests 14c67946ce0223a61016685ab6c6aa7ff1bfe45b GoogleCloudPlatform/professional-services-data-validator#1708 2026-04-01
+#   timesfm fix/xreg-mode-docstring babdee520848e6444f02c25d73f4368b9d942542 google-research/timesfm#376 2026-03-19
+BirdXplorer fix/278-statement-timeout
+Kamodo fix/numpy2-compat
+Kamodo-core fix/numpy2-compat
+KyoshinEewViewerIngen feature/volcano-map-layer
+OpenFisca-Japan feat/boshi-fushi-kafu-fukushi-shikin
+OpenFisca-Japan feat/kotoshokukun-kyufukin
+OpenFisca-Japan feat/shugaku-enjo
+OpenFisca-Japan feat/jukyo-kakuho-kyufukin
+OpenFisca-Japan feat/kyushokusha-shien
+OpenFisca-Japan feat/shugaku-shien-shinseido
+PHPPresentation ci/phpstan-2-php84
+PythonRobotics support-python-3.14
+action-board fix/issue-1770-prefecture-cache
+action-board feat/issue-1818-breadcrumb
+action-board feat/issue-1850-youtube-clip-description
+action-board feat/issue-1817-rpc-tests
+action-board fix/issue-1163-poster-mission-error-toast
+action-board feat/issue-1817-rpc-tests-develop
+action-board fix/issue-631-posting-count-display
+action-board refactor/issue-1838-achieve-mission-action
+action-board fix/issue-1555-remove-image-transformation
+action-board fix/issue-1718-block-shape-deletion-with-xp
+action-board test/issue-1965-unit-tests-utils
+action-board feat/poster-map-board-search
+burn fix/cubecl-native-bool-from-data
+fineract-backoffice-ui i18n/accounting-list-screen-strings
+icp-js-core fix/deduplicate-fetchSubnetKeys
+kouchou-ai fix/issue-583-filter-empty-comments
+kouchou-ai docs/web-ui-node-runtime-inventory
+kouchou-ai docs/885-og-export-correction
+kouchou-ai docs/885-server-actions-inventory
+mapprint feat/share-buttons-on-map-page
+mapprint feat/2026-kumamoto-earthquake
+mapprint fix/561-layer-order
+mirai-gikai fix/878-grant-service-role-privileges
+mirai-gikai fix/187-safari-ruby-gap
+musicblocks-v4 680-improve-palette-component-interactions
+openaerialmap fix/sync-handler-skip-failed-item
+openclaw fix/issue-17554-stale-runningAtMs
+optax feat/adabelief-weight-decay
+optuna fix/issue-6305-fstring-parallel-coordinate
+optuna fix/tch-pruners-patient-py
+optuna fix/crossover-type-checking
+optuna fix/tpe-sampler-type-checking
+optunahub-registry feat/plot-beeswarm
+optunahub-registry add-meta-learn-tpe
+optunahub-registry gp-acqf-samplers
+pandas fix/issue-63191-index-to-frame-name-default
+professional-services-data-validator fix/mock-gcs-in-unit-tests
+timesfm fix/xreg-mode-docstring
