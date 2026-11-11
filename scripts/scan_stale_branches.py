@@ -1,5 +1,6 @@
-"""Scan all yasumorishima repos for stale `claude/*` branches and update
-a single tracker Issue with the candidate list.
+"""Scan all yasumorishima repos for stale `claude/*` branches, and forks for
+leftover work branches of any name, and update a single tracker Issue with
+the candidate list.
 
 Usage:
     python scripts/scan_stale_branches.py            # update tracker issue
@@ -17,9 +18,13 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parent.parent
 CONFIG = ROOT / "config.json"
 ISSUE_LABEL = "auto-detect:stale-branches"
-ISSUE_TITLE = "🧹 [自動検知] Stale claude/* branches 棚卸し"
+ISSUE_TITLE = "🧹 [自動検知] 消し忘れブランチ棚卸し（claude/* と fork の作業ブランチ）"
 TRACKER_REPO = "yasumorishima/oss-contributions"
 STALE_DAYS_THRESHOLD = 60  # 最終更新からN日以上経過（かつオープンPRなし）なら削除推奨
+# A fork work branch whose last commit is the head of a merged upstream PR is
+# safe to delete: the content lives on upstream. Wait a few days in case the
+# branch is about to be reused.
+FORK_MERGED_GRACE_DAYS = 7
 
 
 def run(cmd: list[str]) -> str | None:
@@ -73,7 +78,7 @@ def list_prs_for_repo(repo_full: str, author: str) -> list[dict]:
     raw = run([
         "gh", "pr", "list", "--repo", repo_full, "--author", author,
         "--state", "all", "--limit", "200",
-        "--json", "url,state,headRefName,number",
+        "--json", "url,state,headRefName,number,headRefOid",
     ])
     if not raw:
         return []
@@ -91,6 +96,62 @@ def find_pr_for_branch(prs: list[dict], branch: str) -> dict | None:
     state_priority = {"OPEN": 0, "MERGED": 1, "CLOSED": 2}
     matches.sort(key=lambda p: state_priority.get(p.get("state", "").upper(), 3))
     return matches[0]
+
+
+def list_branch_names(repo_full: str) -> set[str] | None:
+    """All branch names of `repo_full`, or None when they cannot be read."""
+    raw = run(["gh", "api", "--paginate", f"repos/{repo_full}/branches", "--jq", ".[].name"])
+    if raw is None:
+        return None
+    return {line for line in raw.splitlines() if line.strip()}
+
+
+def list_fork_work_branches(author: str, repo: str, upstream_names: set[str],
+                            default_branch: str) -> list[dict]:
+    """Return [{name, sha, date}] for branches the owner made in a fork.
+
+    Skipped: claude/* (scanned by list_claude_branches), the default branch,
+    names that also exist upstream, and branches whose last commit was not
+    written by the owner (copied from upstream when the fork was made).
+    """
+    raw = run([
+        "gh", "api", "--paginate", f"repos/{author}/{repo}/branches",
+        "--jq", '.[] | {name: .name, sha: .commit.sha}',
+    ])
+    if not raw:
+        return []
+    branches = []
+    for line in raw.splitlines():
+        if not line.strip():
+            continue
+        b = json.loads(line)
+        name = b["name"]
+        if name.startswith("claude/") or name == default_branch or name in upstream_names:
+            continue
+        info = run([
+            "gh", "api", f"repos/{author}/{repo}/commits/{b['sha']}",
+            "--jq", '[.commit.committer.date, (.author.login // ""), (.committer.login // "")] | @tsv',
+        ])
+        if info is None:
+            continue
+        date_s, author_login, committer_login = (info.split("\t") + ["", "", ""])[:3]
+        if author not in (author_login, committer_login):
+            continue
+        b["date"] = date_s[:10]
+        branches.append(b)
+    return branches
+
+
+def get_fork_info(author: str, repo: str) -> tuple[str | None, str]:
+    """For a fork, return (upstream `owner/name` or None, default branch)."""
+    raw = run([
+        "gh", "api", f"repos/{author}/{repo}",
+        "--jq", '[(.parent.full_name // ""), .default_branch] | @tsv',
+    ])
+    if not raw:
+        return None, ""
+    parent, default = (raw.split("\t") + [""])[:2]
+    return (parent or None), default
 
 
 def get_upstream_full(author: str, repo: str) -> str | None:
@@ -141,6 +202,30 @@ def classify(branch_date: str, pr: dict | None) -> tuple[str, str]:
     return ("残置", f"PR未作成・{age}日経過")
 
 
+def classify_fork_work(branch_sha: str, branch_date: str, pr: dict | None) -> tuple[str, str]:
+    """Return (action, reason) for a fork work branch (not claude/*)."""
+    age = age_in_days(branch_date)
+    age_s = f"{age}日経過" if age is not None else "日付不明"
+    if pr:
+        state = pr.get("state", "").upper()
+        url = pr.get("url", "")
+        pr_num = url.rsplit("/", 1)[-1] if url else "?"
+        if state == "OPEN":
+            return ("残置", f"オープンPR #{pr_num}")
+        if state == "MERGED" and pr.get("headRefOid") == branch_sha:
+            if age is not None and age >= FORK_MERGED_GRACE_DAYS:
+                return ("削除推奨", f"マージ済PR #{pr_num}・PR の後のコミットなし・{age_s}")
+            return ("残置", f"マージ済PR #{pr_num}・{age_s}（{FORK_MERGED_GRACE_DAYS}日待ち）")
+        label = ("マージ済PR" if state == "MERGED" else "クローズPR") + f" #{pr_num}"
+        if state == "MERGED":
+            label += "・PR の後に新しいコミット"
+    else:
+        label = "PR未作成"
+    if age is not None and age >= STALE_DAYS_THRESHOLD:
+        return ("要確認", f"{label}・{age_s}（消す前に SHA を記録）")
+    return ("残置", f"{label}・{age_s}")
+
+
 def build_report(rows: list[dict]) -> str:
     """Build markdown report grouped by fork/own."""
     fork_rows = [r for r in rows if r["fork"]]
@@ -149,14 +234,14 @@ def build_report(rows: list[dict]) -> str:
     def render_table(group_rows: list[dict]) -> str:
         if not group_rows:
             return "_(該当なし)_\n"
-        lines = ["| リポ | branch | 最終更新 | PR | 推奨 | 削除コマンド |",
-                 "|---|---|---|---|---|---|"]
+        lines = ["| リポ | branch | SHA | 最終更新 | PR | 推奨 | 理由 | 削除コマンド |",
+                 "|---|---|---|---|---|---|---|---|"]
         # Sort: 削除推奨 first, then by repo, then by date
         priority = {"削除推奨": 0, "要確認": 1, "残置": 2}
         for r in sorted(group_rows, key=lambda x: (priority.get(x["action"], 9), x["repo"], x["date"])):
             del_cmd = f"`gh api -X DELETE repos/{r['author']}/{r['repo']}/git/refs/heads/{r['branch']}`"
             lines.append(
-                f"| `{r['repo']}` | `{r['branch']}` | {r['date']} | {r['pr_label']} | **{r['action']}** | {del_cmd} |"
+                f"| `{r['repo']}` | `{r['branch']}` | `{r.get('sha', '')[:8]}` | {r['date']} | {r['pr_label']} | **{r['action']}** | {r['reason']} | {del_cmd} |"
             )
         return "\n".join(lines) + "\n"
 
@@ -167,9 +252,12 @@ def build_report(rows: list[dict]) -> str:
     summary = " / ".join(f"{k}: {v}" for k, v in summary_counts.items()) or "なし"
 
     return (
-        f"# Stale claude/* Branches Tracker\n\n"
+        f"# 消し忘れブランチ Tracker（claude/* と fork の作業ブランチ）\n\n"
         f"最終スキャン: {now_jst}\n"
-        f"閾値: オープンPRなしかつ最終更新から {STALE_DAYS_THRESHOLD} 日以上経過 → 削除推奨（マージ済PRがあっても同じ）\n\n"
+        f"閾値（claude/*）: オープンPRなしかつ最終更新から {STALE_DAYS_THRESHOLD} 日以上経過 → 削除推奨（マージ済PRがあっても同じ）\n"
+        f"閾値（fork の作業ブランチ＝upstream に同名が無く、最後のコミットが自分のもの）: "
+        f"マージ済PRの head がブランチの先と同じで {FORK_MERGED_GRACE_DAYS} 日以上 → 削除推奨／"
+        f"PR なし・クローズ・PR の後に新しいコミットで {STALE_DAYS_THRESHOLD} 日以上 → 要確認\n\n"
         f"**集計**: {summary}（合計 {len(rows)} ブランチ）\n\n"
         f"## ⚠️ フォーク内 (上流誤PRリスクあり、優先削除候補)\n\n"
         f"{render_table(fork_rows)}\n"
@@ -204,7 +292,7 @@ def upsert_issue(body: str) -> None:
     if issue_num is None:
         # Ensure label exists
         run(["gh", "label", "create", ISSUE_LABEL, "--repo", TRACKER_REPO,
-             "--color", "EDEDED", "--description", "Auto-detect: stale claude/* branches",
+             "--color", "EDEDED", "--description", "Auto-detect: stale claude/* and fork work branches",
              "--force"])
         result = run([
             "gh", "issue", "create", "--repo", TRACKER_REPO,
@@ -215,7 +303,7 @@ def upsert_issue(body: str) -> None:
     else:
         run([
             "gh", "issue", "edit", str(issue_num), "--repo", TRACKER_REPO,
-            "--body-file", str(body_path),
+            "--title", ISSUE_TITLE, "--body-file", str(body_path),
         ])
         print(f"Updated tracker issue #{issue_num}")
     if body_path.exists() and body_path.name == "_stale_body.tmp.md":
@@ -233,23 +321,37 @@ def main() -> None:
 
     rows: list[dict] = []
     for repo in repos:
-        branches = list_claude_branches(author, repo["name"])
+        branches = [dict(b, kind="claude") for b in list_claude_branches(author, repo["name"])]
+        upstream_full = None
+        if repo["fork"]:
+            upstream_full, default_branch = get_fork_info(author, repo["name"])
+            upstream_names = list_branch_names(upstream_full) if upstream_full else None
+            if upstream_names is None:
+                # Without the upstream list every inherited branch would look like ours.
+                print(f"  {repo['name']}: upstream branches unreadable, fork work branches skipped",
+                      file=sys.stderr)
+            else:
+                branches += [dict(b, kind="fork-work") for b in
+                             list_fork_work_branches(author, repo["name"], upstream_names, default_branch)]
         if not branches:
             continue
-        print(f"  {repo['name']}: {len(branches)} claude/* branches")
+        print(f"  {repo['name']}: {len(branches)} branches to check")
         # Query PRs in own repo
         own_full = f"{author}/{repo['name']}"
         prs_own = list_prs_for_repo(own_full, author)
         # For forks, also query upstream (PRs from fork branches usually go to upstream)
         prs_upstream: list[dict] = []
-        if repo["fork"]:
-            upstream_full = get_upstream_full(author, repo["name"])
-            if upstream_full:
-                prs_upstream = list_prs_for_repo(upstream_full, author)
+        if upstream_full:
+            prs_upstream = list_prs_for_repo(upstream_full, author)
 
         for b in branches:
-            pr = find_pr_for_branch(prs_own, b["name"]) or find_pr_for_branch(prs_upstream, b["name"])
-            action, reason = classify(b["date"], pr)
+            if b["kind"] == "fork-work":
+                # an upstream PR decides first: the fork's own PRs are review drafts
+                pr = find_pr_for_branch(prs_upstream, b["name"]) or find_pr_for_branch(prs_own, b["name"])
+                action, reason = classify_fork_work(b["sha"], b["date"], pr)
+            else:
+                pr = find_pr_for_branch(prs_own, b["name"]) or find_pr_for_branch(prs_upstream, b["name"])
+                action, reason = classify(b["date"], pr)
             pr_label = "なし"
             if pr:
                 num = pr.get("url", "").rsplit("/", 1)[-1]
@@ -259,6 +361,7 @@ def main() -> None:
                 "repo": repo["name"],
                 "fork": repo["fork"],
                 "branch": b["name"],
+                "sha": b.get("sha", ""),
                 "date": b["date"],
                 "pr_label": pr_label,
                 "action": action,
