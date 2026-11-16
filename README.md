@@ -42,10 +42,10 @@ Automated watchers that surface active open-source bounties.
 | [gtfs-validator](https://github.com/MobilityData/gtfs-validator) | Java | 1 | 1 | 0 | 0 |
 | [PHPPresentation](https://github.com/PHPOffice/PHPPresentation) | PHP | 2 | 1 | 0 | 1 |
 | [fineract-backoffice-ui](https://github.com/apache/fineract-backoffice-ui) | TypeScript | 1 | 1 | 0 | 0 |
-| [BirdXplorer](https://github.com/codeforjapan/BirdXplorer) | Python | 2 | 1 | 1 | 0 |
+| [BirdXplorer](https://github.com/codeforjapan/BirdXplorer) | Python | 2 | 2 | 0 | 0 |
 | [mapprint](https://github.com/codeforjapan/mapprint) | SCSS | 4 | 3 | 0 | 1 |
 | [d2](https://github.com/d2lang/d2) | Go | 1 | 0 | 1 | 0 |
-| [MathCAT](https://github.com/daisy/MathCAT) | Rust | 45 | 44 | 0 | 1 |
+| [MathCAT](https://github.com/daisy/MathCAT) | Rust | 65 | 61 | 3 | 1 |
 | [abr-geocoder](https://github.com/digital-go-jp/abr-geocoder) | TypeScript | 1 | 0 | 0 | 1 |
 | [gyroflow](https://github.com/gyroflow/gyroflow) | Rust | 2 | 1 | 1 | 0 |
 | [notify-rust](https://github.com/hoodie/notify-rust) | Rust | 1 | 0 | 0 | 1 |
@@ -62,7 +62,7 @@ Automated watchers that surface active open-source bounties.
 | [d2](https://github.com/terrastruct/d2) | Go | 1 | 0 | 1 | 0 |
 | [burn](https://github.com/tracel-ai/burn) | Rust | 1 | 1 | 0 | 0 |
 | [zio](https://github.com/zio/zio) | Unknown | 2 | 0 | 0 | 2 |
-| **Total** | | **157** | **111** | **16** | **30** |
+| **Total** | | **177** | **129** | **18** | **30** |
 
 ## Contributions by Project
 
@@ -371,7 +371,7 @@ Angular back-office UI for Apache Fineract, the open-source core banking platfor
 
 | # | PR | Status | Description |
 |---|---|---|---|
-| 2 | [#286](https://github.com/codeforjapan/BirdXplorer/pull/286) | Open | feat(api): statement_timeout で打ち切られたクエリを 504、その他の DB 障害を 503 に返す (#284) |
+| 2 | [#286](https://github.com/codeforjapan/BirdXplorer/pull/286) | Merged | feat(api): statement_timeout で打ち切られたクエリを 504、その他の DB 障害を 503 に返す (#284) |
 | 1 | [#281](https://github.com/codeforjapan/BirdXplorer/pull/281) | Merged | feat(common): DB クエリに statement_timeout を設定（既定 30 秒） (#278) |
 
 ### [codeforjapan/mapprint](https://github.com/codeforjapan/mapprint)
@@ -401,6 +401,26 @@ Work log and to-do for the Japanese translation: [mathcat-ja-notes](https://gith
 
 | # | PR | Status | Description |
 |---|---|---|---|
+| 65 | [#1000](https://github.com/daisy/MathCAT/pull/1000) | Merged | ja: write 角かっこ, 太い白抜き and 右さがり so Open JTalk reads them correctly |
+| 64 | [#1001](https://github.com/daisy/MathCAT/pull/1001) | Merged | ja: say sum and product intents with their limits in Japanese order |
+| 63 | [#1002](https://github.com/daisy/MathCAT/pull/1002) | Merged | ja: read prefixed units, 分, 日 and 年, and per hour correctly |
+| 62 | [#1010](https://github.com/daisy/MathCAT/pull/1010) | Merged | ja: say 毎, 毎時 and 毎分 for a slash between units |
+| 61 | [#1011](https://github.com/daisy/MathCAT/pull/1011) | Merged | ja: say 行列式 オブ x and ノルム オブ x instead of の |
+| 60 | [#1012](https://github.com/daisy/MathCAT/pull/1012) | Merged | ja: write 大文字 as おおもじ so Open JTalk reads it correctly |
+| 59 | [#1013](https://github.com/daisy/MathCAT/pull/1013) | Merged | ja: no pause between a subscripted base and the の of its power |
+| 58 | [#1014](https://github.com/daisy/MathCAT/pull/1014) | Merged | ja: write the kanji that Open JTalk misreads after a space so they read right |
+| 57 | [#1017](https://github.com/daisy/MathCAT/pull/1017) | Merged | ja: say nothing for a product of units and say 時 for the hour after a unit |
+| 56 | [#1018](https://github.com/daisy/MathCAT/pull/1018) | Merged | ja: write 開 in open subset and open superset as かい |
+| 55 | [#1019](https://github.com/daisy/MathCAT/pull/1019) | Merged | ja: verify the U+22xx operators in unicode-full.yaml; say 相似 for ∽ and ニアリーイコール for ≒ |
+| 54 | [#1020](https://github.com/daisy/MathCAT/pull/1020) | Merged | ja: verify the U+25xx shapes in unicode-full.yaml and fix words Open JTalk misreads |
+| 53 | [#1027](https://github.com/daisy/MathCAT/pull/1027) | Merged | ja: verify the U+00xx, U+02xx and U+03xx signs in unicode-full.yaml; say ¥ as a currency |
+| 52 | [#1028](https://github.com/daisy/MathCAT/pull/1028) | Merged | ja: verify the U+27xx signs in unicode-full.yaml; call the angle brackets 山カッコ |
+| 51 | [#1029](https://github.com/daisy/MathCAT/pull/1029) | Merged | ja: speak leaf intents with the IntentMappings word |
+| 50 | [#1030](https://github.com/daisy/MathCAT/pull/1030) | Merged | ja: verify the U+21xx letterlike symbols and arrows in unicode-full.yaml; say 波形の and 一対の |
+| 49 | [#1031](https://github.com/daisy/MathCAT/pull/1031) | Merged | ja: verify the U+23xx brackets in unicode-full.yaml; call the corners 隅 |
+| 48 | [#1037](https://github.com/daisy/MathCAT/pull/1037) | Open | ja: verify the U+26xx star, card suits and music signs in unicode-full.yaml |
+| 47 | [#1038](https://github.com/daisy/MathCAT/pull/1038) | Open | ja: verify the circled letters, ⧫, ⧸ and ⸘ in unicode-full.yaml |
+| 46 | [#1039](https://github.com/daisy/MathCAT/pull/1039) | Open | ja: verify the bold, script, fraktur and double-struck letters in unicode-full.yaml |
 | 45 | [#980](https://github.com/daisy/MathCAT/pull/980) | Merged | ja: verify the Greek letters and combining marks; say イプシロン, イータ, グザイ and 語末シグマ; say 上の/下の for marks above/below |
 | 44 | [#981](https://github.com/daisy/MathCAT/pull/981) | Merged | ja: drop the は said before relation symbols; read … as テンテンテン and the ratio ∶ as 対 |
 | 43 | [#982](https://github.com/daisy/MathCAT/pull/982) | Merged | ja: read ⅆⅇⅈⅉ as the letter, a mixed number with と, ℃ as 摂氏度 and ± as プラスマイナス |
