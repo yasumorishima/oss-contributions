@@ -24,7 +24,7 @@ from pathlib import Path
 
 TRACKER = "yasumorishima/oss-contributions"
 IDLE = "PR is"  # resolve() result once the PR is no longer open: the project stops by itself
-AUTHOR = ("yasumorishima", "fw_yasu11@hotmail.com")
+AUTHOR = ("yasumorishima", "90467955+yasumorishima@users.noreply.github.com")
 
 PROJECTS = {
     "gyroflow": {
