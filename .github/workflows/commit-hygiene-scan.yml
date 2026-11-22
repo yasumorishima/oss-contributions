@@ -38,7 +38,7 @@ jobs:
         run: |
           set +e
           AUTHOR=$(jq -r ".author" config.json)
-          ALLOWED_EMAIL="fw_yasu11@hotmail.com"
+          ALLOWED_EMAIL="90467955+yasumorishima@users.noreply.github.com"
           REPORT_FILE=$(mktemp)
           UPSTREAMS_FILE=$(mktemp)
           FAIL=false
@@ -117,7 +117,7 @@ jobs:
             echo "## 凡例"
             echo "- \`anthropic-trailer\`: \`Co-Authored-By: Claude ...\` trailer (\`noreply@anthropic.com\`) 混入"
             echo "- \`dummy-email\`: \`yasu@example.com\` (test/default) 混入"
-            echo "- \`email-mismatch(gmail)\`: \`fwyasu11@gmail.com\` 混入 (primary は \`fw_yasu11@hotmail.com\`)"
+            echo "- \`email-mismatch(gmail)\`: \`fwyasu11@gmail.com\` 混入 (コミットのアドレスは \`90467955+yasumorishima@users.noreply.github.com\`)"
             echo ""
             echo "## 対応方針"
             echo "- 🟢 safe-to-fix: 人間 review ゼロ → \`git filter-branch\` + force-push で安全に rewrite 可能"
