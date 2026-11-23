@@ -45,7 +45,7 @@ Automated watchers that surface active open-source bounties.
 | [BirdXplorer](https://github.com/codeforjapan/BirdXplorer) | Python | 2 | 2 | 0 | 0 |
 | [mapprint](https://github.com/codeforjapan/mapprint) | SCSS | 4 | 3 | 0 | 1 |
 | [d2](https://github.com/d2lang/d2) | Go | 1 | 0 | 1 | 0 |
-| [MathCAT](https://github.com/daisy/MathCAT) | Rust | 79 | 76 | 2 | 1 |
+| [MathCAT](https://github.com/daisy/MathCAT) | Rust | 94 | 93 | 0 | 1 |
 | [abr-geocoder](https://github.com/digital-go-jp/abr-geocoder) | TypeScript | 1 | 0 | 0 | 1 |
 | [gyroflow](https://github.com/gyroflow/gyroflow) | Rust | 2 | 1 | 1 | 0 |
 | [notify-rust](https://github.com/hoodie/notify-rust) | Rust | 1 | 0 | 0 | 1 |
@@ -62,7 +62,7 @@ Automated watchers that surface active open-source bounties.
 | [d2](https://github.com/terrastruct/d2) | Go | 1 | 0 | 1 | 0 |
 | [burn](https://github.com/tracel-ai/burn) | Rust | 1 | 1 | 0 | 0 |
 | [zio](https://github.com/zio/zio) | Unknown | 2 | 0 | 0 | 2 |
-| **Total** | | **191** | **144** | **17** | **30** |
+| **Total** | | **206** | **161** | **15** | **30** |
 
 ## Contributions by Project
 
@@ -401,6 +401,21 @@ Work log and to-do for the Japanese translation: [mathcat-ja-notes](https://gith
 
 | # | PR | Status | Description |
 |---|---|---|---|
+| 94 | [#1076](https://github.com/daisy/MathCAT/pull/1076) | Merged | ja: add the telegraph symbols for months, hours and days |
+| 93 | [#1078](https://github.com/daisy/MathCAT/pull/1078) | Merged | ja: add the circled and parenthesized ideographs and katakana, and verify the enclosed numbers |
+| 92 | [#1084](https://github.com/daisy/MathCAT/pull/1084) | Merged | ja: verify the supplemental math operators (U+2A00-2AFF) in unicode-full.yaml |
+| 91 | [#1087](https://github.com/daisy/MathCAT/pull/1087) | Merged | ja: verify the MathType relation symbols (U+E900-E9FF) in unicode-full.yaml |
+| 90 | [#1089](https://github.com/daisy/MathCAT/pull/1089) | Merged | ja: verify the miscellaneous math symbols-B (U+2900-29FF) in unicode-full.yaml |
+| 89 | [#1090](https://github.com/daisy/MathCAT/pull/1090) | Merged | ja: remove the unicode-full.yaml entries that unicode.yaml already defines |
+| 88 | [#1091](https://github.com/daisy/MathCAT/pull/1091) | Merged | ja: verify the letterlike symbols, number forms and arrows (U+2100-21FF) in unicode-full.yaml |
+| 87 | [#1092](https://github.com/daisy/MathCAT/pull/1092) | Merged | ja: verify the dingbats, math symbols-A and arrows-A (U+2700-27FF) in unicode-full.yaml |
+| 86 | [#1093](https://github.com/daisy/MathCAT/pull/1093) | Merged | ja: verify the general punctuation, currency and symbol combining marks (U+2000-20FF) in unicode-full.yaml |
+| 85 | [#1096](https://github.com/daisy/MathCAT/pull/1096) | Merged | ja: verify the MathType arrows (U+EB00-EBFF) in unicode-full.yaml |
+| 84 | [#1097](https://github.com/daisy/MathCAT/pull/1097) | Merged | ja: verify the rest of the U+22xx operators in unicode-full.yaml |
+| 83 | [#1098](https://github.com/daisy/MathCAT/pull/1098) | Merged | ja: verify the miscellaneous symbols and arrows (U+2B00-2BFF) in unicode-full.yaml |
+| 82 | [#1100](https://github.com/daisy/MathCAT/pull/1100) | Merged | ja: verify the rest of the geometric shapes (U+25A0-25FF) in unicode-full.yaml |
+| 81 | [#1101](https://github.com/daisy/MathCAT/pull/1101) | Merged | ja: verify the MathType negated relations (U+EA00-EAFF) in unicode-full.yaml |
+| 80 | [#1105](https://github.com/daisy/MathCAT/pull/1105) | Merged | ja: verify the MathType bracket pieces (U+EC00-ECFF) in unicode-full.yaml |
 | 79 | [#1043](https://github.com/daisy/MathCAT/pull/1043) | Merged | ja: add tests for ClearSpeak preferences the en tests cover |
 | 78 | [#1045](https://github.com/daisy/MathCAT/pull/1045) | Merged | ja: with AndSoOn, say まで after the last item of a list |
 | 77 | [#1049](https://github.com/daisy/MathCAT/pull/1049) | Merged | ja: read log_b x as ログ b の x and drop the オブ after a limit |
@@ -413,8 +428,8 @@ Work log and to-do for the Japanese translation: [mathcat-ja-notes](https://gith
 | 70 | [#1068](https://github.com/daisy/MathCAT/pull/1068) | Merged | ja: fix the symbol names that Open JTalk misreads, and U+23E6 that stopped the speech |
 | 69 | [#1069](https://github.com/daisy/MathCAT/pull/1069) | Merged | ja: write 角 as かく and 循環節 as 循環せつ, which Open JTalk misread |
 | 68 | [#1072](https://github.com/daisy/MathCAT/pull/1072) | Merged | Quote the spell values that were bare names, starting with U+23E6 |
-| 67 | [#1073](https://github.com/daisy/MathCAT/pull/1073) | Open | ja: verify the U+33xx squared units in unicode-full.yaml and add the squared katakana words |
-| 66 | [#1075](https://github.com/daisy/MathCAT/pull/1075) | Open | en: speak ㏂ and ㏘ as a.m. and p.m., not attometers and picometers |
+| 67 | [#1073](https://github.com/daisy/MathCAT/pull/1073) | Merged | ja: verify the U+33xx squared units in unicode-full.yaml and add the squared katakana words |
+| 66 | [#1075](https://github.com/daisy/MathCAT/pull/1075) | Merged | en: speak ㏂ and ㏘ as a.m. and p.m., not attometers and picometers |
 | 65 | [#1000](https://github.com/daisy/MathCAT/pull/1000) | Merged | ja: write 角かっこ, 太い白抜き and 右さがり so Open JTalk reads them correctly |
 | 64 | [#1001](https://github.com/daisy/MathCAT/pull/1001) | Merged | ja: say sum and product intents with their limits in Japanese order |
 | 63 | [#1002](https://github.com/daisy/MathCAT/pull/1002) | Merged | ja: read prefixed units, 分, 日 and 年, and per hour correctly |
